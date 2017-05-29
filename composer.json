@@ -1,0 +1,13 @@
+{
+    "require": {
+        "slim/slim": "^3.0",
+        "illuminate/database": "~5.1",
+        "monolog/monolog": "^1.22"
+    },
+    "autoload": {
+        "classmap": [
+            "api/src/models",
+            "api/src/handlers"
+        ]
+    }
+}
