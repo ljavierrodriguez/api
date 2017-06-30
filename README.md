@@ -11,12 +11,18 @@ Before starting ot use the API methods you have to request for an access_token b
 
 **The response will be something like this:**
 
+```
+#!json
+
+
     {
         "access_token": "7ab8d4abaa369c76b447e5d10387650ff628f3dc",
         "expires_in": 86400,
         "token_type": "Bearer",
         "scope": null
     }
+
+```
 
 ###2. Using UserCredentials to get access_token
 
