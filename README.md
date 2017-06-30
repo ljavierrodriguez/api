@@ -1,12 +1,53 @@
 #Breathe Code Talent Tree API
 
+Before starting ot use the API methods you have to request for an access_token by autenticating your client app, with one of these following options:
+
+###1. Using ClientCredentials to get access_token
+
+**Request an access_token by doing the following request:**
+
+    POST <client_id>:<client_secret> https://talenttree-alesanchezr.c9users.io/api/token
+    PARAMS grant_type=client_credentials
+
+**The response will be something like this:**
+
+    {
+        "access_token": "7ab8d4abaa369c76b447e5d10387650ff628f3dc",
+        "expires_in": 86400,
+        "token_type": "Bearer",
+        "scope": null
+    }
+
+###2. Using UserCredentials to get access_token
+
+**Request an access_token by doing the following request:**
+
+    POST <client_id>:<client_secret> https://talenttree-alesanchezr.c9users.io/api/token
+    PARAMS grant_type=password&username=<users_username>&password=<users_password>
+
+**The response will be something like this:**
+
+    {
+        "access_token": "8d452bcb5b64cca657b6b28f6da5347c12f0fa39",
+        "expires_in": 86400,
+        "token_type": "Bearer",
+        "scope": null,
+        "refresh_token": "b52a5790f22846d2c6c3b5044f6ca88523724e88"
+    }
+
+After you have your "authorization code" you can use any API request by appending the authorization code as a GET or post parameter.
+
+##RESOURCES
+
     1. Badges
-        1.1 Get badges [GET]
+        1.1 Get badges of student [GET]
+        1.2 Get all badges [GET]
     2. Single Badge
         2.1 Get single badge [GET]
         2.2 Create or update single badge [POST]
         2.3 Delete single badge [DELETE]
     3. Student
+        3.0 Get all students [GET]
         3.1 Get single Student [GET]
         3.2 Create one Student [POST]
         3.3 Delete single student [DELETE]
@@ -22,9 +63,29 @@
 
 As you develop throughout the academy, you will earn "talent badges" that all together will become your "Talent Tree".
 
-##Badges Collection [/badges/student/{student_id}]
+##Badges Collection [/badges/]
 
-### Get badges [GET]
+### Get all badges [GET]
+
++ Response 200 (application/json)
+
+        {
+            "code": 200,
+            "data": {
+                "name": "Master in CSS Selectors",
+                "earned_at": "2014-11-11T08:40:51.620Z",
+                "url": "/badge/1",
+                "image_url": "/path/to/image",
+                "points_to_achieve": 50,
+                "technologies": [
+                    "js", "swift"
+                ]
+            }
+        }
+
+##Student Badges Collection [/badges/student/{student_id}]
+
+### Get student badges [GET]
 
 + Parameters
     + student_id (number, optional) - ID of the student
@@ -120,6 +181,46 @@ A badge can only be deleted if it has no activity with 5 days old. Otherwise it 
             "message": "ok"
         }
         
+## Students Collection [/students/]
+
+### Get all students [GET]
+
++ Response 200 (application/json)
+
+        {
+            "code": 200,
+            "data": [
+                {
+                    "id": 1,
+                    "breathecode_id": 1,
+                    "email": "john@4geeks.co",
+                    "avatar_url": "",
+                    "full_name": "John",
+                    "total_points": 18,
+                    "description": "",
+                    "created_at": "2017-05-29 04:54:13",
+                    "updated_at": "2017-06-06 01:10:52",
+                    "url": "/student/1",
+                    "badges": [
+                    "dry_master"
+                    ]
+                },
+                {
+                    "id": 2,
+                    "breathecode_id": 2,
+                    "email": "pedro@4geeks.co",
+                    "avatar_url": "",
+                    "full_name": "Pedro",
+                    "total_points": 0,
+                    "description": "",
+                    "created_at": "2017-05-29 04:54:13",
+                    "updated_at": "2017-05-29 04:54:13",
+                    "url": "/student/2",
+                    "badges": []
+                }
+            ]
+        }
+
 ## Student Collection [/student/{id}]
 
 ### Get single Student [GET]
@@ -313,11 +414,13 @@ Having a specialties is the ultimate goal, a specialty is comprised by a group o
 + Request (application/json)
 
         {
-        	"name": "Font End Genious",
-        	"slug": "master_of_frontend",
-        	"description": "Loren ipsum orbat thinkin ir latbongen sidoment",
-        	"image_url": "https://assets.breatheco.de/img/funny/baby.jpg",
-        	"badges": ["css_master","copymaster"]
+          "profile_slug": "full-stack-web",
+          "name": "CSS Master",
+          "slug": "css-master",
+          "image_url":"",
+          "description": "Loren ipsum orbat thinkin ir latbongen sidoment",
+          "badges": ["css_selectors","clean_code"],
+          "points_to_achieve": 40
         }
 
 + Response 201 (application/json)

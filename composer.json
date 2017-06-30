@@ -2,7 +2,9 @@
     "require": {
         "slim/slim": "^3.0",
         "illuminate/database": "~5.1",
-        "monolog/monolog": "^1.22"
+        "monolog/monolog": "^1.22",
+        "chadicus/slim-oauth2": "^3.1",
+        "slim/php-view": "^2.2"
     },
     "autoload": {
         "classmap": [

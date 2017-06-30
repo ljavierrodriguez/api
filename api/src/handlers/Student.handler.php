@@ -14,6 +14,12 @@ class StudentHandler extends MainHandler{
         return $this->success($response,$student);
     }
     
+    public function getAllStudentsHandler(Request $request, Response $response) {
+
+        $students = Student::all();
+        return $this->success($response,$students);
+    }
+    
     public function getStudentActivityHandler(Request $request, Response $response) {
         $studentId = $request->getAttribute('student_id');
         
@@ -31,6 +37,7 @@ class StudentHandler extends MainHandler{
             $student = Student::find($studentId);
             if(!$student) throw new Exception('Invalid student id: '.$studentId);
             
+            $student = $this->setOptional($student,$data,'breathecode_id');
             $student = $this->setOptional($student,$data,'email');
             $student = $this->setOptional($student,$data,'full_name');
         } 
@@ -38,6 +45,7 @@ class StudentHandler extends MainHandler{
             $student = new Student();
             $student->email = $data['email'];
             $student->full_name = $data['full_name'];
+            $student->breathecode_id = $data['breathecode_id'];
         }
         
         $student = $this->setOptional($student,$data,'avatar_url');
@@ -50,7 +58,9 @@ class StudentHandler extends MainHandler{
     
     public function createStudentActivityHandler(Request $request, Response $response) {
         $studentId = $request->getAttribute('student_id');
+        
         $data = $request->getParsedBody();
+        if(empty($data)) throw new Exception('There was an error retrieving the request content, it needs to be a valid JSON');
         
         $badge = Badge::where('slug', $data['badge_slug'])->first();
         if(!$badge) throw new Exception('Invalid badge slug');
@@ -84,10 +94,9 @@ class StudentHandler extends MainHandler{
         $daysOld = floor(($now - strtotime($attributes['created_at'])) / (60 * 60 * 24));
         if($daysOld>5) throw new Exception('The activity is to old to delete');
         
-        
-        $activity->student()->total_points -= $activity->points_earned;
-        $activity->student()->save();
+        $student = $activity->student()->first();
         $activity->delete();
+        $student->updateBasedOnActivity();
         
         return $this->success($response,"ok");
     }

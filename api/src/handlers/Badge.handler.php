@@ -16,6 +16,7 @@ class BadgeHandler extends MainHandler{
         
         return $this->success($response,$badges);
     }
+    
     public function getBadgeHandler(Request $request, Response $response) {
         $badgeId = $request->getAttribute('badge_id');
         
@@ -25,9 +26,16 @@ class BadgeHandler extends MainHandler{
         return $this->success($response,$badges);
     }
     
+    public function getAllBadgesHandler(Request $request, Response $response) {
+        $badges = Badge::all();
+        return $this->success($response,$badges);
+    }
+    
     public function createOrUpdateBadgeHandler(Request $request, Response $response) {
         $badgeId = $request->getAttribute('badge_id');
+        
         $data = $request->getParsedBody();
+        if(empty($data)) throw new Exception('There was an error retrieving the request content, it needs to be a valid JSON');
         
         if($badgeId){
             $badge = Badge::find($badgeId);

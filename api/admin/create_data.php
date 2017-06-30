@@ -16,6 +16,10 @@
     $app->db->table('profiles')->truncate();
     $schema->enableForeignKeyConstraints();
     
+    //$oauth = new oauth_clients;
+    
+    //$oauth->save();
+    
     $std1 = new Student;
     $std1->full_name = 'John';
     $std1->breathecode_id = 1;
@@ -82,6 +86,7 @@
     
     $fullstack = new Profile();
     $fullstack->name = "Full-Stack Web Developer";
+    $fullstack->slug = "full-stack-web";
     $fullstack->description = "Manages front-end and back-end side of the web";
     $fullstack->save();
     echo "The profile ".$fullstack->name." has been created"." \n";
