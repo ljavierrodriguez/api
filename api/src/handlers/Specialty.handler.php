@@ -22,6 +22,7 @@ class SpecialtyHandler extends MainHandler{
         
         return $this->success($response,$specialties);
     }
+    
     public function getSpecialtyHandler(Request $request, Response $response) {
         $specialtyId = $request->getAttribute('specialty_id');
         

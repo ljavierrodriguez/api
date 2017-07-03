@@ -15,7 +15,8 @@ if($schema->hasTable('student_specialty')) $app->db->table('student_specialty')-
 if($schema->hasTable('requierments')) $app->db->table('requierments')->truncate();
 if($schema->hasTable('profiles')) $app->db->table('profiles')->truncate();
 if($schema->hasTable('profile_specialty')) $app->db->table('profile_specialty')->truncate();
-    
+
+echo "Creating tables for OAuth 2.0 credentials... \n";
 if($schema->hasTable('oauth_clients'))
 {
     $schema->dropIfExists('oauth_clients');
@@ -50,11 +51,11 @@ SCHEMA;
 			'last_name' => "Sanchez",
 		));
 }
-    
+
+echo "Creating Badges table... \n";
 $schema->dropIfExists('badges');
 if(!$schema->hasTable('badges'))
 {
-    $schema->dropIfExists('badges');
     $schema->create('badges', function($table) { 
         $table->bigIncrements('id');
         $table->string('slug', 200)->unique();
@@ -68,13 +69,26 @@ if(!$schema->hasTable('badges'))
         $table->index('slug');
     });
 }
+
+echo "Creating Users table... \n";
+$schema->dropIfExists('users');
+if(!$schema->hasTable('users'))
+{
+    $schema->create('users', function($table) { 
+        $table->bigIncrements('id');
+        $table->string('username', 200)->unique();
+        $table->timestamps();
+        
+    });
+}
+
+echo "Creating Students table... \n";
 $schema->dropIfExists('students');
 if(!$schema->hasTable('students'))
 {
-    $schema->dropIfExists('students');
     $schema->create('students', function($table) { 
         $table->bigIncrements('id');
-        $table->unsignedBigInteger('breathecode_id')->unique();
+        $table->unsignedBigInteger('breathecode_id');
         $table->string('email', 200)->unique();
         $table->string('avatar_url', 255);
         $table->string('full_name', 200);
@@ -82,8 +96,12 @@ if(!$schema->hasTable('students'))
         $table->text('description');
         $table->timestamps();
     
+        $table->foreign('breathecode_id')->references('id')->on('users')->onDelete('cascade');
+        $table->index('breathecode_id');
     });
 }
+
+echo "Creating Badge<>Student pivot table... \n";
 $schema->dropIfExists('badge_student');
 if(!$schema->hasTable('badge_student'))
 {
@@ -99,6 +117,7 @@ if(!$schema->hasTable('badge_student'))
     });
 }
 
+echo "Creating Activities table... \n";
 $schema->dropIfExists('activities');
 if(!$schema->hasTable('activities'))
 {
@@ -112,10 +131,12 @@ if(!$schema->hasTable('activities'))
         $table->integer('points_earned');
         $table->timestamps();
     
-        $table->foreign('student_id')->references('id')->on('students')->onDelete('cascade');;
+        $table->foreign('student_id')->references('id')->on('students')->onDelete('cascade');
         $table->foreign('badge_id')->references('id')->on('badges')->onDelete('cascade');;
     });
 }
+
+echo "Creating Specialties table... \n";
 $schema->dropIfExists('specialties');
 if(!$schema->hasTable('specialties'))
 {
@@ -130,6 +151,8 @@ if(!$schema->hasTable('specialties'))
 
     });
 }
+
+echo "Creating Student_Specialty pivot table... \n";
 $schema->dropIfExists('student_specialty');
 if(!$schema->hasTable('student_specialty'))
 {
@@ -142,6 +165,8 @@ if(!$schema->hasTable('student_specialty'))
         $table->foreign('specialty_id')->references('id')->on('specialties')->onDelete('cascade');;
     });
 }
+
+echo "Creating Requierments table... \n";
 $schema->dropIfExists('requierments');
 if(!$schema->hasTable('requierments'))
 {
@@ -155,6 +180,8 @@ if(!$schema->hasTable('requierments'))
         $table->foreign('badge_id')->references('id')->on('badges')->onDelete('cascade');
     });
 }
+
+echo "Creating Profiles table... \n";
 $schema->dropIfExists('profiles');
 if(!$schema->hasTable('profiles'))
 {
@@ -167,6 +194,8 @@ if(!$schema->hasTable('profiles'))
 
     });
 }
+
+echo "Creating Profile_Specialty pivot table... \n";
 $schema->dropIfExists('profile_specialty');
 if(!$schema->hasTable('profile_specialty'))
 {
@@ -179,4 +208,5 @@ if(!$schema->hasTable('profile_specialty'))
         $table->foreign('specialty_id')->references('id')->on('specialties')->onDelete('cascade');
     });
 }
+
 $schema->enableForeignKeyConstraints();

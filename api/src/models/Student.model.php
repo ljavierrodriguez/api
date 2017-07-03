@@ -43,6 +43,10 @@ class Student extends \Illuminate\Database\Eloquent\Model
         return $this->badges()->wherePivot('is_achieved',true)->pluck('slug');
     }
     
+    public function user(){
+        return $this->belongsTo('User', 'id', 'breathecode_id');
+    }
+    
     public function badges()
     {
         return $this->belongsToMany('Badge')->withPivot('points_acumulated')->withTimestamps();

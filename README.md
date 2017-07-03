@@ -34,11 +34,29 @@ Before starting ot use the API methods you have to request for an access_token b
         "scope": null,
         "refresh_token": "b52a5790f22846d2c6c3b5044f6ca88523724e88"
     }
+    
+**Since your are using UserCredentials you probable want the current_user id, you can request it using the following API method:**
 
-After you have your "authorization code" you can use any API request by appending the authorization code as a GET or post parameter.
+    GET [/me/]
+    
+**The response will be something like:**
+
+    {
+        "code": 200,
+        "data": {
+            "user_id": 1,
+            "username": "john@4geeks.co"
+        }
+    }
+
+
 
 ##RESOURCES
 
+After you have your "authorization code" you can use any API request by appending the authorization code as a GET or post parameter.
+
+    1. User
+        1.1 Get autenticated user id (if using UserCredentials) [GET]
     1. Badges
         1.1 Get badges of student [GET]
         1.2 Get all badges [GET]
@@ -60,10 +78,23 @@ After you have your "authorization code" you can use any API request by appendin
         5.2 Create specialty [POST]
         5.3 Delete specialty [DELETE]
     
+##Current user Collection [/me/]
 
-As you develop throughout the academy, you will earn "talent badges" that all together will become your "Talent Tree".
+### Get current user [GET]
+
++ Response 200 (application/json)
+
+        {
+            "code": 200,
+            "data": {
+                "user_id": 1,
+                "username": "john@4geeks.co"
+            }
+        }
 
 ##Badges Collection [/badges/]
+
+As you develop throughout the academy, you will earn "talent badges" that all together will become your "Talent Tree".
 
 ### Get all badges [GET]
 

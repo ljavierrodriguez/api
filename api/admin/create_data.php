@@ -4,6 +4,9 @@
     require_once('../dependencies.php');
 
     $schema = $app->db->getSchemaBuilder();
+    $app->db->listen(function($sql) {
+        var_dump($sql);
+    });
     $schema->disableForeignKeyConstraints();
     $app->db->table('students')->truncate();
     $app->db->table('badges')->truncate();
@@ -20,26 +23,47 @@
     
     //$oauth->save();
     
+    echo "Creating a user 1...";
+    $u1 = new User;
+    $u1->username = 'john@4geeks.co';
+    $u1->save();
+    echo "done  \n";
+    echo "Creating a user 2...";
+    $u2 = new User;
+    $u2->username = 'pedro@4geeks.co';
+    $u2->save();
+    echo "done  \n";
+    echo "Creating a user 3...";
+    $u3 = new User;
+    $u3->username = 'mickel@4geeks.co';
+    $u3->save();
+    echo "done  \n";
+    
+    
+    echo "Creating student 1...";
     $std1 = new Student;
     $std1->full_name = 'John';
-    $std1->breathecode_id = 1;
     $std1->email = 'john@4geeks.co';
+    $u1->student()->save($std1);
     $std1->save();
-    echo "Creating a user ".$std1->full_name.' ('.$std1->email.") \n";
+    echo "done  \n";
     
+    
+    echo "Creating student 2...";
     $std2 = new Student;
     $std2->full_name = 'Pedro';
-    $std2->breathecode_id = 2;
     $std2->email = 'pedro@4geeks.co';
+    $u2->student()->save($std2);
     $std2->save();
-    echo "Creating a user ".$std2->full_name.' ('.$std2->email.") \n";
+    echo "done  \n";
     
+    echo "Creating student 3...";
     $std3 = new Student;
-    $std3->breathecode_id = 3;
     $std3->full_name = 'Mickel';
     $std3->email = 'mickel@4geeks.co';
+    $u3->student()->save($std3);
     $std3->save();
-    echo "Creating a user ".$std3->full_name.' ('.$std3->email.") \n";
+    echo "done  \n";
 
     $badge1 = new Badge;
     $badge1->name = 'CSS Selectors';
