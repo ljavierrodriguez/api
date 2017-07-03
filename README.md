@@ -11,12 +11,18 @@ Before starting ot use the API methods you have to request for an access_token b
 
 **The response will be something like this:**
 
+```
+#!json
+
+
     {
         "access_token": "7ab8d4abaa369c76b447e5d10387650ff628f3dc",
         "expires_in": 86400,
         "token_type": "Bearer",
         "scope": null
     }
+
+```
 
 ###2. Using UserCredentials to get access_token
 
@@ -27,6 +33,9 @@ Before starting ot use the API methods you have to request for an access_token b
 
 **The response will be something like this:**
 
+```
+#!json
+
     {
         "access_token": "8d452bcb5b64cca657b6b28f6da5347c12f0fa39",
         "expires_in": 86400,
@@ -34,6 +43,7 @@ Before starting ot use the API methods you have to request for an access_token b
         "scope": null,
         "refresh_token": "b52a5790f22846d2c6c3b5044f6ca88523724e88"
     }
+```
     
 **Since your are using UserCredentials you probable want the current_user id, you can request it using the following API method:**
 
@@ -48,7 +58,6 @@ Before starting ot use the API methods you have to request for an access_token b
             "username": "john@4geeks.co"
         }
     }
-
 
 
 ##RESOURCES
@@ -100,6 +109,10 @@ As you develop throughout the academy, you will earn "talent badges" that all to
 
 + Response 200 (application/json)
 
+
+```
+#!json
+
         {
             "code": 200,
             "data": {
@@ -113,6 +126,8 @@ As you develop throughout the academy, you will earn "talent badges" that all to
                 ]
             }
         }
+```
+
 
 ##Student Badges Collection [/badges/student/{student_id}]
 
@@ -123,6 +138,10 @@ As you develop throughout the academy, you will earn "talent badges" that all to
 
 + Response 200 (application/json)
 
+
+```
+#!json
+
         {
             "code": 200,
             "data": {
@@ -136,6 +155,8 @@ As you develop throughout the academy, you will earn "talent badges" that all to
                 ]
             }
         }
+```
+
         
 ## Single Badge Collection [/badge/{?id}{?slug}]
 
