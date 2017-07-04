@@ -24,6 +24,9 @@ Before starting ot use the API methods you have to request for an access_token b
 
 ```
 
+Now you can do request like the following 
+    /student/1?access_token=2223a54d04dcffb60a26c7c25508869b779c521d
+
 ###2. Using UserCredentials to get access_token
 
 **Request an access_token by doing the following request:**
