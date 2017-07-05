@@ -3,3 +3,4 @@ composer.phar
 php_errors.log
 php.ini
 api/config.php
+php_errorlog
