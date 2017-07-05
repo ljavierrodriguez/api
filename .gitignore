@@ -2,5 +2,5 @@ composer.phar
 /vendor/
 php_errors.log
 php.ini
-api/config.php
+config.php
 php_errorlog
