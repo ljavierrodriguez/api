@@ -1,4 +1,5 @@
 <?php
+require 'config.php';
 
 $config = [
     'settings' => [
@@ -14,9 +15,9 @@ $config = [
         'db' => [
             'driver' => 'mysql',
             'host' => 'localhost',
-            'database' => 'c9',
-            'username' => 'alesanchezr',
-            'password' => '',
+            'database' => DATABASE_NAME,
+            'username' => DATABASE_USERNAME,
+            'password' => DATABASE_PASSWORD,
             'charset'   => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix'    => '',
@@ -29,9 +30,9 @@ $app = new \Slim\App;
 $settings = array(
     'driver' => 'mysql',
     'host' => '127.0.0.1',
-    'database' => 'c9',
-    'username' => 'alesanchezr',
-    'password' => '',
+    'database' => DATABASE_NAME,
+    'username' => DATABASE_USERNAME,
+    'password' => DATABASE_PASSWORD,
     'collation' => 'utf8_general_ci',
     'prefix' => ''
 );
