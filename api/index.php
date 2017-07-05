@@ -21,7 +21,7 @@ require 'dependencies.php';
  * Using externarl library: https://github.com/chadicus/slim-oauth2
  * And PHP Oauth Server: https://bshaffer.github.io/oauth2-server-php-docs/
  **/
-$storage = new OAuth2\Storage\Pdo(array('dsn' => 'mysql:host=localhost;dbname=c9', 'username' => 'alesanchezr', 'password' => ''));
+$storage = new OAuth2\Storage\Pdo(array('dsn' => 'mysql:host=localhost;dbname='.DATABASE_NAME, 'username' => DATABASE_USERNAME, 'password' => DATABASE_PASSWORD));
 $server = new OAuth2\Server($storage,array(
     'access_lifetime' => 86400
 ));
