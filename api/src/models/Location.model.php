@@ -2,7 +2,7 @@
 
 class Location extends \Illuminate\Database\Eloquent\Model 
 {
-    public function students(){
-        return $this->hasMany('Student');
+    public function cohorts(){
+        return $this->hasMany('Cohort');
     }
 }

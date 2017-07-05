@@ -6,7 +6,7 @@ class Specialty extends \Illuminate\Database\Eloquent\Model
     protected $appends = ['url','total_points','badges'];
     public function getBadgesAttribute()
     {
-        return $this->badges()->get();
+        return $this->badges()->get()->pluck('slug');
     }
     public function getURLAttribute()
     {

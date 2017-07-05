@@ -86,6 +86,13 @@ After you have your "authorization code" you can use any API request by appendin
         5.1 Get single specialty [GET]
         5.2 Create specialty [POST]
         5.3 Delete specialty [DELETE]
+    6. Cohort
+        6.1 Get single cohort [GET]
+        6.2 Get all cohorts [GET]
+        6.3 Get all students from cohort [GET]
+        6.4 Create a cohort [POST]
+        6.5 Update a Cohort [POST]
+        6.5 Delete a Cohort [DELETE]
     
 ##Current user Collection [/me/]
 
@@ -109,22 +116,37 @@ As you develop throughout the academy, you will earn "talent badges" that all to
 
 + Response 200 (application/json)
 
-
 ```
 #!json
 
         {
             "code": 200,
-            "data": {
-                "name": "Master in CSS Selectors",
-                "earned_at": "2014-11-11T08:40:51.620Z",
-                "url": "/badge/1",
-                "image_url": "/path/to/image",
-                "points_to_achieve": 50,
-                "technologies": [
-                    "js", "swift"
-                ]
-            }
+            "data": [
+                {
+                  "id": 1,
+                  "slug": "css_selectors",
+                  "name": "CSS Selectors",
+                  "image_url": "",
+                  "points_to_achieve": 10,
+                  "description": "Select everything",
+                  "technologies": "css3",
+                  "created_at": "2017-07-04 23:57:35",
+                  "updated_at": "2017-07-04 23:57:35",
+                  "url": "/badge/1"
+                },
+                {
+                  "id": 2,
+                  "slug": "keyboard_shortcuts",
+                  "name": "Shorcut Everything",
+                  "image_url": "",
+                  "points_to_achieve": 10,
+                  "description": "Learn and use the keyboards",
+                  "technologies": "sublime, c9",
+                  "created_at": "2017-07-04 23:57:35",
+                  "updated_at": "2017-07-04 23:57:35",
+                  "url": "/badge/2"
+                }
+            ]
         }
 ```
 
@@ -273,6 +295,37 @@ A badge can only be deleted if it has no activity with 5 days old. Otherwise it 
             ]
         }
 
+## Create Student Collection [/student/]
+
+### Create single Student [GET]
+
++ Request (application/json)
+
+    + Attributes
+        + email                 (string, required) - email for the student
+        + cohort_slug                 (string, required) - cohort_slug
+        + full_name              (string, required) - Name for the student
+        + avatar_url         (string) - Image that points to the url of the user image previously uploaded
+        + total_points (number) - Total points acumuled by the student
+        + description (string, required) - Small student Bio
+
++ Response 201 (application/json)
+
+        {
+            "code": 200,
+            "data": {
+                "avatar_url": "this/is/the/user",
+                "full_name": "Pedro Manrique",
+                "total_points": 3,
+                "description": "",
+                "created_at": "2017-07-04 23:57:35",
+                "url": "/student/1",
+                "badges": [],
+                "id": 1,
+                "email": "john@4geeks.co"
+            }
+        }
+        
 ## Student Collection [/student/{id}]
 
 ### Get single Student [GET]
@@ -292,32 +345,30 @@ A badge can only be deleted if it has no activity with 5 days old. Otherwise it 
             }
         }
         
-### Create single Student [POST]
+### Update single Student [POST]
 
 + Request (application/json)
 
     + Attributes
-        + slug              (string, required) - Slug of the badge
-        + name              (string, required) - Name for the badge
-        + image_url         (string, required) - Image that points to the url of the user image previously uploaded
-        + points_to_achieve (number, required) - Total points acumuled to win it
-        + technologies (string, required) - All the technologies separated by comma
+        + full_name              (string, required) - Name for the student
+        + avatar_url         (string) - Image that points to the url of the user image previously uploaded
+        + total_points (number) - Total points acumuled by the student
+        + description (string, required) - Small student Bio
 
 + Response 201 (application/json)
 
         {
             "code": 200,
             "data": {
+                "avatar_url": "this/is/the/user",
+                "full_name": "Pedro Manrique",
+                "total_points": 3,
+                "description": "",
+                "created_at": "2017-07-04 23:57:35",
+                "url": "/student/1",
+                "badges": [],
                 "id": 1,
-                "slug": "css_master",
-                "name": "Master in CSS Selectors",
-                "earned_at": "2014-11-11T08:40:51.620Z",
-                "url": "/badge/1",
-                "image_url": "/path/to/image",
-                "points_to_achieve": 50,
-                "technologies": [
-                    "js", "swift"
-                ]
+                "email": "john@4geeks.co"
             }
         }
         
@@ -439,7 +490,8 @@ When an activity is deleted the points should be substracted on each related bad
     + id (string, optional) - Id of the badge
 
 + Response 200 (application/json)
-
+```
+#!json
         {
             "code": 200,
             "data": {
@@ -458,7 +510,7 @@ When an activity is deleted the points should be substracted on each related bad
                 ]
             }
         }
-        
+```
 ### Create specialty [POST]
 
 Having a specialties is the ultimate goal, a specialty is comprised by a group of badges.
@@ -488,6 +540,94 @@ Having a specialties is the ultimate goal, a specialty is comprised by a group o
                 "url": "/badge/1",
                 "total_points": 3,
                 "badges": ["css_master","css_master"]
+            }
+        }
+        
+### Delete specialty [DELETE]
+
+When a specialty is deleted the tags are not deleted, and specialties can only be deleted if they don't any activities with more than 5 days old. . Otherwise it will be marked as "archived".
+
++ Request (application/json)
+    + Attributes
+        +specialty_slug            (string, required) - The UNIQUE slug for th specialty
+
++ Response 201 (application/json)
+        
+        {
+            "code": 200,
+            "message": "ok"
+        }
+
+## Location Collection [/location/{?id}{?slug}]
+
+### Create location [POST]
+
++ Parameters
+    + slug (string, optional) - Slug of the badge
+    + id (string, optional) - Id of the badge
+
++ Response 200 (application/json)
+    {
+      "code": 200,
+      "data": {
+        "id": 4,
+        "slug": "mdc-v",
+        "name": "MDC V",
+        "stage": "not-started",
+        "slack-url": "http://www.slack.com",
+        "created_at": "2017-07-05 02:48:38",
+        "updated_at": "2017-07-05 02:48:38",
+        "location_slug": "mdc"
+      }
+    }
+
+## Cohort Collection [/cohort/{id}]
+
+### Get single cohort [GET]
+
++ Parameters
+    + slug (string, required) - Slug of the cohort
+
++ Response 200 (application/json)
+
+        {
+            "code": 200,
+            "data": {
+                "id": 4,
+                "slug": "mdc-v",
+                "name": "MDC V",
+                "stage": "not-started",
+                "slack-url": "http://www.slack.com",
+                "created_at": "2017-07-05 02:48:38",
+                "updated_at": "2017-07-05 02:48:38",
+                "location_slug": "mdc"
+            }
+        }
+        
+### Create cohort [POST]
+
++ Request (application/json)
+
+        {
+            "slug": "mdc-v",
+            "slack-url": "http://www.slack.com",
+            "location_slug": "mdc",
+            "name": "MDC V"
+        }
+
++ Response 201 (application/json)
+        
+        {
+            "code": 200,
+            "data": {
+                "id": 4,
+                "slug": "mdc-v",
+                "name": "MDC V",
+                "stage": "not-started",
+                "slack-url": "http://www.slack.com",
+                "created_at": "2017-07-05 02:48:38",
+                "updated_at": "2017-07-05 02:48:38",
+                "location_slug": "mdc"
             }
         }
         

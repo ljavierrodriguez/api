@@ -5,6 +5,8 @@ use Slim\Http\Response as Response;
 
 class SpecialtyHandler extends MainHandler{
     
+    protected $slug = 'Specialty';
+    
     public function getStudentSpecialtiesHandler(Request $request, Response $response) {
         $studentId = $request->getAttribute('student_id');
 
@@ -23,16 +25,45 @@ class SpecialtyHandler extends MainHandler{
         return $this->success($response,$specialties);
     }
     
-    public function getSpecialtyHandler(Request $request, Response $response) {
-        $specialtyId = $request->getAttribute('specialty_id');
+    public function createSpecialtyHandler(Request $request, Response $response) {
         
-        $specialty = Specialty::find($specialtyId);
-        if(!$specialty) throw new Exception('Invalid specialty id');
+        $data = $request->getParsedBody();
+        if(empty($data)) throw new Exception('There was an error retrieving the request content, it needs to be a valid JSON');
+        
+        $profile = Profile::where('slug', $data['profile_slug'])->first();
+        if(!$profile) throw new Exception('Invalid profile slug');
+        
+        if(count($data['badges'])<2) throw new Exception('A specialty must be created with at least two badges');
+        
+        $specialty = new Specialty();
+        $badges = [];
+        foreach($data['badges'] as $bslug)
+        {
+            $badge = Badge::where('slug', $bslug)->first();
+            if($badge) $badges[] = $badge->id;
+            else throw new Exception('Invalid badge: '.$bslug);
+        }
+        $specialty->slug = $data['slug'];
+        $specialty->name = $data['name'];
+        $specialty->image_url = $data['image_url'];
+        $specialty->points_to_achieve = $data['points_to_achieve'];
+        $specialty->description = $data['description'];
+        $specialty->save();
+        
+        try{
+            $specialty->profiles()->attach($profile);
+            $specialty->badges()->attach($badges);
+        }
+        catch(Exception $e)
+        {
+            $specialty->delete();
+            throw new Exception($e->getMessage());
+        }
         
         return $this->success($response,$specialty);
     }
     
-    public function createOrUpdateSpecialtyHandler(Request $request, Response $response) {
+    public function updateSpecialtyHandler(Request $request, Response $response) {
         $specialtyId = $request->getAttribute('specialty_id');
         
         $data = $request->getParsedBody();

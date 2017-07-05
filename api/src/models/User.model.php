@@ -2,11 +2,11 @@
 
 class User extends \Illuminate\Database\Eloquent\Model 
 {
-    public function students(){
+    public function student(){
         return $this->hasOne('Student');
     }
     
     public function teacher(){
-        return $this->hasOne('Student');
+        return $this->hasOne('Teacher');
     }
 }

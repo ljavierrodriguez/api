@@ -2,10 +2,22 @@
 
 class Student extends \Illuminate\Database\Eloquent\Model 
 {
-    protected $appends = ['url','badges'];
+    public $incrementing = false;
+    protected $primaryKey = 'user_id';
+    protected $hidden = ['user_id','user','updated_at','pivot'];
+    protected $appends = ['url','badges','id','email'];
+    
+    public function getIdAttribute()
+    {
+        return $this->user_id;
+    }
     public function getURLAttribute()
     {
         return '/student/'.$this->id;
+    }
+    public function getEmailAttribute()
+    {
+        return $this->user->username;
     }
     
     public function updateBasedOnActivity(){
@@ -44,7 +56,7 @@ class Student extends \Illuminate\Database\Eloquent\Model
     }
     
     public function user(){
-        return $this->belongsTo('User', 'id', 'breathecode_id');
+        return $this->belongsTo('User');
     }
     
     public function badges()
@@ -55,6 +67,11 @@ class Student extends \Illuminate\Database\Eloquent\Model
     public function specialties()
     {
         return $this->belongsToMany('Specialty','student_specialty')->withTimestamps();
+    }
+
+    public function cohorts()
+    {
+        return $this->belongsToMany('Cohort')->withTimestamps();
     }
     
     public function activities()

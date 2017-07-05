@@ -8,6 +8,10 @@
         var_dump($sql);
     });
     $schema->disableForeignKeyConstraints();
+    $app->db->table('users')->truncate();
+    $app->db->table('cohorts')->truncate();
+    $app->db->table('teachers')->truncate();
+    $app->db->table('locations')->truncate();
     $app->db->table('students')->truncate();
     $app->db->table('badges')->truncate();
     $app->db->table('badge_student')->truncate();
@@ -38,21 +42,32 @@
     $u3->username = 'mickel@4geeks.co';
     $u3->save();
     echo "done  \n";
-    
+    echo "Creating a user 4...";
+    $u4 = new User;
+    $u4->username = 'teacher1@4geeks.co';
+    $u4->save();
+    echo "done  \n";
+    echo "Creating a user 5...";
+    $u5 = new User;
+    $u5->username = 'teacher2@4geeks.co';
+    $u5->save();
+    echo "done  \n";
+    echo "Creating a user 6...";
+    $u6 = new User;
+    $u6->username = 'teacher3@4geeks.co';
+    $u6->save();
+    echo "done  \n";
     
     echo "Creating student 1...";
     $std1 = new Student;
     $std1->full_name = 'John';
-    $std1->email = 'john@4geeks.co';
     $u1->student()->save($std1);
     $std1->save();
     echo "done  \n";
     
-    
     echo "Creating student 2...";
     $std2 = new Student;
     $std2->full_name = 'Pedro';
-    $std2->email = 'pedro@4geeks.co';
     $u2->student()->save($std2);
     $std2->save();
     echo "done  \n";
@@ -60,11 +75,50 @@
     echo "Creating student 3...";
     $std3 = new Student;
     $std3->full_name = 'Mickel';
-    $std3->email = 'mickel@4geeks.co';
     $u3->student()->save($std3);
     $std3->save();
     echo "done  \n";
+    
+    
+    echo "Creating teacher 1...";
+    $tea1 = new Teacher;
+    $tea1->full_name = 'Ronal';
+    $u4->student()->save($tea1);
+    $tea1->save();
+    echo "done  \n";
+    
+    echo "Creating teacher 2...";
+    $tea2 = new Teacher;
+    $tea2->full_name = 'Saul';
+    $u5->student()->save($tea2);
+    $tea2->save();
+    echo "done  \n";
+    
+    echo "Creating teacher 3...";
+    $tea3 = new Teacher;
+    $tea3->full_name = 'Bob';
+    $u6->student()->save($tea3);
+    $tea3->save();
+    echo "done  \n";
+    
+    echo "Creating location miami... ";
+    $location = new Location;
+    $location->slug = 'mdc';
+    $location->name = 'Miami Dade';
+    $location->address = '270 Catalonia';
+    $location->save();
+    echo "done  \n";
+    
+    echo "inside cohort MDC III cohort...";
+    $cohort = new Cohort;
+    $cohort->slug = 'mdc-iii';
+    $cohort->name = 'MDC III';
+    $cohort->stage = 'not-started';
+    $location->cohorts()->save($cohort);
+    $cohort->save();
+    echo "done  \n";
 
+    echo "Creating badge 'css_selectors' (Points to achieve: 10)";
     $badge1 = new Badge;
     $badge1->name = 'CSS Selectors';
     $badge1->slug = 'css_selectors';
@@ -72,8 +126,9 @@
     $badge1->technologies = 'css3';
     $badge1->description = 'Select everything';
     $badge1->save();
-    echo "Creating a badge ".$badge1->slug.' (Points to achieve: '.$badge1->points_to_achieve.") \n";
+    echo "done  \n";
     
+    echo "Creating badge 'keyboard_shortcuts' (Points to achieve: 10)";
     $badge2 = new Badge;
     $badge2->name = 'Shorcut Everything';
     $badge2->slug = 'keyboard_shortcuts';
@@ -81,8 +136,9 @@
     $badge2->technologies = 'sublime, c9';
     $badge2->description = 'Learn and use the keyboards';
     $badge2->save();
-    echo "Creating a badge ".$badge2->slug.' (Points to achieve: '.$badge2->points_to_achieve.") \n";
+    echo "done  \n";
 
+    echo "Creating badge 'clean_code' (Points to achieve: 10)";
     $badge3 = new Badge;
     $badge3->name = 'Clean Code';
     $badge3->slug = 'clean_code';
@@ -90,8 +146,9 @@
     $badge3->technologies = 'css3, html5, js, sublime';
     $badge3->description = 'Have a commented and clean code';
     $badge3->save();
-    echo "Creating a badge ".$badge3->slug.' (Points to achieve: '.$badge3->points_to_achieve.") \n";
+    echo "done  \n";
     
+    echo "Creating badge 'dry_master' (Points to achieve: 10)";
     $badge4 = new Badge;
     $badge4->name = 'DRY Master';
     $badge4->slug = 'dry_master';
@@ -99,22 +156,24 @@
     $badge4->technologies = 'css3, c9';
     $badge4->description = 'Dont repeat yourself';
     $badge4->save();
-    echo "Creating a badge ".$badge4->slug.' (Points to achieve: '.$badge4->points_to_achieve.") \n";
+    echo "done  \n";
     
     $std1->badges()->attach($badge2);
-    echo $std1->full_name." has the badge ".$badge2->slug." \n";
+    echo $std1->full_name." has now the badge ".$badge2->slug." \n";
     $std1->badges()->attach($badge3);
-    echo $std1->full_name." has the badge ".$badge3->slug." \n";
-    $std1->badges()->attach($badge4);
-    echo $std2->full_name." has the badge ".$badge4->slug." \n";
+    echo $std1->full_name." has now the badge ".$badge3->slug." \n";
+    $std2->badges()->attach($badge4);
+    echo $std2->full_name." has now the badge ".$badge4->slug." \n";
     
+    echo "Creating the profile 'full-stack-web'...";
     $fullstack = new Profile();
     $fullstack->name = "Full-Stack Web Developer";
     $fullstack->slug = "full-stack-web";
     $fullstack->description = "Manages front-end and back-end side of the web";
     $fullstack->save();
-    echo "The profile ".$fullstack->name." has been created"." \n";
+    echo "done  \n";
     
+    echo "Creating specialty: 'front-end' with badges ".$badge4->slug.', '.$badge3->slug." for profile: ".$fullstack->name." \n";
     $specialty1 = new Specialty();
     $specialty1->slug = 'front-end';
     $specialty1->name = 'Font-End Developer';
@@ -125,8 +184,9 @@
     $specialty1->badges()->attach($badge3);
     $specialty1->students()->attach($std1);
     $specialty1->profiles()->attach($fullstack);
-    echo 'Creating a specialty: '.$specialty1->slug." with badges ".$badge4->slug.', '.$badge3->slug." for profile: ".$fullstack->name." \n";
+    echo "done  \n";
     
+    echo "Creating a specialty: 'back-end' with badges ".$badge1->slug.', '.$badge2->slug." for profile: ".$fullstack->name." \n";
     $specialty2 = new Specialty();
     $specialty2->slug = 'back-end';
     $specialty2->name = 'Back-End Developer';
@@ -137,4 +197,4 @@
     $specialty2->badges()->attach($badge2);
     $specialty2->students()->attach($std1);
     $specialty2->profiles()->attach($fullstack);
-    echo 'Creating a specialty: '.$specialty2->slug." with badges ".$badge1->slug.', '.$badge2->slug." for profile: ".$fullstack->name." \n";
+    echo "done  \n";

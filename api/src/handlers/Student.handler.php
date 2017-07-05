@@ -5,49 +5,59 @@ use Slim\Http\Response as Response;
 
 class StudentHandler extends MainHandler{
     
-    public function getStudentHandler(Request $request, Response $response) {
-        $studentId = $request->getAttribute('student_id');
-        
-        $student = Student::find($studentId);
-        if(!$student) throw new Exception('Invalid student id');
-        
-        return $this->success($response,$student);
-    }
+    protected $slug = 'Student';
     
-    public function getAllStudentsHandler(Request $request, Response $response) {
-
-        $students = Student::all();
-        return $this->success($response,$students);
+    public function getStudentHandler(Request $request, Response $response) {
+        $breathecodeId = $request->getAttribute('student_id');
+        
+        $user = User::find($breathecodeId);
+        if(!$user or !$user->student) throw new Exception('Invalid student_id');
+        
+        return $this->success($response,$user->student);
     }
     
     public function getStudentActivityHandler(Request $request, Response $response) {
         $studentId = $request->getAttribute('student_id');
         
-        $activities = Activity::where('student_id', $studentId)->get();
+        $activities = Activity::where('student_user_id', $studentId)->get();
         if(!$activities) throw new Exception('Invalid student id:'.$studentId);
         
         return $this->success($response,$activities);
     }
     
-    public function createOrUpdateStudentHandler(Request $request, Response $response) {
+    public function createStudentHandler(Request $request, Response $response) {
+        $data = $request->getParsedBody();
+        if(empty($data)) throw new Exception('There was an error retrieving the request content, it needs to be a valid JSON');
+        
+        $cohort = Cohort::where('slug', $data['cohort_slug'])->first();
+        if(!$cohort) throw new Exception('Invalid cohort slug');
+        
+        $user = new User;
+        $user->username = $data['email'];
+        $user->save();
+
+        $student = new Student();
+        $student->full_name = $data['full_name'];
+        $student = $this->setOptional($student,$data,'avatar_url');
+        $student = $this->setOptional($student,$data,'total_points');
+        $student = $this->setOptional($student,$data,'description');
+        $student->cohorts()->associate($cohort);
+        $user->student()->save($student);
+        
+        
+        return $this->success($response,$student);
+    }
+    
+    public function updateStudentHandler(Request $request, Response $response) {
         $studentId = $request->getAttribute('student_id');
         $data = $request->getParsedBody();
         
-        if($studentId){
-            $student = Student::find($studentId);
-            if(!$student) throw new Exception('Invalid student id: '.$studentId);
-            
-            $student = $this->setOptional($student,$data,'breathecode_id');
-            $student = $this->setOptional($student,$data,'email');
-            $student = $this->setOptional($student,$data,'full_name');
-        } 
-        else{
-            $student = new Student();
-            $student->email = $data['email'];
-            $student->full_name = $data['full_name'];
-            $student->breathecode_id = $data['breathecode_id'];
-        }
+        $student = Student::find($studentId);
+        if(!$student) throw new Exception('Invalid student id: '.$studentId);
+
+        if($data['email']) throw new Exception('Students emails cannot be updated through this service');
         
+        $student = $this->setOptional($student,$data,'full_name');
         $student = $this->setOptional($student,$data,'avatar_url');
         $student = $this->setOptional($student,$data,'total_points');
         $student = $this->setOptional($student,$data,'description');

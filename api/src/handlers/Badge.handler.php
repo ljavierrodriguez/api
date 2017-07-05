@@ -5,29 +5,17 @@ use Slim\Http\Response as Response;
 
 class BadgeHandler extends MainHandler{
     
+    protected $slug = 'Badge';
+    
     public function getAllStudentBadgesHandler(Request $request, Response $response) {
         $studentId = $request->getAttribute('student_id');
 
         $badges = $this->app->db->table('badges')
         ->join('badge_student','badge_student.badge_id','=','badges.id')
-        ->where('badge_student.student_id',$studentId)
+        ->where('badge_student.student_user_id',$studentId)
         ->select('badges.*','badge_student.is_achieved','badge_student.points_acumulated')->get();
         if(!$badges) throw new Exception('Invalid student id');
         
-        return $this->success($response,$badges);
-    }
-    
-    public function getBadgeHandler(Request $request, Response $response) {
-        $badgeId = $request->getAttribute('badge_id');
-        
-        $badges = Badge::find($badgeId);
-        if(!$badges) throw new Exception('Invalid badge id');
-        
-        return $this->success($response,$badges);
-    }
-    
-    public function getAllBadgesHandler(Request $request, Response $response) {
-        $badges = Badge::all();
         return $this->success($response,$badges);
     }
     
