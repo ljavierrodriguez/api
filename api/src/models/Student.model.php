@@ -7,16 +7,15 @@ class Student extends \Illuminate\Database\Eloquent\Model
     protected $hidden = ['user_id','user','updated_at','pivot'];
     protected $appends = ['url','badges','id','email'];
     
-    public function getIdAttribute()
-    {
+    public function getIdAttribute(){
         return $this->user_id;
     }
-    public function getURLAttribute()
-    {
+    
+    public function getURLAttribute(){
         return '/student/'.$this->id;
     }
-    public function getEmailAttribute()
-    {
+    
+    public function getEmailAttribute(){
         return $this->user->username;
     }
     
@@ -59,23 +58,23 @@ class Student extends \Illuminate\Database\Eloquent\Model
         return $this->belongsTo('User');
     }
     
-    public function badges()
-    {
+    public function assignments(){
+        return $this->hasMany('Assignment');
+    }
+    
+    public function badges(){
         return $this->belongsToMany('Badge')->withPivot('points_acumulated')->withTimestamps();
     }
 
-    public function specialties()
-    {
+    public function specialties(){
         return $this->belongsToMany('Specialty','student_specialty')->withTimestamps();
     }
 
-    public function cohorts()
-    {
+    public function cohorts(){
         return $this->belongsToMany('Cohort')->withTimestamps();
     }
     
-    public function activities()
-    {
+    public function activities(){
         return $this->hasMany('Activity');
     }
 }

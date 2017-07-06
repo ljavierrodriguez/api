@@ -21,7 +21,9 @@ require 'dependencies.php';
  * Using externarl library: https://github.com/chadicus/slim-oauth2
  * And PHP Oauth Server: https://bshaffer.github.io/oauth2-server-php-docs/
  **/
-$storage = new OAuth2\Storage\Pdo(array('dsn' => 'mysql:host=localhost;dbname='.DATABASE_NAME, 'username' => DATABASE_USERNAME, 'password' => DATABASE_PASSWORD));
+$storage = new ExtendedPDO(array('dsn' => 'mysql:host=localhost;dbname='.DATABASE_NAME, 'username' => DATABASE_USERNAME, 'password' => DATABASE_PASSWORD));
+$app->storage = $storage;
+
 $server = new OAuth2\Server($storage,array(
     'access_lifetime' => 86400
 ));
@@ -37,32 +39,21 @@ $getUsernameMiddleware = function ($request, $response, $next) {
     
     $body = $request->getParsedBody();
 
-    $response = $next($request, $response);//do the next middleware layer action
-
-    $session = new \Custom\Middleware\SessionHelper;
     if(isset($body['username'])) 
     {
         $user = User::where('username', $body['username'])->first();
-        if(!$user) throw new Exception('There is now user corresponding to these credentials in the platform.');
-    
-        $session->set('user_id', $user->id);
-        $session->set('user_name', $body['username']);
+        if(!$user) throw new Exception('There is now user corresponding to these credentials in the platform: '.$body['username']);
     }
-    else $session->destroy();
+    
+    $response = $next($request, $response);//do the next middleware layer action
 
     return $response;
 };
 
-$sessionMiddleware = new \Custom\Middleware\Session;([
-  'name' => 'dummy_session',
-  'autorefresh' => true,
-  'lifetime' => 3600
-]);
-
 //The HTML views for the OAuth Autentication process
 $renderer = new Views\PhpRenderer( __DIR__ . '/vendor/chadicus/slim-oauth2-routes/templates');
 $app->map(['GET', 'POST'], Routes\Authorize::ROUTE, new Routes\Authorize($server, $renderer))->setName('authorize');
-$app->post(Routes\Token::ROUTE, new Routes\Token($server))->setName('token')->add($sessionMiddleware)->add($getUsernameMiddleware);
+$app->post(Routes\Token::ROUTE, new Routes\Token($server))->setName('token')->add($getUsernameMiddleware);
 $app->map(['GET', 'POST'], Routes\ReceiveCode::ROUTE, new Routes\ReceiveCode($renderer))->setName('receive-code');
 //Creating the Middleware to intercept all request and ask for authorization before continuing
 $authorization = new Middleware\Authorization($server, $app->getContainer());
@@ -72,7 +63,8 @@ $authorization = new Middleware\Authorization($server, $app->getContainer());
  * Everything Related to the user
  **/
 $userHandler = new UserHandler($app);
-$app->get('/me', array($userHandler, 'getMe'))->add($sessionMiddleware)->add($authorization);
+$app->get('/me', array($userHandler, 'getMe'))->add($authorization->withRequiredScope(['admin']));
+$app->post('/credentials/user/', array($userHandler, 'createCredentialsHandler'))->add($authorization->withRequiredScope(['admin']));
 
 
 
@@ -124,6 +116,27 @@ $app->delete('/student/{student_id}', array($studentHandler, 'deleteStudentHandl
 
 
 
+
+/**
+ * Assignments and AssignmentTemplate
+ **/
+$atemplateHandler = new AtemplateHandler($app);
+$app->get('/atemplates/', array($atemplateHandler, 'getAllHandler'))->add($authorization->withRequiredScope(['admin']));
+$app->get('/atemplate/{atemplate_id}', array($atemplateHandler, 'getSingleHandler'))->add($authorization->withRequiredScope(['admin']));
+
+$app->post('/atemplate/', array($atemplateHandler, 'createHandler'))->add($authorization->withRequiredScope(['admin']));
+$app->post('/atemplate/{atemplate_id}', array($atemplateHandler, 'updateHandler'))->add($authorization->withRequiredScope(['admin']));
+$app->delete('/atemplate/{atemplate_id}', array($atemplateHandler, 'deleteHandler'))->add($authorization->withRequiredScope(['admin']));
+
+$assignmentHandler = new AssignmentHandler($app);
+$app->get('/student/assignments/', array($assignmentHandler, 'getAllHandler'))->add($authorization->withRequiredScope(['admin']));
+$app->get('/student/assignment/{assignment_id}', array($assignmentHandler, 'getSingleHandler'))->add($authorization->withRequiredScope(['admin']));
+
+$app->get('/assignments/student/{student_id}', array($assignmentHandler, 'getAllStudentAssignmentsHandler'))->add($authorization->withRequiredScope(['admin']));
+$app->get('/assignments/teacher/{teacher_id}', array($assignmentHandler, 'getAllTeacherAssignmentsHandler'))->add($authorization->withRequiredScope(['admin']));
+$app->post('/student/assignment/', array($assignmentHandler, 'createAssignmentHandler'))->add($authorization->withRequiredScope(['admin']));
+$app->post('/student/assignment/{assignment_id}', array($assignmentHandler, 'updateAssignmentHandler'))->add($authorization->withRequiredScope(['admin']));
+$app->delete('/student/assignment/{assignment_id}', array($assignmentHandler, 'deleteAssignmentHandler'))->add($authorization->withRequiredScope(['admin']));
 
 
 

@@ -8,9 +8,7 @@
     },
     "autoload": {
         "classmap": [
-            "api/src/models",
-            "api/src/handlers",
-            "api/src/middleware"
+            "api/src/"
         ]
     }
 }

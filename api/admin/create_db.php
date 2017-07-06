@@ -6,7 +6,15 @@ require_once('../dependencies.php');
 $schema = $app->db->getSchemaBuilder();
 
 $schema->disableForeignKeyConstraints();
+if($schema->hasTable('users')) $app->db->table('users')->truncate();
 if($schema->hasTable('students')) $app->db->table('students')->truncate();
+if($schema->hasTable('cohorts')) $app->db->table('cohorts')->truncate();
+if($schema->hasTable('teachers')) $app->db->table('teachers')->truncate();
+if($schema->hasTable('cohort_teacher')) $app->db->table('cohort_teacher')->truncate();
+if($schema->hasTable('cohort_student')) $app->db->table('cohort_student')->truncate();
+if($schema->hasTable('locations')) $app->db->table('locations')->truncate();
+if($schema->hasTable('assignmenttemplates')) $app->db->table('assignmenttemplates')->truncate();
+if($schema->hasTable('assignments')) $app->db->table('assignments')->truncate();
 if($schema->hasTable('badges')) $app->db->table('badges')->truncate();
 if($schema->hasTable('badge_student')) $app->db->table('badge_student')->truncate();
 if($schema->hasTable('activities')) $app->db->table('activities')->truncate();
@@ -40,13 +48,16 @@ if(!$schema->hasTable('users')){
     $schema->create('users', function($table) { 
         $table->engine = 'InnoDB';
         $table->bigIncrements('id');
+        $table->integer('wp_id')->unique()->nullable();
+        $table->string('type', 20);
         $table->string('username', 200)->unique();
         $table->timestamps();
         
+        $table->index('wp_id');
     });
 }
 
-echo "Creating Students table... \n";
+echo "Creating Students table...";
 $schema->dropIfExists('students');
 if(!$schema->hasTable('students')){
     $schema->create('students', function($table) {
@@ -57,12 +68,12 @@ if(!$schema->hasTable('students')){
         $table->integer('total_points')->nullable()->default(0);
         $table->text('description');
         $table->timestamps();
-    
         $table->primary('user_id');
         $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
     });
+        echo "s";
 }
-
+echo "done. \n";
 echo "Creating Cohort table... \n";
 $schema->dropIfExists('cohorts');
 if(!$schema->hasTable('cohorts')){
@@ -83,9 +94,7 @@ if(!$schema->hasTable('cohorts')){
 echo "Creating Teacher table... \n";
 $schema->dropIfExists('teachers');
 if(!$schema->hasTable('teachers')){
-    try
-    {
-        $schema->create('teachers', function($table) { 
+    $schema->create('teachers', function($table) { 
             $table->engine = 'InnoDB';
             $table->unsignedBigInteger('user_id');
             $table->string('full_name', 200);
@@ -94,11 +103,39 @@ if(!$schema->hasTable('teachers')){
             $table->primary('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
-    }
-    catch(Exception $e){
-        print_r($e->getMessage());
-        die();
-    }
+}
+
+echo "Creating AssignmentTemplate table... \n";
+$schema->dropIfExists('atemplates');
+if(!$schema->hasTable('atemplates')){
+    $schema->create('atemplates', function($table) { 
+        $table->engine = 'InnoDB';
+        $table->bigIncrements('id');
+        $table->string('project_slug', 200);
+        $table->string('title', 200);
+        $table->string('duration', 200);//in hours
+        $table->string('technologies', 200);
+        $table->timestamps();
+    
+    });
+}
+
+echo "Creating Assignment table... \n";
+$schema->dropIfExists('assignments');
+if(!$schema->hasTable('assignments')){
+    $schema->create('assignments', function($table) { 
+        $table->engine = 'InnoDB';
+        $table->bigIncrements('id');
+        $table->unsignedBigInteger('student_user_id');
+        $table->unsignedBigInteger('teacher_user_id');
+        $table->unsignedBigInteger('atemplate_id');
+        $table->enum('status', ['not-delivered', 'delivered', 'reviewed']);
+        $table->timestamps();
+    
+        $table->foreign('student_user_id')->references('user_id')->on('students')->onDelete('cascade');
+        $table->foreign('teacher_user_id')->references('user_id')->on('teachers')->onDelete('cascade');
+        $table->foreign('atemplate_id')->references('id')->on('atemplates')->onDelete('cascade');
+    });
 }
 
 echo "Creating Cohort<>Teacher pivot table... \n";
