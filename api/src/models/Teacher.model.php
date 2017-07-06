@@ -23,4 +23,8 @@ class Teacher extends \Illuminate\Database\Eloquent\Model
         return $this->belongsToMany('Cohort')->withTimestamps();
     }
     
+    public function assignments(){
+        return $this->hasMany('Assignment');
+    }
+    
 }

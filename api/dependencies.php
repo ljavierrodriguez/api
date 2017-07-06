@@ -25,7 +25,7 @@ $config = [
     ],
 ];
 
-$app = new \Slim\App;
+$app = new \Slim\App($config);
 // Database information
 $settings = array(
     'driver' => 'mysql',

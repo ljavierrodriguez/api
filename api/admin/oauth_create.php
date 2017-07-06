@@ -36,9 +36,10 @@ SCHEMA;
 			'client_id' => "testclient",
 			'client_secret' => "testpass",
 			'redirect_uri' => "http://fake/",
+			'scope' => "admin",
 		));
 	$app->db->table('oauth_users')->insert(array(
-			'username' => "alesanchezr",
+			'username' => "john@4geeks.co",
 			'password' => sha1("1234"),
 			'first_name' => "Alejandro",
 			'last_name' => "Sanchez",

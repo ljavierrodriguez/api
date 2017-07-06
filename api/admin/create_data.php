@@ -10,6 +10,8 @@
     $schema->disableForeignKeyConstraints();
     $app->db->table('users')->truncate();
     $app->db->table('cohorts')->truncate();
+    $app->db->table('assignments')->truncate();
+    $app->db->table('atemplates')->truncate();
     $app->db->table('teachers')->truncate();
     $app->db->table('locations')->truncate();
     $app->db->table('students')->truncate();
@@ -109,13 +111,31 @@
     $location->save();
     echo "done  \n";
     
-    echo "inside cohort MDC III cohort...";
+    echo "Adding it to cohort MDC III...";
     $cohort = new Cohort;
     $cohort->slug = 'mdc-iii';
     $cohort->name = 'MDC III';
     $cohort->stage = 'not-started';
     $location->cohorts()->save($cohort);
     $cohort->save();
+    echo "done  \n";
+    
+    echo "Creating assingment template 1...";
+    $at = new Atemplate;
+    $at->project_slug = 'the-great-project';
+    $at->title = 'Create a great project';
+    $at->duration = '6hrs';
+    $at->technologies = 'CSS, HTML';
+    $at->save();
+    echo "done  \n";
+    
+    echo "Creating assingment 1 and adding it to the template 1...";
+    $assignment = new Assignment;
+    $assignment->status = 'not-delivered';
+    $assignment->student()->associate($std1);
+    $assignment->teacher()->associate($tea1);
+    $assignment->template()->associate($at);
+    $assignment->save();
     echo "done  \n";
 
     echo "Creating badge 'css_selectors' (Points to achieve: 10)";
