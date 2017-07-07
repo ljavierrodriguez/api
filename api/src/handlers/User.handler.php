@@ -34,11 +34,11 @@ class UserHandler extends MainHandler{
         if(!$user)
         {
             $user = new User;
-            $user->username = $data['email'];
             $user->wp_id = $data['wp_id'];
             $user->type = $data['type'];
-            $user->save();
         }
+        $user->username = $data['email'];
+        $user->save();
         
         $storage = $this->app->storage;
         $oauthUser = $storage->setUserWithoutHash($data['email'], $data['password'], null, null);
