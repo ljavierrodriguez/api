@@ -63,8 +63,9 @@ $authorization = new Middleware\Authorization($server, $app->getContainer());
  * Everything Related to the user
  **/
 $userHandler = new UserHandler($app);
-$app->get('/me', array($userHandler, 'getMe'))->add($authorization->withRequiredScope(['admin']));
+$app->get('/me', array($userHandler, 'getMe'))->add($authorization);
 $app->post('/credentials/user/', array($userHandler, 'createCredentialsHandler'))->add($authorization->withRequiredScope(['admin']));
+$app->delete('/user/{user_id}', array($userHandler, 'deleteUser'))->add($authorization->withRequiredScope(['admin']));
 
 
 
@@ -79,14 +80,14 @@ $app->post('/location/', array($locationHandler, 'createLocationHandler'))->add(
 $app->post('/location/{location_id}', array($locationHandler, 'updateLocationHandler'))->add($authorization->withRequiredScope(['admin']));
 $app->delete('/location/{location_id}', array($locationHandler, 'deleteLocationHandler'))->add($authorization->withRequiredScope(['admin']));
 
-
+ 
 
 
 /**
  * Everything Related to the cohorts
  **/
 $cohortHandler = new CohortHandler($app);
-//$app->get('/cohorts/', array($cohortHandler, 'getAllHandler'))->add($authorization->withRequiredScope(['admin']));
+$app->get('/cohorts/', array($cohortHandler, 'getAllHandler'))->add($authorization->withRequiredScope(['admin']));
 $app->get('/cohorts/location/{location_id}', array($cohortHandler, 'getAllCohortsFromLocationHandler'))->add($authorization->withRequiredScope(['admin']));
 $app->get('/cohort/{cohort_id}', array($cohortHandler, 'getSingleHandler'))->add($authorization->withRequiredScope(['admin']));
 
@@ -95,6 +96,18 @@ $app->get('/students/cohort/{cohort_id}', array($cohortHandler, 'getCohortStuden
 $app->post('/cohort/', array($cohortHandler, 'createCohortHandler'))->add($authorization->withRequiredScope(['admin']));
 $app->post('/cohort/{cohort_id}', array($cohortHandler, 'updateCohortHandler'))->add($authorization->withRequiredScope(['admin']));
 $app->delete('/cohort/{cohort_id}', array($cohortHandler, 'deleteCohortHandler'))->add($authorization->withRequiredScope(['admin']));
+
+
+/**
+ * Everything Related to the student itself
+ **/
+$teacherHandler = new TeacherHandler($app);
+$app->get('/teachers/', array($teacherHandler, 'getAllHandler'))->add($authorization->withRequiredScope(['admin']));
+$app->get('/teacher/{teacher_id}', array($teacherHandler, 'getTeacherHandler'))->add($authorization->withRequiredScope(['admin']));
+
+$app->post('/teacher/', array($teacherHandler, 'createTeacherHandler'))->add($authorization->withRequiredScope(['admin']));
+$app->post('/teacher/{teacher_id}', array($teacherHandler, 'updateTeacherHandler'))->add($authorization->withRequiredScope(['admin']));
+//$app->delete('/student/{student_id}', array($studentHandler, 'deleteStudentHandler'))->add($authorization->withRequiredScope(['admin']));
 
 
 
@@ -123,6 +136,8 @@ $app->delete('/student/{student_id}', array($studentHandler, 'deleteStudentHandl
 $atemplateHandler = new AtemplateHandler($app);
 $app->get('/atemplates/', array($atemplateHandler, 'getAllHandler'))->add($authorization->withRequiredScope(['admin']));
 $app->get('/atemplate/{atemplate_id}', array($atemplateHandler, 'getSingleHandler'))->add($authorization->withRequiredScope(['admin']));
+
+$app->post('/atemplate/sync/{wp_id}', array($atemplateHandler, 'syncFromWPHandler'))->add($authorization->withRequiredScope(['admin']));
 
 $app->post('/atemplate/', array($atemplateHandler, 'createHandler'))->add($authorization->withRequiredScope(['admin']));
 $app->post('/atemplate/{atemplate_id}', array($atemplateHandler, 'updateHandler'))->add($authorization->withRequiredScope(['admin']));

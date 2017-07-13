@@ -18,11 +18,25 @@ class AssignmentHandler extends MainHandler{
     
     public function getAllTeacherAssignmentsHandler(Request $request, Response $response) {
         $teacherId = $request->getAttribute('teacher_id');
-        
+        $data = $request->getQueryParams();
+
         $teacher = Teacher::find($teacherId);
-        if(!$teacher) throw new Exception('Invalid teacher id');
+        if(!$teacher) throw new Exception('Invalid teacher id: '.$teacherId);
+        $results = $teacher->assignments()->get();
         
-        return $this->success($response,$teacher->assignments()->get());
+        if(!empty($data['cohort_slug'])){
+            $filtered = $results->filter(function($assigntment) use ($data){
+                if($student = Student::find($assigntment->student_user_id))
+                {
+                    return in_array($data['cohort_slug'],$student->cohorts->toArray());
+                }
+                
+                return false;
+            });
+            $results = $filtered->all();
+        }
+        
+        return $this->success($response,$results);
     }
     
     public function createAssignmentHandler(Request $request, Response $response) {
@@ -34,7 +48,7 @@ class AssignmentHandler extends MainHandler{
             'assignments.student_user_id' => $data['student_id'],
             'assignments.atemplate_id'=> $data['template_id']
         ])->select('assignments.id')->get();
-        if(count($assignments)>0) throw new Exception('There is already an assignment for this student on this project');
+        if(count($assignments)>0) throw new Exception('There is already an assignment for this student on template '.$data['template_id']);
         
         $template = Atemplate::find($data['template_id']);
         if(!$template) throw new Exception('Invalid template id');
@@ -47,7 +61,7 @@ class AssignmentHandler extends MainHandler{
         
         $assignment = new Assignment();
         $assignment->status = 'not-delivered';
-        $assignment->project_slug = $template->project_slug;
+        $assignment->duedate = $data['duedate'];
         $assignment->student()->associate($student);
         $assignment->teacher()->associate($teacher);
         $assignment->template()->associate($template);
@@ -63,8 +77,8 @@ class AssignmentHandler extends MainHandler{
         $assignment = Assignment::find($assignmentId);
         if(!$assignment) throw new Exception('Invalid assingment id');
 
-        if(!in_array($data['status'],['not-delivered', 'delivered', 'reviewed'])) throw new Exception("The only valid status are 'not-delivered', 'delivered' and 'reviewed'");
-        
+        if(!in_array($data['status'],['not-delivered', 'delivered', 'reviewed'])) throw new Exception("Invalid status ".$data['status'].", the only valid status are 'not-delivered', 'delivered' and 'reviewed'");
+
         $assignment->status = $data['status'];
         $assignment->save();
         

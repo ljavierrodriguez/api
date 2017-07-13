@@ -2,7 +2,12 @@
 
 class Assignment extends \Illuminate\Database\Eloquent\Model 
 {
-    protected $hidden = ['student','teacher','template'];
+    protected $hidden = ['student','teacher','atemplate_id'];
+    protected $appends = ['template'];
+    
+    public function getTemplateAttribute(){
+        return $this->template()->first();
+    }
     
     public function student(){
         return $this->belongsTo('Student');

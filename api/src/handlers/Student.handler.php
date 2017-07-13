@@ -32,18 +32,31 @@ class StudentHandler extends MainHandler{
         $cohort = Cohort::where('slug', $data['cohort_slug'])->first();
         if(!$cohort) throw new Exception('Invalid cohort slug');
         
-        $user = new User;
-        $user->username = $data['email'];
-        $user->save();
+        $user = User::where('username', $data['email'])->first();
+        if($user && $user->student) throw new Exception('There is already a student with this email on te API');
+        else if(!$user)
+        {
+            $user = new User;
+            $user->username = $data['email'];
+            $user->type = 'student';
+            $user->full_name = $data['full_name'];
+            $user = $this->setOptional($user,$data,'wp_id');
+            $user->save();
+        }
 
-        $student = new Student();
-        $student->full_name = $data['full_name'];
-        $student = $this->setOptional($student,$data,'avatar_url');
-        $student = $this->setOptional($student,$data,'total_points');
-        $student = $this->setOptional($student,$data,'description');
-        $student->cohorts()->associate($cohort);
-        $user->student()->save($student);
-        
+        if($user)
+        {
+            $user = $this->setOptional($user,$data,'full_name');
+            $user = $this->setOptional($user,$data,'avatar_url');
+            $user = $this->setOptional($user,$data,'bio');
+            $user->save();
+            
+            $student = new Student();
+            $student = $this->setOptional($student,$data,'total_points');
+            $user->student()->save($student);
+            $student->cohorts()->save($cohort);
+            
+        }
         
         return $this->success($response,$student);
     }
@@ -57,10 +70,12 @@ class StudentHandler extends MainHandler{
 
         if($data['email']) throw new Exception('Students emails cannot be updated through this service');
         
-        $student = $this->setOptional($student,$data,'full_name');
-        $student = $this->setOptional($student,$data,'avatar_url');
+        $user = $student->user;
+        $user = $this->setOptional($user,$data,'full_name');
+        $user = $this->setOptional($user,$data,'avatar_url');
+        $user = $this->setOptional($user,$data,'description');
+        $user->save();
         $student = $this->setOptional($student,$data,'total_points');
-        $student = $this->setOptional($student,$data,'description');
         $student->save();
         
         return $this->success($response,$student);

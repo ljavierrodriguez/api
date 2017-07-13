@@ -29,80 +29,6 @@
     
     //$oauth->save();
     
-    echo "Creating a user 1...";
-    $u1 = new User;
-    $u1->username = 'john@4geeks.co';
-    $u1->save();
-    echo "done  \n";
-    echo "Creating a user 2...";
-    $u2 = new User;
-    $u2->username = 'pedro@4geeks.co';
-    $u2->save();
-    echo "done  \n";
-    echo "Creating a user 3...";
-    $u3 = new User;
-    $u3->username = 'mickel@4geeks.co';
-    $u3->save();
-    echo "done  \n";
-    echo "Creating a user 4...";
-    $u4 = new User;
-    $u4->username = 'teacher1@4geeks.co';
-    $u4->save();
-    echo "done  \n";
-    echo "Creating a user 5...";
-    $u5 = new User;
-    $u5->username = 'teacher2@4geeks.co';
-    $u5->save();
-    echo "done  \n";
-    echo "Creating a user 6...";
-    $u6 = new User;
-    $u6->username = 'teacher3@4geeks.co';
-    $u6->save();
-    echo "done  \n";
-    
-    echo "Creating student 1...";
-    $std1 = new Student;
-    $std1->full_name = 'John';
-    $u1->student()->save($std1);
-    $std1->save();
-    echo "done  \n";
-    
-    echo "Creating student 2...";
-    $std2 = new Student;
-    $std2->full_name = 'Pedro';
-    $u2->student()->save($std2);
-    $std2->save();
-    echo "done  \n";
-    
-    echo "Creating student 3...";
-    $std3 = new Student;
-    $std3->full_name = 'Mickel';
-    $u3->student()->save($std3);
-    $std3->save();
-    echo "done  \n";
-    
-    
-    echo "Creating teacher 1...";
-    $tea1 = new Teacher;
-    $tea1->full_name = 'Ronal';
-    $u4->student()->save($tea1);
-    $tea1->save();
-    echo "done  \n";
-    
-    echo "Creating teacher 2...";
-    $tea2 = new Teacher;
-    $tea2->full_name = 'Saul';
-    $u5->student()->save($tea2);
-    $tea2->save();
-    echo "done  \n";
-    
-    echo "Creating teacher 3...";
-    $tea3 = new Teacher;
-    $tea3->full_name = 'Bob';
-    $u6->student()->save($tea3);
-    $tea3->save();
-    echo "done  \n";
-    
     echo "Creating location miami... ";
     $location = new Location;
     $location->slug = 'mdc';
@@ -120,7 +46,117 @@
     $cohort->save();
     echo "done  \n";
     
+    
+    echo "Creating location el impact hub... ";
+    $location2 = new Location;
+    $location2->slug = 'ih';
+    $location2->name = 'Impact Hub';
+    $location2->address = 'Chacao, Torre HP';
+    $location2->save();
+    echo "done  \n";
+    
+    echo "Adding it to cohort MDC III...";
+    $cohort2 = new Cohort;
+    $cohort2->slug = 'ih-i';
+    $cohort2->name = 'Impact Hub I';
+    $cohort2->stage = 'not-started';
+    $location2->cohorts()->save($cohort2);
+    $cohort2->save();
+    echo "done  \n";
+    
+    
+    echo "Creating a user 1...";
+    $u1 = new User;
+    $u1->username = 'john@4geeks.co';
+    $u1->full_name = 'John';
+    $u1->save();
+    echo "done  \n";
+    echo "Creating a user 2...";
+    $u2 = new User;
+    $u2->full_name = 'Pedro';
+    $u2->username = 'pedro@4geeks.co';
+    $u2->save();
+    echo "done  \n";
+    echo "Creating a user 3...";
+    $u3 = new User;
+    $u3->full_name = 'Mickel';
+    $u3->username = 'mickel@4geeks.co';
+    $u3->save();
+    echo "done  \n";
+    echo "Creating a user 4...";
+    $u4 = new User;
+    $u4->username = 'teacher1@4geeks.co';
+    $u4->full_name = 'Ronal';
+    $u4->save();
+    echo "done  \n";
+    echo "Creating a user 5...";
+    $u5 = new User;
+    $u5->full_name = 'Saul';
+    $u5->username = 'teacher2@4geeks.co';
+    $u5->save();
+    echo "done  \n";
+    echo "Creating a user 6...";
+    $u6 = new User;
+    $u6->full_name = 'Bob';
+    $u6->username = 'teacher3@4geeks.co';
+    $u6->save();
+    echo "done  \n";
+    
+    echo "Creating student 1...";
+    $std1 = new Student;
+    $u1->student()->save($std1);
+    $std1->cohorts()->save($cohort);
+    $std1->save();
+    echo "done  \n";
+    
+    echo "Creating student 2...";
+    $std2 = new Student;
+    $u2->student()->save($std2);
+    $std2->cohorts()->save($cohort);
+    $std2->save();
+    echo "done  \n";
+    
+    echo "Creating student 3...";
+    $std3 = new Student;
+    $u3->student()->save($std3);
+    $std3->cohorts()->save($cohort2);
+    $std3->save();
+    echo "done  \n";
+    
+    
+    echo "Creating teacher 1...";
+    $tea1 = new Teacher;
+    $u4->student()->save($tea1);
+    $tea1->cohorts()->save($cohort);
+    $tea1->save();
+    echo "done  \n";
+    
+    echo "Creating teacher 2...";
+    $tea2 = new Teacher;
+    $u5->student()->save($tea2);
+    $tea2->cohorts()->save($cohort);
+    $tea2->save();
+    echo "done  \n";
+    
+    echo "Creating teacher 3...";
+    $tea3 = new Teacher;
+    $u6->student()->save($tea3);
+    $tea3->cohorts()->save($cohort2);
+    $tea3->save();
+    echo "done  \n";
+    
     echo "Creating assingment template 1...";
+    $at = new Atemplate;
+    $at->project_slug = 'the-portfolio';
+    $at->title = 'Your first portfolio';
+    $at->excerpt = 'This is an amazing excerpt';
+    $at->duration = '16hrs';
+    $at->technologies = 'PHP, Wordpress';
+    $at->save();
+    echo "done  \n";
+    
+    
+    echo "Creating assingment template 2...";
     $at = new Atemplate;
     $at->project_slug = 'the-great-project';
     $at->title = 'Create a great project';
@@ -132,6 +168,7 @@
     echo "Creating assingment 1 and adding it to the template 1...";
     $assignment = new Assignment;
     $assignment->status = 'not-delivered';
+    $assignment->duedate = '13/12/2017';
     $assignment->student()->associate($std1);
     $assignment->teacher()->associate($tea1);
     $assignment->template()->associate($at);

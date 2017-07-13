@@ -10,7 +10,10 @@ class SpecialtyHandler extends MainHandler{
     public function getStudentSpecialtiesHandler(Request $request, Response $response) {
         $studentId = $request->getAttribute('student_id');
 
-        $specialties = Student::find($studentId)->specialties()->get();
+        $student = Student::find($studentId);
+        if(!$student) throw new Exception('Student not found');
+        
+        $specialties = $student->specialties()->get();
         if(!$specialties) throw new Exception('Invalid student id');
         
         return $this->success($response,$specialties);

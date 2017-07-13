@@ -47,7 +47,19 @@ class UserHandler extends MainHandler{
             throw new Exception('Unable to create UserCredentials');
         }
 
-            
         return $this->success($response,$user);
     }    
+    
+    public function deleteUser(Request $request, Response $response) {
+        $userId = $request->getAttribute('user_id');
+        if(empty($userId)) throw new Exception('There was an error retrieving the user_id');
+    
+        $user = User::find($userId);
+        if(!$user) throw new Exception('User not found');
+        
+        $user->delete();
+
+        return $this->success($response,'The user was deleted successfully');
+    }    
+    
 }

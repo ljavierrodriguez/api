@@ -38,6 +38,21 @@ SCHEMA;
 			'redirect_uri' => "http://fake/",
 			'scope' => "admin",
 		));
+		
+	$app->db->table('oauth_clients')->insert(array(
+			'client_id' => "ogarcia",
+			'client_secret' => "8ca0854a441cc4c201f925d6bfb36dafa48829c4",
+			'redirect_uri' => "http://fake/",
+			'scope' => "admin",
+		));
+		
+	$app->db->table('oauth_clients')->insert(array(
+			'client_id' => "nbernal",
+			'client_secret' => "8ca0854a441cc4c201f925d6bfb36dafa48829c5",
+			'redirect_uri' => "http://fake/",
+			'scope' => "admin",
+		));
+		
 	$app->db->table('oauth_users')->insert(array(
 			'username' => "john@4geeks.co",
 			'password' => sha1("1234"),
