@@ -116,7 +116,7 @@ class StudentHandler extends MainHandler{
         
         $attributes = $activity->getAttributes();
         $now = time(); // or your date as well
-        $daysOld = floor(($now - strtotime($attributes['created_at'])) / (60 * 60 * 24));
+        $daysOld = floor(($now - strtotime($attributes['created_at'])) / DELETE_MAX_DAYS);
         if($daysOld>5) throw new Exception('The activity is to old to delete');
         
         $student = $activity->student()->first();
@@ -134,7 +134,7 @@ class StudentHandler extends MainHandler{
         
         $attributes = $student->getAttributes();
         $now = time(); // or your date as well
-        $daysOld = floor(($now - strtotime($attributes['created_at'])) / (60 * 60 * 24));
+        $daysOld = floor(($now - strtotime($attributes['created_at'])) / DELETE_MAX_DAYS);
         if($daysOld>5) throw new Exception('The student is to old to delete');
         
         $student->activities()->delete();

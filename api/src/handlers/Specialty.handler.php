@@ -117,9 +117,12 @@ class SpecialtyHandler extends MainHandler{
         $specialty = Specialty::find($specialtyId);
         if(!$specialty) throw new Exception('Invalid specialty id: '.$specialtyId);
         
-        $attributes = $badge->getAttributes();
+        $badges = $specialty->badges()->get();
+        if(count($badges)>0) throw new Exception('Remove all specialty badges first');
+        
+        $attributes = $specialty->getAttributes();
         $now = time(); // or your date as well
-        $daysOld = floor(($now - strtotime($attributes['created_at'])) / (60 * 60 * 24));
+        $daysOld = floor(($now - strtotime($attributes['created_at'])) / DELETE_MAX_DAYS);
         if($daysOld>5) throw new Exception('The specialty is too old to delete');
         $specialty->delete();
         

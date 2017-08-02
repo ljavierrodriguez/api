@@ -32,6 +32,7 @@ SCHEMA;
 	foreach (explode("\n", $createQuery) as $statement) {
 		$app->db->statement($statement);
 	}
+	
 	$app->db->table('oauth_clients')->insert(array(
 			'client_id' => "testclient",
 			'client_secret' => "testpass",

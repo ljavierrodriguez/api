@@ -97,17 +97,20 @@ $app->post('/cohort/', array($cohortHandler, 'createCohortHandler'))->add($autho
 $app->post('/cohort/{cohort_id}', array($cohortHandler, 'updateCohortHandler'))->add($authorization->withRequiredScope(['admin']));
 $app->delete('/cohort/{cohort_id}', array($cohortHandler, 'deleteCohortHandler'))->add($authorization->withRequiredScope(['admin']));
 
+$app->post('/teacher/cohort/{cohort_id}', array($cohortHandler, 'addTeacherToCohortHandler'))->add($authorization->withRequiredScope(['admin']));
+$app->delete('/teacher/cohort/{cohort_id}', array($cohortHandler, 'deleteTeacherFromCohortHandler'))->add($authorization->withRequiredScope(['admin']));
 
 /**
  * Everything Related to the student itself
  **/
 $teacherHandler = new TeacherHandler($app);
 $app->get('/teachers/', array($teacherHandler, 'getAllHandler'))->add($authorization->withRequiredScope(['admin']));
-$app->get('/teacher/{teacher_id}', array($teacherHandler, 'getTeacherHandler'))->add($authorization->withRequiredScope(['admin']));
+$app->get('/teacher/{teacher_id}', array($teacherHandler, 'getSingleHandler'))->add($authorization->withRequiredScope(['admin']));
+$app->get('/teachers/cohort/{cohort_id}', array($teacherHandler, 'getCohortTeachers'))->add($authorization->withRequiredScope(['admin']));
 
 $app->post('/teacher/', array($teacherHandler, 'createTeacherHandler'))->add($authorization->withRequiredScope(['admin']));
 $app->post('/teacher/{teacher_id}', array($teacherHandler, 'updateTeacherHandler'))->add($authorization->withRequiredScope(['admin']));
-//$app->delete('/student/{student_id}', array($studentHandler, 'deleteStudentHandler'))->add($authorization->withRequiredScope(['admin']));
+$app->delete('/teacher/{teacher_id}', array($teacherHandler, 'deleteTeacherHandler'))->add($authorization->withRequiredScope(['admin']));
 
 
 
@@ -151,6 +154,7 @@ $app->get('/assignments/student/{student_id}', array($assignmentHandler, 'getAll
 $app->get('/assignments/teacher/{teacher_id}', array($assignmentHandler, 'getAllTeacherAssignmentsHandler'))->add($authorization->withRequiredScope(['admin']));
 $app->post('/student/assignment/', array($assignmentHandler, 'createAssignmentHandler'))->add($authorization->withRequiredScope(['admin']));
 $app->post('/student/assignment/{assignment_id}', array($assignmentHandler, 'updateAssignmentHandler'))->add($authorization->withRequiredScope(['admin']));
+$app->post('/assignment/cohort/{cohort_id}', array($assignmentHandler, 'createCohortAssignmentHandler'))->add($authorization->withRequiredScope(['admin']));
 $app->delete('/student/assignment/{assignment_id}', array($assignmentHandler, 'deleteAssignmentHandler'))->add($authorization->withRequiredScope(['admin']));
 
 
@@ -163,12 +167,13 @@ $app->delete('/student/assignment/{assignment_id}', array($assignmentHandler, 'd
  **/
 $badgeHandler = new BadgeHandler($app);
 $app->get('/badges/', array($badgeHandler, 'getAllHandler'))->add($authorization->withRequiredScope(['admin']));
-$app->get('/badge/{badge_id}', array($badgeHandler, 'getSingleHandler'))->add($authorization->withRequiredScope(['admin']));
+$app->get('/badge/{badge_id}', array($badgeHandler, 'getSingleBadge'))->add($authorization->withRequiredScope(['admin']));
 
 $app->get('/badges/student/{student_id}', array($badgeHandler, 'getAllStudentBadgesHandler'))->add($authorization->withRequiredScope(['admin']));
 $app->post('/badge/', array($badgeHandler, 'createOrUpdateBadgeHandler'))->add($authorization->withRequiredScope(['admin']));
 $app->post('/badge/{badge_id}', array($badgeHandler, 'createOrUpdateBadgeHandler'))->add($authorization->withRequiredScope(['admin']));
 $app->delete('/badge/{badge_id}', array($badgeHandler, 'deleteBadgeHandler'))->add($authorization->withRequiredScope(['admin']));
+$app->post('/badge/image/{badge_id}', array($badgeHandler, 'updateThumbHandler'))->add($authorization->withRequiredScope(['admin']));
 
 
 
@@ -202,7 +207,7 @@ $app->get('/specialties/profile/{profile_id}', array($specialtyHandler, 'getProf
 $app->get('/specialties/student/{student_id}', array($specialtyHandler, 'getStudentSpecialtiesHandler'))->add($authorization->withRequiredScope(['admin']));
 $app->post('/specialty/{specialty_id}', array($specialtyHandler, 'updateSpecialtyHandler'))->add($authorization->withRequiredScope(['admin']));
 $app->post('/specialty/', array($specialtyHandler, 'createSpecialtyHandler'))->add($authorization->withRequiredScope(['admin']));
-$app->delete('/specialty/{specialty_id}', array($studentHandler, 'deleteSpecialtyHandler'))->add($authorization->withRequiredScope(['admin']));
+$app->delete('/specialty/{specialty_id}', array($specialtyHandler, 'deleteSpecialtyHandler'))->add($authorization->withRequiredScope(['admin']));
 
 
 

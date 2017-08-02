@@ -7,6 +7,18 @@ class TeacherHandler extends MainHandler{
     
     protected $slug = 'Teacher';
     
+    public function getCohortTeachers(Request $request, Response $response) {
+        $cohortId = $request->getAttribute('cohort_id');
+
+        //retrieve the cohort by slug or id
+        $cohort = null;
+        if(is_numeric($cohortId)) $cohort = Cohort::find($cohortId);
+        else $cohort = Cohort::where('slug', $cohort_id)->first();
+        if(!$cohort) throw new Exception('Invalid cohort id: '.$cohortId);
+        
+        return $this->success($response,$cohort->teachers()->get());
+    }
+    
     public function createTeacherHandler(Request $request, Response $response) {
         $data = $request->getParsedBody();
         if(empty($data)) throw new Exception('There was an error retrieving the request content, it needs to be a valid JSON');
@@ -30,8 +42,11 @@ class TeacherHandler extends MainHandler{
             $user = $this->setOptional($user,$data,'bio');
             $user->save();
             
-            $teacher = new Teacher();
-            $user->teacher()->save($teacher);
+            if(!$user->teacher())
+            {
+                $teacher = new Teacher();
+                $user->teacher()->save($teacher);
+            }
         }
         
         return $this->success($response,$teacher);
@@ -55,20 +70,19 @@ class TeacherHandler extends MainHandler{
         return $this->success($response,$teacher);
     }
     
-    public function deleteStudentHandler(Request $request, Response $response) {
-        $studentId = $request->getAttribute('student_id');
+    public function deleteTeacherHandler(Request $request, Response $response) {
+        $teacherId = $request->getAttribute('teacher_id');
         
-        $student = Student::find($studentId);
-        if(!$student) throw new Exception('Invalid student id');
+        $teacher = Teacher::find($teacherId);
+        if(!$teacher) throw new Exception('Invalid teacher id');
         
-        $attributes = $student->getAttributes();
+        /*
+        $attributes = $teacher->getAttributes();
         $now = time(); // or your date as well
-        $daysOld = floor(($now - strtotime($attributes['created_at'])) / (60 * 60 * 24));
-        if($daysOld>5) throw new Exception('The student is to old to delete');
-        
-        $student->activities()->delete();
-        $student->badges()->delete();
-        $student->delete();
+        $daysOld = floor(($now - strtotime($attributes['created_at'])) / DELETE_MAX_DAYS);
+        if($daysOld>5) throw new Exception('The teacher is to old to delete');
+        */
+        $teacher->delete();
         
         return $this->success($response,"ok");
     }

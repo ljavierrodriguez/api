@@ -58,9 +58,6 @@ class CohortHandler extends MainHandler{
         $students = $cohort->students()->get();
         if(count($students)>0) throw new Exception('Remove all students from the cohort first.');
         
-        //$teachers = $cohort->teachers()->get();
-        //if(count($teachers)>0) throw new Exception('Remove all teachers from the cohort first.');
-        
         $cohort->delete();
         
         return $this->success($response,"The cohort was deleted successfully");
@@ -95,4 +92,56 @@ class CohortHandler extends MainHandler{
         return $this->success($response,"There are ".count($cohort->students())." students in the cohort.");
     }
     
+    public function addTeacherToCohortHandler(Request $request, Response $response) {
+        $cohortId = $request->getAttribute('cohort_id');
+        
+        $teachersArray = $request->getParsedBody();
+        if(empty($teachersArray)) throw new Exception('There was an error retrieving the request content, it needs to be a valid JSON');
+        
+        //there can only be a max of one main instructor
+        $mainInstructors = [];
+        foreach($teachersArray as $t) if(isset($t['is_instructor']) && $t['is_instructor']=='true') $mainInstructors[] = $t['teacher_id'];
+        if(count($mainInstructors)>1) throw new Exception('There can only be one main instructor');
+       
+        $cohort = Cohort::find($cohortId);
+        if(!$cohort) throw new Exception('Invalid cohort id: '.$cohortId);
+        
+        $auxTeachers = [];
+        $currentTeachers = $cohort->teachers()->get();
+        foreach($teachersArray as $tea) {
+            $teacher = Teacher::find($tea['teacher_id']);
+            if(!$teacher) throw new Exception('Invalid teacher id: '.$tea['teacher_id']);
+            if(!$currentTeachers->contains($tea['teacher_id'])) $auxTeachers[] = $tea['teacher_id'];
+        }
+
+        if($auxTeachers>0) $cohort->teachers()->attach($auxTeachers);
+        else throw new Exception('Error retreving Teachers form the body request');
+        
+        foreach($currentTeachers as $ct) $cohort->teachers()->updateExistingPivot($ct->id, ['is_instructor'=>false]);
+        $cohort->teachers()->updateExistingPivot($mainInstructors[0], ['is_instructor'=>true]);
+        
+        return $this->success($response,$currentTeachers);
+    }
+    
+    public function deleteTeacherFromCohortHandler(Request $request, Response $response) {
+        $cohortId = $request->getAttribute('cohort_id');
+        
+        $teachersArray = $request->getParsedBody();
+        if(empty($teachersArray)) throw new Exception('There was an error retrieving the request content, it needs to be a valid JSON');
+        
+        $cohort = Cohort::find($cohortId);
+        if(!$cohort) throw new Exception('Invalid cohort id: '.$cohortId);
+        
+        $auxTeachers = [];
+        foreach($teachersArray as $tea) {
+            $teacher = Teacher::find($tea['teacher_id']);
+            if(!$teacher) throw new Exception('Invalid teacher id: '.$tea['teacher_id']);
+            $auxTeachers[] = $tea['teacher_id'];
+        }
+
+        if($auxTeachers>0) $cohort->teachers()->detach($auxTeachers);
+        else throw new Exception('Error deleting teachers');
+        
+        return $this->success($response,"There are ".count($cohort->teachers()->get())." teachers in the cohort.");
+    }
 }

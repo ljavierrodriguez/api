@@ -29,6 +29,8 @@ class UserHandler extends MainHandler{
     public function createCredentialsHandler(Request $request, Response $response) {
         $data = $request->getParsedBody();
         if(empty($data)) throw new Exception('There was an error retrieving the request content, it needs to be a valid JSON');
+
+        if(!in_array($data['type'],['teacher','student'])) throw new Exception('The user type has to be a "teacher" or "student", "'.$data['type'].'" given');
     
         $user = User::where('username', $data['email'])->first();
         if(!$user)
@@ -39,6 +41,8 @@ class UserHandler extends MainHandler{
         }
         $user->username = $data['email'];
         $user->save();
+        
+        $this->generateStudentOrTeacher($user);
         
         $storage = $this->app->storage;
         $oauthUser = $storage->setUserWithoutHash($data['email'], $data['password'], null, null);
@@ -60,6 +64,21 @@ class UserHandler extends MainHandler{
         $user->delete();
 
         return $this->success($response,'The user was deleted successfully');
-    }    
+    }  
+    
+    private function generateStudentOrTeacher($user){
+        switch($user->type)
+        {
+            case "teacher" || "admin":
+                if(!$user->teacher())
+                {
+                    $teacher = new Teacher();
+                    $user->teacher()->save($teacher);
+                }
+            break;
+            case "student":
+            break;
+        }
+    }
     
 }

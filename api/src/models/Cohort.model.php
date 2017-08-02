@@ -22,7 +22,8 @@ class Cohort extends \Illuminate\Database\Eloquent\Model
     
     public function teachers()
     {
-        return $this->hasMany('Teacher','user_id');
+        $teachers = $this->belongsToMany('Teacher','cohort_teacher','cohort_id','teacher_user_id')->withTimestamps();
+        return $teachers;
     }
     
     

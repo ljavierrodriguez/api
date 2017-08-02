@@ -19,12 +19,14 @@ class AssignmentHandler extends MainHandler{
     public function getAllTeacherAssignmentsHandler(Request $request, Response $response) {
         $teacherId = $request->getAttribute('teacher_id');
         $data = $request->getQueryParams();
-
+        
         $teacher = Teacher::find($teacherId);
         if(!$teacher) throw new Exception('Invalid teacher id: '.$teacherId);
         $results = $teacher->assignments()->get();
-        
+
         if(!empty($data['cohort_slug'])){
+            $data['cohort_slug'] = strtolower($data['cohort_slug']);
+            
             $filtered = $results->filter(function($assigntment) use ($data){
                 if($student = Student::find($assigntment->student_user_id))
                 {
@@ -43,13 +45,6 @@ class AssignmentHandler extends MainHandler{
         $data = $request->getParsedBody();
         if(empty($data)) throw new Exception('There was an error retrieving the request content, it needs to be a valid JSON');
         
-        $assignments = $this->app->db->table('assignments')
-        ->where([
-            'assignments.student_user_id' => $data['student_id'],
-            'assignments.atemplate_id'=> $data['template_id']
-        ])->select('assignments.id')->get();
-        if(count($assignments)>0) throw new Exception('There is already an assignment for this student on template '.$data['template_id']);
-        
         $template = Atemplate::find($data['template_id']);
         if(!$template) throw new Exception('Invalid template id');
         
@@ -59,15 +54,40 @@ class AssignmentHandler extends MainHandler{
         $teacher = Teacher::find($data['teacher_id']);
         if(!$teacher) throw new Exception('Invalid teacher id');
         
-        $assignment = new Assignment();
-        $assignment->status = 'not-delivered';
-        $assignment->duedate = $data['duedate'];
-        $assignment->student()->associate($student);
-        $assignment->teacher()->associate($teacher);
-        $assignment->template()->associate($template);
-        $assignment->save();
+        $this->_createStudentAssignment($student,$template,$teacher,$data['duedate']);
         
         return $this->success($response,$assignment);
+    }
+    
+    public function createCohortAssignmentHandler(Request $request, Response $response) {
+        $data = $request->getParsedBody();
+        if(empty($data)) throw new Exception('There was an error retrieving the request content, it needs to be a valid JSON');
+        
+        $duedate = date('Y-m-d',strtotime($data['duedate']));
+        if(!$duedate) throw new Exception('Invalid date format');
+        
+        $cohort_id = $request->getAttribute('cohort_id');
+        
+        $template = Atemplate::find($data['template_id']);
+        if(!$template) throw new Exception('Invalid template id');
+        
+        //retrieve the cohor by slug or id
+        $cohort = null;
+        if(is_numeric($cohort_id)) $cohort = Cohort::find($cohort_id);
+        else $cohort = Cohort::where('slug', $cohort_id)->first();
+        if(!$cohort) throw new Exception('Invalid cohort id: '.$cohort_id);
+        
+        $teachers = $this->app->db->table('cohort_teacher')
+        ->where([
+            'cohort_teacher.cohort_id' => $cohort->id,
+            'cohort_teacher.is_instructor' => true
+        ])->select('cohort_teacher.teacher_user_id')->get();
+        if(count($teachers)==0) throw new Exception('There cohort needs a main teacher in order to accept assignments');
+        
+        $students = $cohort->students()->get();
+        foreach($students as $student) $this->_createStudentAssignment($student,$template,$teachers->first(),$duedate);
+        
+        return $this->success($response,'Ok');
     }
     
     public function updateAssignmentHandler(Request $request, Response $response) {
@@ -96,4 +116,22 @@ class AssignmentHandler extends MainHandler{
         return $this->success($response,"The assignment was successfully deleted.");
     }
     
+    private function _createStudentAssignment($student,$template,$teacher,$duedate){
+        $assignments = $this->app->db->table('assignments')
+        ->where([
+            'assignments.student_user_id' => $student->user_id,
+            'assignments.atemplate_id' => $template->id
+        ])->select('assignments.id')->get();
+        if(count($assignments)>0) throw new Exception('There is already an assignment for this student on template: '.$template->id);
+        
+        $assignment = new Assignment();
+        $assignment->status = 'not-delivered';
+        $assignment->duedate = $duedate;
+        $assignment->student()->associate($student->user_id);
+        $assignment->teacher()->associate($teacher->teacher_user_id);
+        $assignment->template()->associate($template->id);
+        $assignment->save();
+        
+        return $assignment;
+    }
 }
