@@ -58,4 +58,24 @@ class MainHandler{
         
         return $this->success($response,$single);
     }
+    
+    public function syncMainData(Request $request, Response $response) {
+        
+        $log = [];
+        
+        $fullstack = Profile::where('slug', "full-stack-web")->first();
+        if(!$fullstack){
+            $fullstack = new Profile();
+            $fullstack->name = "Full-Stack Web Developer";
+            $fullstack->slug = "full-stack-web";
+            $fullstack->description = "Manages front-end and back-end side of the web";
+            $fullstack->save();
+            
+            $log[] = "The profile full-stack-web was created to train Full Stack Web Developers";
+            
+        }else $log[] = "The profile full-stack-web was already created.";
+        
+        
+        return $this->success($response,$log);
+    }
 }

@@ -22,8 +22,11 @@ class SpecialtyHandler extends MainHandler{
     public function getProfileSpecialtiesHandler(Request $request, Response $response) {
         $profileId = $request->getAttribute('profile_id');
 
-        $specialties = Profile::find($profileId)->specialties()->get();
-        if(!$specialties) throw new Exception('Invalid profile id');
+        $profile = Profile::find($profileId);
+        if(!$profile) throw new Exception('Invalid profile id');
+        
+        $specialties = $profile->specialties()->get();
+        //if(!$specialties) throw new Exception('Invalid profile id');
         
         return $this->success($response,$specialties);
     }

@@ -29,6 +29,7 @@ class LocationHandler extends MainHandler{
         $location = Location::where('slug', $data['slug'])->first();
         
         if(!$location) $location = new Location();
+        $location->slug = $data['slug'];
         $location->name = $data['name'];
         $location = $this->setOptional($location,$data,'country');
         $location = $this->setOptional($location,$data,'address');

@@ -32,12 +32,13 @@ class UserHandler extends MainHandler{
 
         if(!in_array($data['type'],['teacher','student'])) throw new Exception('The user type has to be a "teacher" or "student", "'.$data['type'].'" given');
     
-        $cohorIds = [];
-        if(!isset($data['cohorts'])) throw new Exception('You have to specify the user cohorts');
-        else foreach($data['cohorts'] as $cohortSlug){
+        $cohortIds = [];
+        if(!isset($data['cohorts']) && $data['type']=='student') throw new Exception('You have to specify the user cohorts');
+        
+        if(isset($data['cohorts'])) foreach($data['cohorts'] as $cohortSlug){
             $auxCohort = Cohort::where('slug', $cohortSlug)->first();
-            if(!$auxCohort) throw new Exception('The cohort '.$auxCohort.' is invalid.');
-            $cohorIds[] = $auxCohort->id;
+            if(!$auxCohort) throw new Exception('The cohort '.$cohortSlug.' is invalid.');
+            $cohortIds[] = $auxCohort->id;
         }
     
         $user = User::where('username', $data['email'])->first();
@@ -46,10 +47,16 @@ class UserHandler extends MainHandler{
         $user->wp_id = $data['wp_id'];
         $user->type = $data['type'];
         $user->username = $data['email'];
+        $user = $this->setOptional($user,$data,'full_name');
         $user->save();
         
         $studentOrTeacher = $this->generateStudentOrTeacher($user);
-        $studentOrTeacher->cohorts->attach($cohorIds);
+        
+        $oldCohorts = $studentOrTeacher->cohorts()->get()->pluck('id');
+        if(count($cohortIds)>0){
+            $studentOrTeacher->cohorts()->detach($oldCohorts);
+            $studentOrTeacher->cohorts()->attach($cohortIds);
+        }
         
         $storage = $this->app->storage;
         $oauthUser = $storage->setUserWithoutHash($data['email'], $data['password'], null, null);
@@ -72,12 +79,10 @@ class UserHandler extends MainHandler{
         {
             $user = new User;
             $user->wp_id = $data['wp_id'];
+            $user->username = $data['email'];
             $user->type = $data['type'];
+            $user->save();
         }
-        $user->username = $data['email'];
-        $user->save();
-        
-        $this->generateStudentOrTeacher($user);
         
         $storage = $this->app->storage;
         $oauthUser = $storage->setUserWithoutHash($data['email'], $data['password'], null, null);
@@ -102,17 +107,17 @@ class UserHandler extends MainHandler{
     }  
     
     private function generateStudentOrTeacher($user){
-        //echo $user->type; die();
+
         switch($user->type)
         {
-            case "teacher" || "admin":
+            case "teacher":
                 $teacher = $user->teacher()->first();
                 if(!$teacher)
                 {
                     $teacher = new Teacher();
                     $user->teacher()->save($teacher);
-                    return $teacher;
                 }
+                return $teacher;
             break;
             case "student":
                 $student = $user->student()->first();
@@ -120,8 +125,8 @@ class UserHandler extends MainHandler{
                 {
                     $student = new Student();
                     $user->student()->save($student);
-                    return $student;
                 }
+                return $student;
             break;
         }
     }

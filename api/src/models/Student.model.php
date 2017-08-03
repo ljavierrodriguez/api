@@ -95,7 +95,8 @@ class Student extends \Illuminate\Database\Eloquent\Model
     }
 
     public function cohorts(){
-        return $this->belongsToMany('Cohort')->withTimestamps();
+        $cohorts = $this->belongsToMany('Cohort','cohort_student','student_user_id','cohort_id')->withTimestamps();
+        return $cohorts;
     }
     
     public function activities(){

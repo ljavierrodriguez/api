@@ -58,6 +58,11 @@ $app->map(['GET', 'POST'], Routes\ReceiveCode::ROUTE, new Routes\ReceiveCode($re
 //Creating the Middleware to intercept all request and ask for authorization before continuing
 $authorization = new Middleware\Authorization($server, $app->getContainer());
 
+/**
+ * Main basic stuff
+ **/
+$mainHandler = new MainHandler($app);
+$app->post('/sync/', array($mainHandler, 'syncMainData'))->add($authorization->withRequiredScope(['admin']));
 
 /**
  * Everything Related to the user
@@ -67,6 +72,7 @@ $app->get('/me', array($userHandler, 'getMe'))->add($authorization);
 $app->post('/credentials/user/', array($userHandler, 'createCredentialsHandler'))->add($authorization->withRequiredScope(['admin']));
 $app->delete('/user/{user_id}', array($userHandler, 'deleteUser'))->add($authorization->withRequiredScope(['admin']));
 
+$app->post('/user/sync', array($userHandler, 'syncUserHandler'))->add($authorization->withRequiredScope(['admin']));
 
 
 /**
