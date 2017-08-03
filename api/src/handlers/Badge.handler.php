@@ -12,7 +12,7 @@ class BadgeHandler extends MainHandler{
         
         $single = null;
         if(is_numeric($id)) $single = Badge::find($id);
-        $single = Badge::where('slug', $id)->first();
+        else $single = Badge::where('slug', $id)->first();
         
         if(!$single) throw new Exception('Invalid '.strtolower($this->slug).'_id');
         

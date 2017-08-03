@@ -21,6 +21,22 @@ class LocationHandler extends MainHandler{
         return $this->success($response,$location);
     }
     
+    public function syncLocationHandler(Request $request, Response $response) {
+        $data = $request->getParsedBody();
+        if(empty($data)) throw new Exception('There was an error retrieving the request content, it needs to be a valid JSON');
+        
+        if(!isset($data['slug']))  throw new Exception('You have to specify a location slug');
+        $location = Location::where('slug', $data['slug'])->first();
+        
+        if(!$location) $location = new Location();
+        $location->name = $data['name'];
+        $location = $this->setOptional($location,$data,'country');
+        $location = $this->setOptional($location,$data,'address');
+        $location->save();
+        
+        return $this->success($response,$location);
+    }
+    
     public function updateLocationHandler(Request $request, Response $response) {
         $locationId = $request->getAttribute('location_id');
         $data = $request->getParsedBody();

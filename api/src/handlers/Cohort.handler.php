@@ -16,6 +16,15 @@ class CohortHandler extends MainHandler{
         return $this->success($response,$location->cohorts()->get());
     }
     
+    public function getAllCohortsFromTeacherHandler(Request $request, Response $response) {
+        $teacherId = $request->getAttribute('teacher_id');
+        
+        $teacher = Teacher::find($teacherId);
+        if(!$teacher) throw new Exception('Invalid teacher id:'.$teacherId);
+        
+        return $this->success($response,$teacher->cohorts()->get());
+    }
+    
     public function createCohortHandler(Request $request, Response $response) {
         $data = $request->getParsedBody();
         if(empty($data)) throw new Exception('There was an error retrieving the request content, it needs to be a valid JSON');
@@ -29,6 +38,35 @@ class CohortHandler extends MainHandler{
         $cohort->slug = $data['slug'];
         $cohort = $this->setOptional($cohort,$data,'slack-url');
         $location->cohorts()->save($cohort);
+        
+        return $this->success($response,$cohort);
+    }
+    
+    public function syncCohortHandler(Request $request, Response $response) {
+        $data = $request->getParsedBody();
+        if(empty($data)) throw new Exception('There was an error retrieving the request content, it needs to be a valid JSON');
+        
+        $location = Location::where('slug', $data['location_slug'])->first();
+        if(!$location) throw new Exception('Invalid location_slug slug');
+        
+        $teacher = Teacher::find($data['instructor_id']);
+        if(!$teacher) throw new Exception('Invalid instructor_id: '.$data['instructor_id']);
+        
+        if(!isset($data['slug']))  throw new Exception('You have to specify a cohort slug');
+        $cohort = Cohort::where('slug', $data['slug'])->first();
+        if(!$cohort) $cohort = new Cohort();
+        
+        
+        $cohort->name = $data['name'];
+        $cohort->stage = 'not-started';
+        $cohort->slug = $data['slug'];
+        $cohort = $this->setOptional($cohort,$data,'slack-url');
+        $location->cohorts()->save($cohort);
+        $cohort->teachers()->attach($teacher);
+        
+        $currentTeachers = $cohort->teachers()->get();
+        foreach($currentTeachers as $ct) $cohort->teachers()->updateExistingPivot($ct->id, ['is_instructor'=>false]);
+        $cohort->teachers()->updateExistingPivot($teacher->id, ['is_instructor'=>true]);
         
         return $this->success($response,$cohort);
     }

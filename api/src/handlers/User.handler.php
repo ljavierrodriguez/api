@@ -26,6 +26,41 @@ class UserHandler extends MainHandler{
         
     }    
     
+    public function syncUserHandler(Request $request, Response $response) {
+        $data = $request->getParsedBody();
+        if(empty($data)) throw new Exception('There was an error retrieving the request content, it needs to be a valid JSON');
+
+        if(!in_array($data['type'],['teacher','student'])) throw new Exception('The user type has to be a "teacher" or "student", "'.$data['type'].'" given');
+    
+        $cohorIds = [];
+        if(!isset($data['cohorts'])) throw new Exception('You have to specify the user cohorts');
+        else foreach($data['cohorts'] as $cohortSlug){
+            $auxCohort = Cohort::where('slug', $cohortSlug)->first();
+            if(!$auxCohort) throw new Exception('The cohort '.$auxCohort.' is invalid.');
+            $cohorIds[] = $auxCohort->id;
+        }
+    
+        $user = User::where('username', $data['email'])->first();
+        if(!$user) $user = new User;
+        
+        $user->wp_id = $data['wp_id'];
+        $user->type = $data['type'];
+        $user->username = $data['email'];
+        $user->save();
+        
+        $studentOrTeacher = $this->generateStudentOrTeacher($user);
+        $studentOrTeacher->cohorts->attach($cohorIds);
+        
+        $storage = $this->app->storage;
+        $oauthUser = $storage->setUserWithoutHash($data['email'], $data['password'], null, null);
+        if(empty($oauthUser)){
+            $user->delete();
+            throw new Exception('Unable to create UserCredentials');
+        }
+
+        return $this->success($response,$user);
+    }    
+    
     public function createCredentialsHandler(Request $request, Response $response) {
         $data = $request->getParsedBody();
         if(empty($data)) throw new Exception('There was an error retrieving the request content, it needs to be a valid JSON');
@@ -67,18 +102,29 @@ class UserHandler extends MainHandler{
     }  
     
     private function generateStudentOrTeacher($user){
+        //echo $user->type; die();
         switch($user->type)
         {
             case "teacher" || "admin":
-                if(!$user->teacher())
+                $teacher = $user->teacher()->first();
+                if(!$teacher)
                 {
                     $teacher = new Teacher();
                     $user->teacher()->save($teacher);
+                    return $teacher;
                 }
             break;
             case "student":
+                $student = $user->student()->first();
+                if(!$student)
+                {
+                    $student = new Student();
+                    $user->student()->save($student);
+                    return $student;
+                }
             break;
         }
     }
+    
     
 }

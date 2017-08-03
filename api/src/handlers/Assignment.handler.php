@@ -99,6 +99,12 @@ class AssignmentHandler extends MainHandler{
 
         if(!in_array($data['status'],['not-delivered', 'delivered', 'reviewed'])) throw new Exception("Invalid status ".$data['status'].", the only valid status are 'not-delivered', 'delivered' and 'reviewed'");
 
+        if($data['status'] == 'delivered') 
+        {
+            if(!$data['github_url']) throw new Exception('You need to specify a github URL to deliver an assignment');
+            $assignment->github_url = $data['github_url'];
+        }
+        
         $assignment->status = $data['status'];
         $assignment->save();
         

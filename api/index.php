@@ -80,6 +80,7 @@ $app->post('/location/', array($locationHandler, 'createLocationHandler'))->add(
 $app->post('/location/{location_id}', array($locationHandler, 'updateLocationHandler'))->add($authorization->withRequiredScope(['admin']));
 $app->delete('/location/{location_id}', array($locationHandler, 'deleteLocationHandler'))->add($authorization->withRequiredScope(['admin']));
 
+$app->post('/location/sync/', array($locationHandler, 'syncLocationHandler'))->add($authorization->withRequiredScope(['admin']));
  
 
 
@@ -89,6 +90,7 @@ $app->delete('/location/{location_id}', array($locationHandler, 'deleteLocationH
 $cohortHandler = new CohortHandler($app);
 $app->get('/cohorts/', array($cohortHandler, 'getAllHandler'))->add($authorization->withRequiredScope(['admin']));
 $app->get('/cohorts/location/{location_id}', array($cohortHandler, 'getAllCohortsFromLocationHandler'))->add($authorization->withRequiredScope(['admin']));
+$app->get('/cohorts/teacher/{teacher_id}', array($cohortHandler, 'getAllCohortsFromTeacherHandler'))->add($authorization->withRequiredScope(['admin']));
 $app->get('/cohort/{cohort_id}', array($cohortHandler, 'getSingleHandler'))->add($authorization->withRequiredScope(['admin']));
 
 $app->post('/student/cohort/{cohort_id}', array($cohortHandler, 'addStudentToCohortHandler'))->add($authorization->withRequiredScope(['admin']));
@@ -100,6 +102,7 @@ $app->delete('/cohort/{cohort_id}', array($cohortHandler, 'deleteCohortHandler')
 $app->post('/teacher/cohort/{cohort_id}', array($cohortHandler, 'addTeacherToCohortHandler'))->add($authorization->withRequiredScope(['admin']));
 $app->delete('/teacher/cohort/{cohort_id}', array($cohortHandler, 'deleteTeacherFromCohortHandler'))->add($authorization->withRequiredScope(['admin']));
 
+$app->post('/cohort/sync/', array($cohortHandler, 'syncCohortHandler'))->add($authorization->withRequiredScope(['admin']));
 /**
  * Everything Related to the student itself
  **/

@@ -133,6 +133,7 @@ if(!$schema->hasTable('assignments')){
         $table->date('duedate');
         $table->unsignedBigInteger('atemplate_id');
         $table->string('status', 40);
+        $table->string('github_url', 255)->nullable();
         $table->timestamps();
     
         $table->foreign('student_user_id')->references('user_id')->on('students')->onDelete('cascade');
@@ -294,3 +295,4 @@ if(!$schema->hasTable('profile_specialty')){
 }
 
 $schema->enableForeignKeyConstraints();
+echo "All done!! \n";
