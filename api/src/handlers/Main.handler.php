@@ -58,4 +58,50 @@ class MainHandler{
         
         return $this->success($response,$single);
     }
+    
+    public function syncMainData(Request $request, Response $response) {
+        
+        $log = [];
+        
+        $fullstack = Profile::where('slug', "full-stack-web")->first();
+        if(!$fullstack){
+            $fullstack = new Profile();
+            $fullstack->name = "Full-Stack Web Developer";
+            $fullstack->slug = "full-stack-web";
+            $fullstack->description = "Manages front-end and back-end side of the web";
+            $fullstack->save();
+            
+            $log[] = "The profile full-stack-web was created to train Full Stack Web Developers";
+            
+        }else $log[] = "The profile full-stack-web was already created.";
+        
+        $this->_createOauthClients();
+        $log[] = "nbernal and ogarcia clients created.";
+        
+        return $this->success($response,$log);
+    }
+    
+    private function _createOauthClients(){
+        $oscar = $this->app->db->table('oauth_clients')->where([
+            'oauth_clients.client_id' => 'ogarcia'
+        ])->select('oauth_clients.client_id');
+        
+        if(count($oscar)==0) $this->app->db->table('oauth_clients')->insert(array(
+        		'client_id' => "ogarcia",
+        		'client_secret' => "8ca0854a441cc4c201f925d6bfb36dafa48829c4",
+        		'redirect_uri' => "http://fake/",
+        		'scope' => "admin",
+        	));
+        	
+        $nilson = $this->app->db->table('oauth_clients')->where([
+            'oauth_clients.client_id' => 'nbernal'
+        ])->select('oauth_clients.client_id');
+        	
+        if(count($nilson)==0) $this->app->db->table('oauth_clients')->insert(array(
+        		'client_id' => "nbernal",
+        		'client_secret' => "8ca0854a441cc4c201f925d6bfb36dafa48829c5",
+        		'redirect_uri' => "http://fake/",
+        		'scope' => "admin",
+        	));
+    }
 }

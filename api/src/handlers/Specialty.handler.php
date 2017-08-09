@@ -10,7 +10,10 @@ class SpecialtyHandler extends MainHandler{
     public function getStudentSpecialtiesHandler(Request $request, Response $response) {
         $studentId = $request->getAttribute('student_id');
 
-        $specialties = Student::find($studentId)->specialties()->get();
+        $student = Student::find($studentId);
+        if(!$student) throw new Exception('Student not found');
+        
+        $specialties = $student->specialties()->get();
         if(!$specialties) throw new Exception('Invalid student id');
         
         return $this->success($response,$specialties);
@@ -19,8 +22,13 @@ class SpecialtyHandler extends MainHandler{
     public function getProfileSpecialtiesHandler(Request $request, Response $response) {
         $profileId = $request->getAttribute('profile_id');
 
-        $specialties = Profile::find($profileId)->specialties()->get();
-        if(!$specialties) throw new Exception('Invalid profile id');
+        $profile = null;
+        if(is_numeric($profileId)) $profile = Profile::find($profileId);
+        else $profile = Profile::where('slug', $profileId)->first();
+        if(!$profile) throw new Exception('Invalid profile id: '.$profileId);
+        
+        $specialties = $profile->specialties()->get();
+        //if(!$specialties) throw new Exception('Invalid profile id');
         
         return $this->success($response,$specialties);
     }
@@ -114,9 +122,12 @@ class SpecialtyHandler extends MainHandler{
         $specialty = Specialty::find($specialtyId);
         if(!$specialty) throw new Exception('Invalid specialty id: '.$specialtyId);
         
-        $attributes = $badge->getAttributes();
+        $badges = $specialty->badges()->get();
+        if(count($badges)>0) throw new Exception('Remove all specialty badges first');
+        
+        $attributes = $specialty->getAttributes();
         $now = time(); // or your date as well
-        $daysOld = floor(($now - strtotime($attributes['created_at'])) / (60 * 60 * 24));
+        $daysOld = floor(($now - strtotime($attributes['created_at'])) / DELETE_MAX_DAYS);
         if($daysOld>5) throw new Exception('The specialty is too old to delete');
         $specialty->delete();
         

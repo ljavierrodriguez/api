@@ -34,4 +34,13 @@ class ExtendedPDO extends \OAuth2\Storage\Pdo{
         $hasher = new PasswordHash(8, true);
         return $hasher->HashPassword( trim( $password ) );
     }
+    
+    // plaintext passwords are bad!  Override this for your application
+    protected function checkPassword($user, $password)
+    {
+        $hasher = new PasswordHash(8, true);
+        $result = $hasher->CheckPassword($password,$user['password']);
+
+        return $result;
+    }
 }

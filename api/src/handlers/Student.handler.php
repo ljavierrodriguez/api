@@ -2,6 +2,7 @@
 
 use Slim\Http\Request as Request;
 use Slim\Http\Response as Response;
+use Carbon\Carbon;
 
 class StudentHandler extends MainHandler{
     
@@ -25,6 +26,29 @@ class StudentHandler extends MainHandler{
         return $this->success($response,$activities);
     }
     
+    public function getStudentBriefing(Request $request, Response $response) {
+        $studentId = $request->getAttribute('student_id');
+        
+        $student = Student::find($studentId);
+        if(!$student) throw new Exception('Invalid student id: '.$studentId);
+        
+        $acumulatedPoints = $this->app->db->table('activities')->where([
+            'activities.student_user_id' => $studentId
+        ])->sum('activities.points_earned');
+        $result['acumulated_points'] = $acumulatedPoints;
+        
+        $creation = $student->created_at;
+        $result['creation_date'] = $creation->format('Y-m-d');
+
+        $count = $this->_daysBetween($creation);
+        $result['days'] = $count;
+        
+        $profile = Profile::find(1);
+        $result['profile'] = $profile;
+        
+        return $this->success($response,$result);
+    }
+    
     public function createStudentHandler(Request $request, Response $response) {
         $data = $request->getParsedBody();
         if(empty($data)) throw new Exception('There was an error retrieving the request content, it needs to be a valid JSON');
@@ -32,18 +56,31 @@ class StudentHandler extends MainHandler{
         $cohort = Cohort::where('slug', $data['cohort_slug'])->first();
         if(!$cohort) throw new Exception('Invalid cohort slug');
         
-        $user = new User;
-        $user->username = $data['email'];
-        $user->save();
+        $user = User::where('username', $data['email'])->first();
+        if($user && $user->student) throw new Exception('There is already a student with this email on te API');
+        else if(!$user)
+        {
+            $user = new User;
+            $user->username = $data['email'];
+            $user->type = 'student';
+            $user->full_name = $data['full_name'];
+            $user = $this->setOptional($user,$data,'wp_id');
+            $user->save();
+        }
 
-        $student = new Student();
-        $student->full_name = $data['full_name'];
-        $student = $this->setOptional($student,$data,'avatar_url');
-        $student = $this->setOptional($student,$data,'total_points');
-        $student = $this->setOptional($student,$data,'description');
-        $student->cohorts()->associate($cohort);
-        $user->student()->save($student);
-        
+        if($user)
+        {
+            $user = $this->setOptional($user,$data,'full_name');
+            $user = $this->setOptional($user,$data,'avatar_url');
+            $user = $this->setOptional($user,$data,'bio');
+            $user->save();
+            
+            $student = new Student();
+            $student = $this->setOptional($student,$data,'total_points');
+            $user->student()->save($student);
+            $student->cohorts()->save($cohort);
+            
+        }
         
         return $this->success($response,$student);
     }
@@ -57,10 +94,12 @@ class StudentHandler extends MainHandler{
 
         if($data['email']) throw new Exception('Students emails cannot be updated through this service');
         
-        $student = $this->setOptional($student,$data,'full_name');
-        $student = $this->setOptional($student,$data,'avatar_url');
+        $user = $student->user;
+        $user = $this->setOptional($user,$data,'full_name');
+        $user = $this->setOptional($user,$data,'avatar_url');
+        $user = $this->setOptional($user,$data,'description');
+        $user->save();
         $student = $this->setOptional($student,$data,'total_points');
-        $student = $this->setOptional($student,$data,'description');
         $student->save();
         
         return $this->success($response,$student);
@@ -83,7 +122,6 @@ class StudentHandler extends MainHandler{
         $activity->name = $data['name'];
         $activity->description = $data['description'];
         $activity->points_earned = $data['points_earned'];
-        $activity->type = $data['type'];
         $activity->student()->associate($student);
         $activity->badge()->associate($badge);
         $activity->save();
@@ -101,7 +139,7 @@ class StudentHandler extends MainHandler{
         
         $attributes = $activity->getAttributes();
         $now = time(); // or your date as well
-        $daysOld = floor(($now - strtotime($attributes['created_at'])) / (60 * 60 * 24));
+        $daysOld = floor(($now - strtotime($attributes['created_at'])) / DELETE_MAX_DAYS);
         if($daysOld>5) throw new Exception('The activity is to old to delete');
         
         $student = $activity->student()->first();
@@ -119,7 +157,7 @@ class StudentHandler extends MainHandler{
         
         $attributes = $student->getAttributes();
         $now = time(); // or your date as well
-        $daysOld = floor(($now - strtotime($attributes['created_at'])) / (60 * 60 * 24));
+        $daysOld = floor(($now - strtotime($attributes['created_at'])) / DELETE_MAX_DAYS);
         if($daysOld>5) throw new Exception('The student is to old to delete');
         
         $student->activities()->delete();
@@ -127,6 +165,12 @@ class StudentHandler extends MainHandler{
         $student->delete();
         
         return $this->success($response,"ok");
+    }
+    
+    private function _daysBetween($date1, $date2=null){
+        
+        if(!$date2) $date2 = Carbon::now('America/Vancouver');
+        return $date1->diffInDays($date2);
     }
     
 }

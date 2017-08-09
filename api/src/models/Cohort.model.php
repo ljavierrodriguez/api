@@ -3,10 +3,13 @@
 class Cohort extends \Illuminate\Database\Eloquent\Model 
 {
     protected $hidden = ['pivot'];
-    protected $appends = ['location_slug'];
+    protected $appends = ['location_slug','teachers'];
     
-    public function getLocationSlugAttribute()
-    {
+    public function getTeachersAttribute(){
+        return $this->teachers()->get()->pluck('id');
+    }
+    
+    public function getLocationSlugAttribute(){
         if($location = $this->location()->first()) return $location->slug;
         else return null;
     }
@@ -22,7 +25,8 @@ class Cohort extends \Illuminate\Database\Eloquent\Model
     
     public function teachers()
     {
-        return $this->hasMany('Teacher','user_id');
+        $teachers = $this->belongsToMany('Teacher','cohort_teacher','cohort_id','teacher_user_id')->withTimestamps();
+        return $teachers;
     }
     
     

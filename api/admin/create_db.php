@@ -49,6 +49,9 @@ if(!$schema->hasTable('users')){
         $table->engine = 'InnoDB';
         $table->bigIncrements('id');
         $table->integer('wp_id')->unique()->nullable();
+        $table->string('avatar_url', 255);
+        $table->string('bio', 255);
+        $table->string('full_name', 200);
         $table->string('type', 20);
         $table->string('username', 200)->unique();
         $table->timestamps();
@@ -63,11 +66,10 @@ if(!$schema->hasTable('students')){
     $schema->create('students', function($table) {
         $table->engine = 'InnoDB';
         $table->unsignedBigInteger('user_id');
-        $table->string('avatar_url', 255);
         $table->string('full_name', 200);
         $table->integer('total_points')->nullable()->default(0);
-        $table->text('description');
         $table->timestamps();
+        $table->enum('financial_status', ['paid', 'ontime', 'late', 'default']);
         $table->primary('user_id');
         $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
     });
@@ -97,7 +99,6 @@ if(!$schema->hasTable('teachers')){
     $schema->create('teachers', function($table) { 
             $table->engine = 'InnoDB';
             $table->unsignedBigInteger('user_id');
-            $table->string('full_name', 200);
             $table->timestamps();
         
             $table->primary('user_id');
@@ -111,8 +112,10 @@ if(!$schema->hasTable('atemplates')){
     $schema->create('atemplates', function($table) { 
         $table->engine = 'InnoDB';
         $table->bigIncrements('id');
-        $table->string('project_slug', 200);
+        $table->string('project_slug', 200)->unique();
+        $table->integer('wp_id')->unique()->nullable();
         $table->string('title', 200);
+        $table->string('excerpt', 200)->nullable();
         $table->string('duration', 200);//in hours
         $table->string('technologies', 200);
         $table->timestamps();
@@ -128,8 +131,10 @@ if(!$schema->hasTable('assignments')){
         $table->bigIncrements('id');
         $table->unsignedBigInteger('student_user_id');
         $table->unsignedBigInteger('teacher_user_id');
+        $table->date('duedate');
         $table->unsignedBigInteger('atemplate_id');
-        $table->enum('status', ['not-delivered', 'delivered', 'reviewed']);
+        $table->string('status', 40);
+        $table->string('github_url', 255)->nullable();
         $table->timestamps();
     
         $table->foreign('student_user_id')->references('user_id')->on('students')->onDelete('cascade');
@@ -143,12 +148,12 @@ $schema->dropIfExists('cohort_teacher');
 if(!$schema->hasTable('cohort_teacher')){
     $schema->create('cohort_teacher', function($table) { 
         $table->engine = 'InnoDB';
-        $table->unsignedBigInteger('teacher_id');//->primary();
+        $table->unsignedBigInteger('teacher_user_id');//->primary();
         $table->unsignedBigInteger('cohort_id');//->primary();
         $table->boolean('is_instructor')->default(false);//->primary();
         $table->timestamps();
     
-        $table->foreign('teacher_id')->references('user_id')->on('teachers')->onDelete('cascade');
+        $table->foreign('teacher_user_id')->references('user_id')->on('teachers')->onDelete('cascade');
         $table->foreign('cohort_id')->references('id')->on('cohorts')->onDelete('cascade');
     });
 }
@@ -291,3 +296,4 @@ if(!$schema->hasTable('profile_specialty')){
 }
 
 $schema->enableForeignKeyConstraints();
+echo "All done!! \n";
