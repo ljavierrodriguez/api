@@ -25,7 +25,8 @@ class TeacherHandler extends MainHandler{
         
         $user = User::where('username', $data['email'])->first();
         if($user && $user->teacher) throw new Exception('There is already a user with this email on te API');
-        else if(!$user)
+        $created = false;
+        if(!$user)
         {
             $user = new User;
             $user->username = $data['email'];
@@ -33,16 +34,21 @@ class TeacherHandler extends MainHandler{
             $user->full_name = $data['full_name'];
             $user = $this->setOptional($user,$data,'wp_id');
             $user->save();
+            $created = true;
         }
-
+        
         if($user)
         {
-            $user = $this->setOptional($user,$data,'full_name');
-            $user = $this->setOptional($user,$data,'avatar_url');
-            $user = $this->setOptional($user,$data,'bio');
-            $user->save();
+            if(!$created)
+            {
+                $user = $this->setOptional($user,$data,'full_name');
+                $user = $this->setOptional($user,$data,'avatar_url');
+                $user = $this->setOptional($user,$data,'bio');
+                $user->save();
+            }
             
-            if(!$user->teacher())
+            $teacher = $user->teacher()->get()->first();
+            if(!$teacher)
             {
                 $teacher = new Teacher();
                 $user->teacher()->save($teacher);

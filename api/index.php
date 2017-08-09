@@ -25,7 +25,7 @@ $storage = new ExtendedPDO(array('dsn' => 'mysql:host=localhost;dbname='.DATABAS
 $app->storage = $storage;
 
 $server = new OAuth2\Server($storage,array(
-    'access_lifetime' => 86400
+    'access_lifetime' => 186400
 ));
 
 //Enable Authorization Code credentials to allow request from authorization code.
@@ -58,11 +58,37 @@ $app->map(['GET', 'POST'], Routes\ReceiveCode::ROUTE, new Routes\ReceiveCode($re
 //Creating the Middleware to intercept all request and ask for authorization before continuing
 $authorization = new Middleware\Authorization($server, $app->getContainer());
 
+
+/**
+ * Static Data that will not be managed
+ **/
+$catalogHandler = new CatalogHandler($app);
+$app->get('/technologies/', array($catalogHandler, 'getAllTechnologies'));
+$app->get('/countries/', array($catalogHandler, 'getAllCountries'));
+
+
+
+
+
+
 /**
  * Main basic stuff
  **/
 $mainHandler = new MainHandler($app);
 $app->post('/sync/', array($mainHandler, 'syncMainData'))->add($authorization->withRequiredScope(['admin']));
+
+
+
+
+
+
+/**
+ * Every course is meant to trian students in one specific profile, for example: Full Stack Web Developer
+ **/
+$profileHandler = new ProfileHandler($app);
+$app->get('/profiles/', array($profileHandler, 'getAllHandler'))->add($authorization->withRequiredScope(['admin']));
+$app->get('/profile/{profile_id}', array($profileHandler, 'getSingleHandler'))->add($authorization->withRequiredScope(['admin']));
+
 
 /**
  * Everything Related to the user
@@ -138,6 +164,7 @@ $app->post('/student/', array($studentHandler, 'createStudentHandler'))->add($au
 $app->post('/student/{student_id}', array($studentHandler, 'updateStudentHandler'))->add($authorization->withRequiredScope(['admin']));
 $app->delete('/student/{student_id}', array($studentHandler, 'deleteStudentHandler'))->add($authorization->withRequiredScope(['admin']));
 
+$app->get('/briefing/student/{student_id}', array($studentHandler, 'getStudentBriefing'))->add($authorization->withRequiredScope(['admin']));
 
 
 
@@ -155,6 +182,12 @@ $app->post('/atemplate/', array($atemplateHandler, 'createHandler'))->add($autho
 $app->post('/atemplate/{atemplate_id}', array($atemplateHandler, 'updateHandler'))->add($authorization->withRequiredScope(['admin']));
 $app->delete('/atemplate/{atemplate_id}', array($atemplateHandler, 'deleteHandler'))->add($authorization->withRequiredScope(['admin']));
 
+
+
+
+
+
+
 $assignmentHandler = new AssignmentHandler($app);
 $app->get('/student/assignments/', array($assignmentHandler, 'getAllHandler'))->add($authorization->withRequiredScope(['admin']));
 $app->get('/student/assignment/{assignment_id}', array($assignmentHandler, 'getSingleHandler'))->add($authorization->withRequiredScope(['admin']));
@@ -166,8 +199,7 @@ $app->post('/student/assignment/{assignment_id}', array($assignmentHandler, 'upd
 $app->post('/assignment/cohort/{cohort_id}', array($assignmentHandler, 'createCohortAssignmentHandler'))->add($authorization->withRequiredScope(['admin']));
 $app->delete('/student/assignment/{assignment_id}', array($assignmentHandler, 'deleteAssignmentHandler'))->add($authorization->withRequiredScope(['admin']));
 
-
-
+$app->post('/assignment/sync/', array($assignmentHandler, 'syncFromWPHandler'))->add($authorization->withRequiredScope(['admin']));
 
 
 

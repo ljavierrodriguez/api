@@ -69,6 +69,7 @@ if(!$schema->hasTable('students')){
         $table->string('full_name', 200);
         $table->integer('total_points')->nullable()->default(0);
         $table->timestamps();
+        $table->enum('financial_status', ['paid', 'ontime', 'late', 'default']);
         $table->primary('user_id');
         $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
     });

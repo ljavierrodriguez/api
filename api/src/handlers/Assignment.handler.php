@@ -54,7 +54,41 @@ class AssignmentHandler extends MainHandler{
         $teacher = Teacher::find($data['teacher_id']);
         if(!$teacher) throw new Exception('Invalid teacher id');
         
+        $assignments = $this->app->db->table('assignments')
+        ->where([
+            'assignments.student_user_id' => $student->user_id,
+            'assignments.atemplate_id' => $template->id
+        ])->select('assignments.id')->get();
+        if(count($assignments)>0) throw new Exception('There is already an assignment for this student on template: '.$template->id);
+        
         $this->_createStudentAssignment($student,$template,$teacher,$data['duedate']);
+        
+        return $this->success($response,$assignment);
+    }
+    
+    public function syncFromWPHandler(Request $request, Response $response){
+        $data = $request->getParsedBody();
+        if(empty($data)) throw new Exception('There was an error retrieving the request content, it needs to be a valid JSON');
+        
+        $template = Atemplate::where('project_slug', $data['template_slug'])->first();
+        if(!$template) throw new Exception('Invalid template slug: '.$data['template_slug']);
+        
+        $student = Student::find($data['student_id']);
+        if(!$student) throw new Exception('Invalid student id: '.$data['student_id']);
+        
+        $teacher = Teacher::find($data['teacher_id']);
+        if(!$teacher) throw new Exception('Invalid teacher id: '.$data['teacher_id']);
+        
+       //print_r($data); die();
+        
+        $assignments = $this->app->db->table('assignments')
+        ->where([
+            'assignments.student_user_id' => $student->user_id,
+            'assignments.atemplate_id' => $template->id
+        ])->select('assignments.id')->get();
+        if(count($assignments)>0) return $this->success($response,$assignments[0]);
+        
+        $assignment = $this->_createStudentAssignment($student,$template,$teacher,$data['duedate'], $data['status']);
         
         return $this->success($response,$assignment);
     }
@@ -104,9 +138,37 @@ class AssignmentHandler extends MainHandler{
             if(!$data['github_url']) throw new Exception('You need to specify a github URL to deliver an assignment');
             $assignment->github_url = $data['github_url'];
         }
+
+        $savedBadges = [];
+        $student = $assignment->student()->get()->first();
+        if($data['status'] == 'reviewed') 
+        {
+            if(!$data['badges']) throw new Exception('You need to specify what badges have been earned by the student');
+            
+            try{
+                foreach($data['badges'] as $slug => $points){
+                    $stuff = ['name'=> $assignment->template->title, 'points'=>$points];
+                    $savedBadges[] = $this->_updateStudentActivity($slug,$student, $stuff);
+                }
+            }
+            catch(Exception $e)
+            {
+                $this->_deleteBadges($savedBadges, $student);
+                throw $e;
+            }
+            
+            $student->updateBasedOnActivity();
+        }
         
-        $assignment->status = $data['status'];
-        $assignment->save();
+        
+        try{
+            $assignment->status = $data['status'];
+            $assignment->save();
+        }
+        catch(Exception $e){
+            if($data['status'] == 'reviewed') $this->_deleteBadges($savedBadges, $student);
+            throw $e;
+        }
         
         return $this->success($response,$assignment);
     }
@@ -122,22 +184,39 @@ class AssignmentHandler extends MainHandler{
         return $this->success($response,"The assignment was successfully deleted.");
     }
     
-    private function _createStudentAssignment($student,$template,$teacher,$duedate){
-        $assignments = $this->app->db->table('assignments')
-        ->where([
-            'assignments.student_user_id' => $student->user_id,
-            'assignments.atemplate_id' => $template->id
-        ])->select('assignments.id')->get();
-        if(count($assignments)>0) throw new Exception('There is already an assignment for this student on template: '.$template->id);
-        
+    private function _createStudentAssignment($student,$template,$teacher,$duedate,$status='not-delivered'){
+
         $assignment = new Assignment();
-        $assignment->status = 'not-delivered';
+        $assignment->status = $status;
         $assignment->duedate = $duedate;
         $assignment->student()->associate($student->user_id);
-        $assignment->teacher()->associate($teacher->teacher_user_id);
+        $assignment->teacher()->associate($teacher->user_id);
         $assignment->template()->associate($template->id);
         $assignment->save();
         
         return $assignment;
     }
+    
+    private function _updateStudentActivity($badgeSlug, $student, $data){
+        
+        $badge = Badge::where('slug', $badgeSlug)->first();
+        if(!$badge) throw new Exception('Invalid badge slug: '.$badgeSlug);
+        
+        $activity = new Activity();
+        $activity->type = 'project';
+        $activity->name = $data['name'];
+        $activity->description = 'Assignment '.$data['name'].' was finished successfully!';
+        $activity->points_earned = $data['points'];
+        $activity->student()->associate($student);
+        $activity->badge()->associate($badge);
+        $activity->save();
+        
+        return $activity;
+    }
+    
+    private function _deleteBadges($savedBadges, $student){
+        foreach($savedBadges as $badge) $badge->delete();
+        if(count($savedBadges)>0) $student->updateBasedOnActivity();
+    }
+    
 }

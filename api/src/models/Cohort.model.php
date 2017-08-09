@@ -3,10 +3,13 @@
 class Cohort extends \Illuminate\Database\Eloquent\Model 
 {
     protected $hidden = ['pivot'];
-    protected $appends = ['location_slug'];
+    protected $appends = ['location_slug','teachers'];
     
-    public function getLocationSlugAttribute()
-    {
+    public function getTeachersAttribute(){
+        return $this->teachers()->get()->pluck('id');
+    }
+    
+    public function getLocationSlugAttribute(){
         if($location = $this->location()->first()) return $location->slug;
         else return null;
     }

@@ -2,6 +2,7 @@
 
 use Slim\Http\Request as Request;
 use Slim\Http\Response as Response;
+use Carbon\Carbon;
 
 class StudentHandler extends MainHandler{
     
@@ -23,6 +24,29 @@ class StudentHandler extends MainHandler{
         if(!$activities) throw new Exception('Invalid student id:'.$studentId);
         
         return $this->success($response,$activities);
+    }
+    
+    public function getStudentBriefing(Request $request, Response $response) {
+        $studentId = $request->getAttribute('student_id');
+        
+        $student = Student::find($studentId);
+        if(!$student) throw new Exception('Invalid student id: '.$studentId);
+        
+        $acumulatedPoints = $this->app->db->table('activities')->where([
+            'activities.student_user_id' => $studentId
+        ])->sum('activities.points_earned');
+        $result['acumulated_points'] = $acumulatedPoints;
+        
+        $creation = $student->created_at;
+        $result['creation_date'] = $creation->format('Y-m-d');
+
+        $count = $this->_daysBetween($creation);
+        $result['days'] = $count;
+        
+        $profile = Profile::find(1);
+        $result['profile'] = $profile;
+        
+        return $this->success($response,$result);
     }
     
     public function createStudentHandler(Request $request, Response $response) {
@@ -98,7 +122,6 @@ class StudentHandler extends MainHandler{
         $activity->name = $data['name'];
         $activity->description = $data['description'];
         $activity->points_earned = $data['points_earned'];
-        $activity->type = $data['type'];
         $activity->student()->associate($student);
         $activity->badge()->associate($badge);
         $activity->save();
@@ -142,6 +165,12 @@ class StudentHandler extends MainHandler{
         $student->delete();
         
         return $this->success($response,"ok");
+    }
+    
+    private function _daysBetween($date1, $date2=null){
+        
+        if(!$date2) $date2 = Carbon::now('America/Vancouver');
+        return $date1->diffInDays($date2);
     }
     
 }

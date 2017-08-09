@@ -5,7 +5,7 @@ class Teacher extends \Illuminate\Database\Eloquent\Model
     public $incrementing = false;
     protected $primaryKey = 'user_id';
     protected $hidden = ['user_id','user','updated_at'];
-    protected $appends = ['url','id','wp_id','cohorts','full_name','avatar_url','bio'];
+    protected $appends = ['url','id','wp_id','cohorts','full_name','avatar_url','bio','username'];
     
     public function getAvatarURLAttribute(){
         if($this->user) return $this->user->avatar_url;
@@ -14,6 +14,11 @@ class Teacher extends \Illuminate\Database\Eloquent\Model
         
     public function getBioAttribute(){
         if($this->user) return $this->user->bio;
+        else null;
+    }
+    
+    public function getUsernameAttribute(){
+        if($this->user) return $this->user->username;
         else null;
     }
     
