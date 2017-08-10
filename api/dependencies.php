@@ -46,3 +46,16 @@ $resolver = new \Illuminate\Database\ConnectionResolver();
 $resolver->addConnection('default', $conn);
 $resolver->setDefaultConnection('default');
 \Illuminate\Database\Eloquent\Model::setConnectionResolver($resolver);
+
+define('GLOBAL_CONFIG',[
+    "scopes" => [
+        'sync_data',
+        'read_basic_info',//very basic info like locations
+        'read_talent_tree',
+        'student_assignments',
+        
+        'teacher_assignments',
+        'super_admin'//delete or update the most sensitive data
+    ]
+]);
+    
