@@ -34,32 +34,26 @@ SCHEMA;
 	}
 	
 	$app->db->table('oauth_clients')->insert(array(
-			'client_id' => "testclient",
-			'client_secret' => "testpass",
+			'client_id' => "alesanchezr",
+			'client_secret' => "714bfa43e7c312be999d0afea89148e7",
 			'redirect_uri' => "http://fake/",
-			'scope' => "admin",
+			'scope' => "sync_data read_basic_info read_talent_tree student_assignments teacher_assignments super_admin"
 		));
 		
 	$app->db->table('oauth_clients')->insert(array(
 			'client_id' => "ogarcia",
 			'client_secret' => "8ca0854a441cc4c201f925d6bfb36dafa48829c4",
 			'redirect_uri' => "http://fake/",
-			'scope' => "admin",
+			'scope' => "read_basic_info read_talent_tree student_assignments teacher_assignments super_admin"
 		));
 		
 	$app->db->table('oauth_clients')->insert(array(
 			'client_id' => "nbernal",
 			'client_secret' => "8ca0854a441cc4c201f925d6bfb36dafa48829c5",
 			'redirect_uri' => "http://fake/",
-			'scope' => "admin",
+			'scope' => "read_basic_info read_talent_tree student_assignments teacher_assignments super_admin"
 		));
 		
-	$app->db->table('oauth_users')->insert(array(
-			'username' => "john@4geeks.co",
-			'password' => sha1("1234"),
-			'first_name' => "Alejandro",
-			'last_name' => "Sanchez",
-		));
 }
 
 $schema->enableForeignKeyConstraints();
