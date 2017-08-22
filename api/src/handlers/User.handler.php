@@ -30,6 +30,7 @@ class UserHandler extends MainHandler{
         $data = $request->getParsedBody();
         if(empty($data)) throw new Exception('There was an error retrieving the request content, it needs to be a valid JSON');
 
+        if(!isset($data['email'])) throw new Exception('You have to specify the user email');
         if(!in_array($data['type'],['teacher','student'])) throw new Exception('The user type has to be a "teacher" or "student", "'.$data['type'].'" given');
     
         $cohortIds = [];
@@ -40,6 +41,7 @@ class UserHandler extends MainHandler{
             if(!$auxCohort) throw new Exception('The cohort '.$cohortSlug.' is invalid.');
             $cohortIds[] = $auxCohort->id;
         }
+        
     
         $user = User::where('username', $data['email'])->first();
         if(!$user) $user = new User;
@@ -58,11 +60,14 @@ class UserHandler extends MainHandler{
             $studentOrTeacher->cohorts()->attach($cohortIds);
         }
         
-        $storage = $this->app->storage;
-        $oauthUser = $storage->setUserWithoutHash($data['email'], $data['password'], null, null);
-        if(empty($oauthUser)){
-            $user->delete();
-            throw new Exception('Unable to create UserCredentials');
+        if(isset($data['password']))
+        {
+            $storage = $this->app->storage;
+            $oauthUser = $storage->setUserWithoutHash($data['email'], $data['password'], null, null);
+            if(empty($oauthUser)){
+                $user->delete();
+                throw new Exception('Unable to create UserCredentials');
+            }
         }
 
         return $this->success($response,$user);
