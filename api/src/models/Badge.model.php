@@ -10,6 +10,12 @@ class Badge extends \Illuminate\Database\Eloquent\Model
     {
         return '/badge/'.$this->id;
     }
+    
+    public function getImageUrlAttribute()
+    {
+        if(empty($this->image_url)) return "/public/img/badge/rand/chevron-".rand(1,21).".png";
+        else return $this->image_url;
+    }
     /**
      * The products that belong to the shop.
      */

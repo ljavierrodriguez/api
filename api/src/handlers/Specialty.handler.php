@@ -2,6 +2,7 @@
 
 use Slim\Http\Request as Request;
 use Slim\Http\Response as Response;
+use Helpers\BCValidator;
 
 class SpecialtyHandler extends MainHandler{
     
@@ -51,11 +52,10 @@ class SpecialtyHandler extends MainHandler{
             if($badge) $badges[] = $badge->id;
             else throw new Exception('Invalid badge: '.$bslug);
         }
-        $specialty->slug = $data['slug'];
-        $specialty->name = $data['name'];
-        $specialty->image_url = $data['image_url'];
-        $specialty->points_to_achieve = $data['points_to_achieve'];
-        $specialty->description = $data['description'];
+        $specialty = $this->setMandatory($specialty,$data,'slug',BCValidator::SLUG);
+        $specialty = $this->setMandatory($specialty,$data,'name',BCValidator::NAME);
+        $specialty = $this->setMandatory($specialty,$data,'points_to_achieve',BCValidator::POINTS);
+        $specialty = $this->setMandatory($specialty,$data,'description',BCValidator::DESCRIPTION);
         $specialty->save();
         
         try{
@@ -80,37 +80,35 @@ class SpecialtyHandler extends MainHandler{
         $profile = Profile::where('slug', $data['profile_slug'])->first();
         if(!$profile) throw new Exception('Invalid profile slug');
         
-        if($specialtyId){
-            $specialty = Specialty::find($specialtyId);
-            if(!$specialty) throw new Exception('Invalid specialty id: '.$specialtyId);
-            
-            $specialty = $this->setOptional($specialty,$data,'slug');
-            $specialty = $this->setOptional($specialty,$data,'name');
-            $specialty = $this->setOptional($specialty,$data,'image_url');
-            $specialty = $this->setOptional($specialty,$data,'points_to_achieve');
-            $specialty = $this->setOptional($specialty,$data,'description');
-        } 
-        else{
-            if(count($data['badges'])<2) throw new Exception('A specialty must be created with at least two badges');
-            
-            $specialty = new Specialty();
+        if(is_numeric($specialtyId)) $specialty = Specialty::find($specialtyId);
+        else $specialty = Specialty::where('slug', $specialtyId)->first();
+        if(!$specialty) throw new Exception('Invalid specialty slug or id: '.$specialtyId);
+        
+        if(is_numeric($specialtyId)) $specialty->slug = $data['slug'];
+        $specialty = $this->setOptional($specialty,$data,'slug',BCValidator::SLUG);
+        $specialty = $this->setOptional($specialty,$data,'name',BCValidator::NAME);
+        $specialty = $this->setOptional($specialty,$data,'points_to_achieve',BCValidator::POINTS);
+        $specialty = $this->setOptional($specialty,$data,'description',BCValidator::DESCRIPTION);
+
+        if(isset($data['badges']))
+        {
+            if(count($data['badges'])<2) throw new Exception('A specialty must have at least two badges');
             $badges = [];
             foreach($data['badges'] as $bslug)
             {
                 $badge = Badge::where('slug', $bslug)->first();
-                if($badge) $badges[] = $badge;
+                if($badge) $badges[] = $badge->id;
                 else throw new Exception('Invalid badge: '.$bslug);
             }
-            $specialty->slug = $data['slug'];
-            $specialty->name = $data['name'];
-            $specialty->image_url = $data['image_url'];
-            $specialty->points_to_achieve = $data['points_to_achieve'];
-            $specialty->description = $data['description'];
-            $specialty->save();
-            $specialty->profiles()->attach($profile);
+            
+            $currentBadges = $specialty->badges()->get();
+            $specialty->badges()->detach($currentBadges);
             $specialty->badges()->attach($badges);
         }
         
+        $currentProfiles = $specialty->profiles()->get();
+        $specialty->profiles()->detach($currentProfiles);
+        $specialty->profiles()->attach($profile);
         $specialty->save();
         
         return $this->success($response,$specialty);
