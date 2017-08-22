@@ -94,6 +94,24 @@ class UserHandler extends MainHandler{
         return $this->success($response,$user);
     }    
     
+    public function updateCredentialsHandler(Request $request, Response $response) {
+        $userId = $request->getAttribute('user_id');
+        if(empty($userId)) throw new Exception('There was an error retrieving the user_id');
+        
+        $data = $request->getParsedBody();
+        if(empty($data) || empty($data['password'])) throw new Exception('You need to specify a password');
+
+        $user = User::find($userId);
+        if(!$user) throw new Exception('Invalid user id: '.$userId);
+        
+        $storage = $this->app->storage;
+        $oauthUser = $storage->setUserWithoutHash($user->username, $data['password'], null, null);
+        
+        if(empty($oauthUser)) throw new Exception('Unable to update User credentials');
+
+        return $this->success($response,$user);
+    }    
+    
     public function deleteUser(Request $request, Response $response) {
         $userId = $request->getAttribute('user_id');
         if(empty($userId)) throw new Exception('There was an error retrieving the user_id');

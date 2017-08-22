@@ -131,9 +131,9 @@ class AssignmentHandler extends MainHandler{
         }
 
         $savedBadges = [];
-        $student = $assignment->student()->get()->first();
         if($data['status'] == 'reviewed') 
         {
+            $student = $assignment->student()->get()->first();
             if(!$data['badges']) throw new Exception('You need to specify what badges have been earned by the student');
             
             try{

@@ -12,6 +12,7 @@ use Slim\Http;
 use Slim\Views;
 use OAuth2\Storage;
 use OAuth2\GrantType;
+use Helpers\ExtendedPDO;
 
 require '../vendor/autoload.php';
 require 'dependencies.php';
@@ -43,7 +44,7 @@ $getUsernameMiddleware = function ($request, $response, $next) {
     {
         $user = User::where('username', $body['username'])->first();
         //print_r($body); die();
-        if(!$user) throw new Exception('There is now user corresponding to these credentials in the platform: '.$body['username']);
+        if(!$user) throw new Exception('There is no user corresponding to these credentials in the platform: '.$body['username']);
     }
     
     $response = $next($request, $response);//do the next middleware layer action
@@ -87,6 +88,7 @@ $app->get('/countries/', array($catalogHandler, 'getAllCountries'));
  **/
 $mainHandler = new MainHandler($app);
 $app->post('/sync/', array($mainHandler, 'syncMainData'))->add($authorization->withRequiredScope($v(['sync_data'])));
+$app->post('/badges/import/', array($mainHandler, 'importBadges'))->add($authorization->withRequiredScope($v(['sync_data'])));
 
 
 
@@ -107,6 +109,7 @@ $app->get('/profile/{profile_id}', array($profileHandler, 'getSingleHandler'))->
 $userHandler = new UserHandler($app);
 $app->get('/me', array($userHandler, 'getMe'))->add($authorization);
 $app->post('/credentials/user/', array($userHandler, 'createCredentialsHandler'))->add($authorization->withRequiredScope($v(['super_admin'])));
+$app->post('/credentials/user/{user_id}', array($userHandler, 'updateCredentialsHandler'))->add($authorization->withRequiredScope($v(['sync_data'])));
 $app->delete('/user/{user_id}', array($userHandler, 'deleteUser'))->add($authorization->withRequiredScope($v(['super_admin'])));
 
 $app->post('/user/sync', array($userHandler, 'syncUserHandler'))->add($authorization->withRequiredScope($v(['sync_data'])));
@@ -205,6 +208,7 @@ $app->get('/student/assignment/{assignment_id}', array($assignmentHandler, 'getS
 
 $app->get('/assignments/student/{student_id}', array($assignmentHandler, 'getAllStudentAssignmentsHandler'))->add($authorization->withRequiredScope($v(['student_assignments'])));
 $app->get('/assignments/teacher/{teacher_id}', array($assignmentHandler, 'getAllTeacherAssignmentsHandler'))->add($authorization->withRequiredScope($v(['teacher_assignments'])));
+$app->get('/assignments/cohort/{cohort_id}', array($assignmentHandler, 'getAllCohortAssignmentsHandler'))->add($authorization->withRequiredScope($v(['teacher_assignments'])));
 
 $app->post('/student/assignment/', array($assignmentHandler, 'createAssignmentHandler'))->add($authorization->withRequiredScope($v(['super_admin'])));
 $app->post('/student/assignment/{assignment_id}', array($assignmentHandler, 'updateAssignmentHandler'))->add($authorization->withRequiredScope($v(['student_assignments'])));

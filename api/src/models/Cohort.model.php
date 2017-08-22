@@ -29,5 +29,4 @@ class Cohort extends \Illuminate\Database\Eloquent\Model
         return $teachers;
     }
     
-    
 }

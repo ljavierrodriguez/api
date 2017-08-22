@@ -2,6 +2,7 @@
 
 use Slim\Http\Request as Request;
 use Slim\Http\Response as Response;
+use Helpers\BCValidator;
 
 class BadgeHandler extends MainHandler{
     
@@ -38,14 +39,16 @@ class BadgeHandler extends MainHandler{
         if(empty($data)) throw new Exception('There was an error retrieving the request content, it needs to be a valid JSON');
         
         if($badgeId){
-            $badge = Badge::find($badgeId);
-            if(!$badge) throw new Exception('Invalid badge id: '.$badgeId);
-            
-            $badge = $this->setOptional($badge,$data,'slug');
+            if(is_numeric($badgeId)) $badge = Badge::find($badgeId);
+            else $badge = Badge::where('slug', $badgeId)->first();
+            if(!$badge) throw new Exception('Invalid badge slug or id: '.$badgeId);
+        
+            $badge = $this->setOptional($badge,$data,'slug',BCValidator::SLUG);
             $badge = $this->setOptional($badge,$data,'name');
             $badge = $this->setOptional($badge,$data,'technologies');
             $badge = $this->setOptional($badge,$data,'description');
             $badge = $this->setOptional($badge,$data,'points_to_achieve');
+            
         } 
         else{
             
@@ -53,13 +56,14 @@ class BadgeHandler extends MainHandler{
             if(!$imageUrl) $imageUrl = PUBLIC_URL.'img/badge/rand/chevron-'.rand(1,21).'.png';
             
             $badge = new Badge();
-            $badge->slug = $data['slug'];
+            $badge = $this->setMandatory($badge,$data,'slug',BCValidator::SLUG);
             $badge->name = $data['name'];
             $badge->image_url = $imageUrl;
             $badge->points_to_achieve = $data['points_to_achieve'];
             $badge->description = $data['description'];
             $badge->technologies = $data['technologies'];
         }
+        
         $badge->save();
         
         return $this->success($response,$badge);
@@ -117,11 +121,12 @@ class BadgeHandler extends MainHandler{
         
         $badge = Badge::find($badgeId);
         if(!$badge) throw new Exception('Invalid badge id: '.$badgeId);
-        
+        /*
         $attributes = $badge->getAttributes();
         $now = time(); // or your date as well
         $daysOld = floor(($now - strtotime($attributes['created_at'])) / DELETE_MAX_DAYS);
         if($daysOld>5) throw new Exception('The badge is too old to delete');
+        */
         $badge->delete();
         
         return $this->success($response,"ok");

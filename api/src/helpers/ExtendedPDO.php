@@ -1,5 +1,8 @@
 <?php
 
+namespace Helpers;
+
+use \PasswordHash;
 
 class ExtendedPDO extends \OAuth2\Storage\Pdo{
     
