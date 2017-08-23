@@ -9,15 +9,14 @@ class BadgeHandler extends MainHandler{
     protected $slug = 'Badge';
     
     public function getSingleBadge(Request $request, Response $response) {
-        $id = $request->getAttribute('badge_id');
+        $badgeId = $request->getAttribute('badge_id');
         
-        $single = null;
-        if(is_numeric($id)) $single = Badge::find($id);
-        else $single = Badge::where('slug', $id)->first();
+        $badge = null;
+        if(is_numeric($badgeId)) $badge = Badge::find($badgeId);
+        else $badge = Badge::where('slug', $badgeId)->first();
+        if(!$badge) throw new Exception('Invalid badge slug or id: '.$badgeId);
         
-        if(!$single) throw new Exception('Invalid '.strtolower($this->slug).'_id');
-        
-        return $this->success($response,$single);
+        return $this->success($response,$badge);
     }
 
     public function getAllStudentBadgesHandler(Request $request, Response $response) {
