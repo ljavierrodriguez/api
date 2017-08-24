@@ -11,11 +11,15 @@ class AtemplateHandler extends MainHandler{
         $data = $request->getParsedBody();
         if(empty($data)) throw new Exception('There was an error retrieving the request content, it needs to be a valid JSON');
 
-        if($data['wp_id']) $at = Atemplate::where('wp_id', $data['wp_id'])->first();
-        if($at) throw new Exception('There is already a Project Template with this '.$data['wp_id']);
+        if(isset($data['wp_id'])){
+            $at = Atemplate::where('wp_id', $data['wp_id'])->first();
+            if($at) throw new Exception('There is already a Project Template with this '.$data['wp_id']);
+        } 
 
-        if($data['project_slug']) $at = Atemplate::where('project_slug', $data['project_slug'])->first();
-        if($at) throw new Exception('There is already a Project Template with project_slug '.$data['project_slug']);
+        if(isset($data['project_slug'])){
+            $at = Atemplate::where('project_slug', $data['project_slug'])->first();
+            if($at) throw new Exception('There is already a Project Template with project_slug '.$data['project_slug']);
+        } 
 
         $at = new Atemplate();
         $at->project_slug = $data['project_slug'];

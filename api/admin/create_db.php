@@ -212,7 +212,7 @@ if(!$schema->hasTable('activities')){
         $table->bigIncrements('id');
         $table->unsignedBigInteger('student_user_id');
         $table->unsignedBigInteger('badge_id');
-        $table->enum('type', ['project', 'quiz', 'challenge']);
+        $table->string('type', 60); //['project', 'quiz', 'challenge', 'teacher_reward']
         $table->string('name', 255);
         $table->text('description');
         $table->integer('points_earned');

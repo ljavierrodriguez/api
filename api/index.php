@@ -178,7 +178,7 @@ $app->post('/student/', array($studentHandler, 'createStudentHandler'))->add($au
 $app->post('/student/{student_id}', array($studentHandler, 'updateStudentHandler'))->add($authorization->withRequiredScope($v(['super_admin'])));
 $app->delete('/student/{student_id}', array($studentHandler, 'deleteStudentHandler'))->add($authorization->withRequiredScope($v(['super_admin'])));
 
-$app->get('/briefing/student/{student_id}', array($studentHandler, 'getStudentBriefing'))->add($authorization->withRequiredScope($v(['super_admin'])));
+$app->get('/briefing/student/{student_id}', array($studentHandler, 'getStudentBriefing'))->add($authorization->withRequiredScope($v(['read_basic_info'])));
 
 
 

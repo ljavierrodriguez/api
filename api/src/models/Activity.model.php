@@ -9,7 +9,7 @@ class Activity extends \Illuminate\Database\Eloquent\Model
      * @return bool
      */
     protected $appends = ['badge_slug','url'];
-    protected $hidden = [];
+    protected $hidden = ['badge'];
     
     public function getBadgeSlugAttribute()
     {
