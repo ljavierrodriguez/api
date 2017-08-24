@@ -3,6 +3,7 @@
 use Slim\Http\Request as Request;
 use Slim\Http\Response as Response;
 use Carbon\Carbon;
+use Helpers\BCValidator;
 
 class StudentHandler extends MainHandler{
     
@@ -20,7 +21,7 @@ class StudentHandler extends MainHandler{
     public function getStudentActivityHandler(Request $request, Response $response) {
         $studentId = $request->getAttribute('student_id');
         
-        $activities = Activity::where('student_user_id', $studentId)->get();
+        $activities = Activity::where('student_user_id', $studentId)->orderBy('created_at', 'desc')->get();
         if(!$activities) throw new Exception('Invalid student id:'.$studentId);
         
         return $this->success($response,$activities);
@@ -107,26 +108,32 @@ class StudentHandler extends MainHandler{
     
     public function createStudentActivityHandler(Request $request, Response $response) {
         $studentId = $request->getAttribute('student_id');
-        
         $data = $request->getParsedBody();
+
         if(empty($data)) throw new Exception('There was an error retrieving the request content, it needs to be a valid JSON');
         
         $badge = Badge::where('slug', $data['badge_slug'])->first();
-        if(!$badge) throw new Exception('Invalid badge slug');
+        if(!$badge) throw new Exception('Invalid badge slug: '.$data['badge_slug']);
         
         $student = Student::find($studentId);
-        if(!$student) throw new Exception('Invalid student id');
+        if(!$student) throw new Exception('Invalid student id: '.$studentId);
+        
+        if(!in_array($data['type'],['project', 'quiz', 'challenge', 'teacher_reward']))  throw new Exception('Invalid activity type: '.$data['type']);
         
         $activity = new Activity();
-        $activity->type = $data['type'];
-        $activity->name = $data['name'];
-        $activity->description = $data['description'];
-        $activity->points_earned = $data['points_earned'];
+        $activity = $this->setMandatory($activity,$data,'type');
+        $activity = $this->setMandatory($activity,$data,'name', BCValidator::DESCRIPTION);
+        $activity = $this->setMandatory($activity,$data,'description', BCValidator::DESCRIPTION);
+        $activity = $this->setMandatory($activity,$data,'points_earned', BCValidator::POINTS);
+
         $activity->student()->associate($student);
         $activity->badge()->associate($badge);
         $activity->save();
         
+        
         $student->updateBasedOnActivity();
+        
+        $student->makeHidden(["cohorts", "badges"]);
         
         return $this->success($response,$activity);
     }
