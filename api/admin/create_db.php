@@ -51,6 +51,7 @@ if(!$schema->hasTable('users')){
         $table->integer('wp_id')->unique()->nullable();
         $table->string('avatar_url', 255);
         $table->string('bio', 255);
+        $table->text('settings')->nullable();
         $table->string('full_name', 200);
         $table->string('type', 20);
         $table->string('username', 200)->unique();

@@ -117,6 +117,38 @@ class UserHandler extends MainHandler{
         return $this->success($response,$user);
     }    
     
+    public function updateUserSettings(Request $request, Response $response) {
+        $userId = $request->getAttribute('user_id');
+        $data = $request->getParsedBody();
+        
+        $user = User::find($userId);
+        if(!$user) throw new Exception('Invalid student id: '.$userId);
+
+        if(!$this->_validateSettings($data)) throw new Exception('Invalid user settings');
+        
+        $settings = $user->getUserSettings();
+        foreach($data as $key => $val) $settings[$key] = $val;
+        
+        unset($settings["client_id"]);
+        unset($settings["client_secret"]);
+        unset($settings["access_token"]);
+        $user->setUserSettings($settings);
+        $user->save();
+        
+        return $this->success($response,$settings);
+    }
+    
+    public function getUserSettings(Request $request, Response $response) {
+        $userId = $request->getAttribute('user_id');
+        
+        $user = User::find($userId);
+        if(!$user) throw new Exception('Invalid student id: '.$userId);
+
+        $settings = $user->getUserSettings();
+        
+        return $this->success($response,$settings);
+    }
+    
     public function deleteUser(Request $request, Response $response) {
         $userId = $request->getAttribute('user_id');
         if(empty($userId)) throw new Exception('There was an error retrieving the user_id');
@@ -152,6 +184,16 @@ class UserHandler extends MainHandler{
                 return $student;
             break;
         }
+    }
+    
+    private function _validateSettings($settings){
+        
+        return true;
+        
+        $settingsExample = [
+            "notification-new-badge" => true
+        ];
+        
     }
     
     
