@@ -7,6 +7,17 @@ class CohortHandler extends MainHandler{
     
     protected $slug = 'Cohort';
     
+    public function getSingleCohort(Request $request, Response $response) {
+        $cohortId = $request->getAttribute('cohort_id');
+        
+        $cohort = null;
+        if(is_numeric($cohortId)) $badge = Cohort::find($cohortId);
+        else $cohort = Cohort::where('slug', $cohortId)->first();
+        if(!$cohort) throw new Exception('Invalid badge slug or id: '.$cohortId);
+        
+        return $this->success($response,$cohort);
+    }
+    
     public function getAllCohortsFromLocationHandler(Request $request, Response $response) {
         $locationId = $request->getAttribute('location_id');
         

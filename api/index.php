@@ -113,6 +113,8 @@ $app->post('/credentials/user/{user_id}', array($userHandler, 'updateCredentials
 $app->delete('/user/{user_id}', array($userHandler, 'deleteUser'))->add($authorization->withRequiredScope($v(['super_admin'])));
 
 $app->post('/user/sync', array($userHandler, 'syncUserHandler'))->add($authorization->withRequiredScope($v(['sync_data'])));
+$app->post('/settings/user/{user_id}', array($userHandler, 'updateUserSettings'))->add($authorization->withRequiredScope($v(['user_profile'])));
+$app->get('/settings/user/{user_id}', array($userHandler, 'getUserSettings'))->add($authorization->withRequiredScope($v(['user_profile'])));
 
 
 /**
@@ -137,7 +139,7 @@ $cohortHandler = new CohortHandler($app);
 $app->get('/cohorts/', array($cohortHandler, 'getAllHandler'))->add($authorization->withRequiredScope($v(['read_basic_info'])));
 $app->get('/cohorts/location/{location_id}', array($cohortHandler, 'getAllCohortsFromLocationHandler'))->add($authorization->withRequiredScope($v(['read_basic_info'])));
 $app->get('/cohorts/teacher/{teacher_id}', array($cohortHandler, 'getAllCohortsFromTeacherHandler'))->add($authorization->withRequiredScope($v(['super_admin'])));
-$app->get('/cohort/{cohort_id}', array($cohortHandler, 'getSingleHandler'))->add($authorization->withRequiredScope($v(['read_basic_info'])));
+$app->get('/cohort/{cohort_id}', array($cohortHandler, 'getSingleCohort'))->add($authorization->withRequiredScope($v(['read_basic_info'])));
 $app->get('/students/cohort/{cohort_id}', array($cohortHandler, 'getCohortStudentsHandler'))->add($authorization->withRequiredScope($v(['super_admin'])));
 
 $app->post('/student/cohort/{cohort_id}', array($cohortHandler, 'addStudentToCohortHandler'))->add($authorization->withRequiredScope($v(['super_admin'])));

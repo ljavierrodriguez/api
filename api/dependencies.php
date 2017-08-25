@@ -51,6 +51,7 @@ define('GLOBAL_CONFIG',[
     "scopes" => [
         'sync_data',
         'read_basic_info',//very basic info like locations
+        'user_profile',
         'read_talent_tree',
         'student_assignments',
         

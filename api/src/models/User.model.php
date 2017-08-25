@@ -3,6 +3,7 @@
 class User extends \Illuminate\Database\Eloquent\Model 
 {
     protected $appends = ['avatar_url'];
+    protected $hidden = ['settings'];
 
     /**
      * Get either a Gravatar URL or complete image tag for a specified email address.
@@ -21,6 +22,12 @@ class User extends \Illuminate\Database\Eloquent\Model
         $url .= md5( strtolower( trim( $this->email ) ) );
         
         return $url;
+    }
+    public function setUserSettings($settings){
+        $this->settings = serialize($settings);
+    }
+    public function getUserSettings(){
+        return unserialize($this->settings);
     }
     public function student(){
         return $this->hasOne('Student');
