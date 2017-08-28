@@ -18,10 +18,46 @@ class StudentHandler extends MainHandler{
         return $this->success($response,$user->student);
     }
     
+    public function updateStudentStatus(Request $request, Response $response) {
+        $studentId = $request->getAttribute('student_id');
+        $data = $request->getParsedBody();
+        
+        $updated = false;
+        $student = Student::find($studentId);
+        if(!$student) throw new Exception('Invalid student id: '.$studentId);
+
+        if(!empty($data['status'])){
+            if(!in_array($data['status'], ['currently_active', 'under_review', 'blocked', 'studies_finished', 'student_dropped']))
+                throw new Exception('Invalid student status: '.$data['status']);
+                
+            $updated = true;
+            $student->status = $data['status'];
+        }
+        
+        if(!empty($data['financial_status'])){
+            if(!in_array($data['financial_status'], ['fully_paid', 'up_to_date', 'late', 'uknown']))
+                throw new Exception('Invalid student finantial status: '.$data['financial_status']);
+            
+            $updated = true;
+            $student->financial_status = $data['financial_status'];
+        }
+
+        if($updated) $student->save();
+        else throw new Exception('You have to specify either the financial_status or status.');
+        
+        return $this->success($response,$student);
+    }
+    
     public function getStudentActivityHandler(Request $request, Response $response) {
         $studentId = $request->getAttribute('student_id');
+        $data = $request->getParams();
         
-        $activities = Activity::where('student_user_id', $studentId)->orderBy('created_at', 'desc')->get();
+        $limit = 10; 
+        if(isset($data["limit"])) $limit = $data["limit"];
+        $skip = 0; 
+        if(isset($data["start"])) $skip = $data["start"];
+        
+        $activities = Activity::where('student_user_id', $studentId)->orderBy('created_at', 'desc')->skip($skip)->take($limit)->get();
         if(!$activities) throw new Exception('Invalid student id:'.$studentId);
         
         return $this->success($response,$activities);
@@ -133,7 +169,7 @@ class StudentHandler extends MainHandler{
         
         $student->updateBasedOnActivity();
         
-        $student->makeHidden(["cohorts", "badges"]);
+        $activity->makeHidden(["student"]);
         
         return $this->success($response,$activity);
     }

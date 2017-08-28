@@ -182,6 +182,7 @@ $app->delete('/student/{student_id}', array($studentHandler, 'deleteStudentHandl
 
 $app->get('/briefing/student/{student_id}', array($studentHandler, 'getStudentBriefing'))->add($authorization->withRequiredScope($v(['read_basic_info'])));
 
+$app->post('/student/status/{student_id}', array($studentHandler, 'updateStudentStatus'))->add($authorization->withRequiredScope($v(['super_admin'])));
 
 
 
