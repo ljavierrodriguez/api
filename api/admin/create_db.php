@@ -32,7 +32,7 @@ if(!$schema->hasTable('badges')){
         $table->bigIncrements('id');
         $table->string('slug', 200)->unique();
         $table->string('name', 200);
-        $table->string('image_url', 255);
+        $table->string('icon', 255);
         $table->integer('points_to_achieve');
         $table->text('description');
         $table->string('technologies', 200);
