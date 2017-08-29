@@ -57,7 +57,7 @@ class BadgeHandler extends MainHandler{
             $badge = new Badge();
             $badge = $this->setMandatory($badge,$data,'slug',BCValidator::SLUG);
             $badge->name = $data['name'];
-            $badge->image_url = $imageUrl;
+            $badge->icon = $imageUrl;
             $badge->points_to_achieve = $data['points_to_achieve'];
             $badge->description = $data['description'];
             $badge->technologies = $data['technologies'];
@@ -108,11 +108,10 @@ class BadgeHandler extends MainHandler{
         
         $imageUrl = $this->uploadThumb($badge,$request);
         if(empty($imageUrl)) throw new Exception('Unable to upload thumb');
-        
-        $badge->image_url = $imageUrl;
+        $badge->icon = substr($imageUrl,2);
         $badge->save();
         
-        return $this->success($response,"Thumb updated");
+        return $this->success($response,$badge);
     }
 
     public function deleteBadgeHandler(Request $request, Response $response) {

@@ -3,19 +3,20 @@
 
 class Badge extends \Illuminate\Database\Eloquent\Model  
 {
-    protected $appends = ['url'];
-    protected $hidden = ['pivot'];
+    protected $appends = ['url','image_url'];
+    protected $hidden = ['pivot', 'icon'];
     
     public function getURLAttribute()
     {
         return '/badge/'.$this->id;
     }
-    
-    public function getImageUrlAttribute()
+
+    public function getImageUrlAttribute($value)
     {
-        if(empty($this->image_url)) return "/public/img/badge/rand/chevron-".rand(1,21).".png";
-        else return $this->image_url;
+        if(empty($this->icon)) return "/public/img/badge/rand/chevron-".rand(1,21).".png";
+        else return $this->icon;
     }
+    
     /**
      * The products that belong to the shop.
      */
