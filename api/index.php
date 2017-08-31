@@ -261,7 +261,7 @@ $app->delete('/activity/{activity_id}', array($studentHandler, 'deleteStudentAct
  **/
 $specialtyHandler = new SpecialtyHandler($app);
 $app->get('/specialty/{specialty_id}', array($specialtyHandler, 'getSingleHandler'))->add($authorization->withRequiredScope($v(['super_admin'])));
-$app->get('/specialties/', array($specialtyHandler, 'getAllHandler'))->add($authorization->withRequiredScope($v(['super_admin'])));
+$app->get('/specialties/', array($specialtyHandler, 'getAllHandler'));
 
 $app->get('/specialties/profile/{profile_id}', array($specialtyHandler, 'getProfileSpecialtiesHandler'))->add($authorization->withRequiredScope($v(['read_talent_tree'])));
 $app->get('/specialties/student/{student_id}', array($specialtyHandler, 'getStudentSpecialtiesHandler'))->add($authorization->withRequiredScope($v(['super_admin'])));
@@ -269,7 +269,7 @@ $app->post('/specialty/{specialty_id}', array($specialtyHandler, 'updateSpecialt
 $app->post('/specialty/', array($specialtyHandler, 'createSpecialtyHandler'))->add($authorization->withRequiredScope($v(['super_admin'])));
 $app->delete('/specialty/{specialty_id}', array($specialtyHandler, 'deleteSpecialtyHandler'))->add($authorization->withRequiredScope($v(['super_admin'])));
 
-
+$app->post('/specialty/image/{specialty_id}', array($specialtyHandler, 'updateThumbHandler'))->add($authorization->withRequiredScope($v(['super_admin'])));
 
 /**
  * Runing the app alfter all configuration

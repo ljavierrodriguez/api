@@ -232,7 +232,7 @@ if(!$schema->hasTable('specialties')){
         $table->bigIncrements('id');
         $table->string('slug', 200)->unique();
         $table->string('name', 255);
-        $table->string('image_url', 255);
+        $table->string('icon', 255);
         $table->text('description');
         $table->integer('points_to_achieve');
         $table->timestamps();

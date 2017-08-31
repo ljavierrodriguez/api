@@ -132,4 +132,50 @@ class SpecialtyHandler extends MainHandler{
         return $this->success($response,"ok");
     }
     
+    private function uploadThumb($badge,$request){
+        $files = $request->getUploadedFiles();
+        //print_r($files); die();
+        if (empty($files['thumb'])) return false;
+
+        if(is_dir(PUBLIC_URL))
+        {
+            if(!is_dir(PUBLIC_URL.'img/')) mkdir(PUBLIC_URL.'img/');
+            if(!is_dir(PUBLIC_URL.'img/specialty/')) mkdir(PUBLIC_URL.'img/specialty/');
+
+            $destination = PUBLIC_URL.'img/specialty/';
+            if(is_dir($destination))
+            {
+                $newfile = $files['thumb'];
+                
+                $oldName = $newfile->getClientFilename();
+                $name_parts = explode(".", $oldName);
+                $ext = end($name_parts);
+                if(!in_array($ext, VALID_IMG_EXTENSIONS)) throw new Exception('Invalid image thumb extension: '.$ext);
+                
+                $newURL = $destination.$badge->slug.'.'.$ext;
+                //print_r($newURL); die();
+                $newfile->moveTo($newURL);
+                return $newURL;
+                
+            }else throw new Exception('Invalid thumb file destination: '.$destination);
+            
+        }else throw new Exception('Invalid PUBLIC_URL destination: '.PUBLIC_URL);
+        
+        return false;
+    }
+    
+    public function updateThumbHandler(Request $request, Response $response) {
+        $specialtyId = $request->getAttribute('specialty_id');
+        
+        $specialty = Specialty::find($specialtyId);
+        if(!$specialty) throw new Exception('Invalid specialty id: '.$specialtyId);
+        
+        $imageUrl = $this->uploadThumb($specialty,$request);
+        if(empty($imageUrl)) throw new Exception('Unable to upload thumb');
+        $specialty->icon = substr($imageUrl,2);
+        $specialty->save();
+        
+        return $this->success($response,$specialty);
+    }
+    
 }
