@@ -2,8 +2,8 @@
 
 class Specialty extends \Illuminate\Database\Eloquent\Model 
 {
-    protected $hidden = ['pivot'];
-    protected $appends = ['url','total_points','badges'];
+    protected $hidden = ['pivot','icon'];
+    protected $appends = ['url','total_points','badges','image_url'];
     
     public function getBadgesAttribute(){
         return $this->badges()->get()->pluck('slug');
@@ -13,6 +13,12 @@ class Specialty extends \Illuminate\Database\Eloquent\Model
     }
     public function getTotalPointsAttribute(){
         return $this->badges()->pluck('points_to_achieve')->sum();
+    }
+    
+    public function getImageUrlAttribute($value)
+    {
+        if(empty($this->icon)) return "/public/img/badge/rand/chevron-".rand(1,21).".png";
+        else return $this->icon;
     }
     /**
      * The products that belong to the shop.
