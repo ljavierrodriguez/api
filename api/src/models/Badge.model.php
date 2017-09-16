@@ -3,7 +3,7 @@
 
 class Badge extends \Illuminate\Database\Eloquent\Model  
 {
-    protected $appends = ['url','image_url'];
+    protected $appends = ['specialties','url','image_url'];
     protected $hidden = ['pivot', 'icon'];
     
     public function getURLAttribute()
@@ -15,6 +15,12 @@ class Badge extends \Illuminate\Database\Eloquent\Model
     {
         if(empty($this->icon)) return "/public/img/badge/rand/chevron-".rand(1,21).".png";
         else return $this->icon;
+    }
+    
+
+    public function getSpecialtiesAttribute($value)
+    {
+        return $this->specialties()->get()->pluck('slug');
     }
     
     /**

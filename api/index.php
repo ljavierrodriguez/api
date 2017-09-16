@@ -102,6 +102,10 @@ $profileHandler = new ProfileHandler($app);
 $app->get('/profiles/', array($profileHandler, 'getAllHandler'))->add($authorization->withRequiredScope($v(['read_talent_tree'])));
 $app->get('/profile/{profile_id}', array($profileHandler, 'getSingleHandler'))->add($authorization->withRequiredScope($v(['super_admin'])));
 
+$app->post('/profile/{profile_id}', array($profileHandler, 'updateProfileHandler'))->add($authorization->withRequiredScope($v(['super_admin'])));
+$app->post('/profile/', array($profileHandler, 'createProfileHandler'))->add($authorization->withRequiredScope($v(['super_admin'])));
+$app->delete('/profile/{profile_id}', array($profileHandler, 'deleteProfileHandler'))->add($authorization->withRequiredScope($v(['super_admin'])));
+
 
 /**
  * Everything Related to the user
@@ -136,7 +140,7 @@ $app->post('/location/sync/', array($locationHandler, 'syncLocationHandler'))->a
  * Everything Related to the cohorts
  **/
 $cohortHandler = new CohortHandler($app);
-$app->get('/cohorts/', array($cohortHandler, 'getAllHandler'))->add($authorization->withRequiredScope($v(['read_basic_info'])));
+$app->get('/cohorts/', array($cohortHandler, 'getAllHandler'));//->add($authorization->withRequiredScope($v(['read_basic_info'])));
 $app->get('/cohorts/location/{location_id}', array($cohortHandler, 'getAllCohortsFromLocationHandler'))->add($authorization->withRequiredScope($v(['read_basic_info'])));
 $app->get('/cohorts/teacher/{teacher_id}', array($cohortHandler, 'getAllCohortsFromTeacherHandler'))->add($authorization->withRequiredScope($v(['super_admin'])));
 $app->get('/cohort/{cohort_id}', array($cohortHandler, 'getSingleCohort'))->add($authorization->withRequiredScope($v(['read_basic_info'])));
@@ -235,6 +239,9 @@ $app->post('/badge/{badge_id}', array($badgeHandler, 'createOrUpdateBadgeHandler
 $app->delete('/badge/{badge_id}', array($badgeHandler, 'deleteBadgeHandler'))->add($authorization->withRequiredScope($v(['super_admin'])));
 $app->post('/badge/image/{badge_id}', array($badgeHandler, 'updateThumbHandler'))->add($authorization->withRequiredScope($v(['super_admin'])));
 
+$app->post('/badge/specialty/{specialty_id}', array($badgeHandler, 'addBadgesToSpecialtyHandler'))->add($authorization->withRequiredScope($v(['super_admin'])));
+$app->delete('/badge/specialty/{specialty_id}', array($badgeHandler, 'deleteBadgesFromSpecialtyHandler'))->add($authorization->withRequiredScope($v(['super_admin'])));
+
 
 
 
@@ -270,6 +277,9 @@ $app->post('/specialty/', array($specialtyHandler, 'createSpecialtyHandler'))->a
 $app->delete('/specialty/{specialty_id}', array($specialtyHandler, 'deleteSpecialtyHandler'))->add($authorization->withRequiredScope($v(['super_admin'])));
 
 $app->post('/specialty/image/{specialty_id}', array($specialtyHandler, 'updateThumbHandler'))->add($authorization->withRequiredScope($v(['super_admin'])));
+
+$app->post('/specialty/profile/{profile_id}', array($specialtyHandler, 'addSpecialtiesToProfileHandler'))->add($authorization->withRequiredScope($v(['super_admin'])));
+$app->delete('/specialty/profile/{profile_id}', array($specialtyHandler, 'deleteSpecialtiesFromProfileHandler'))->add($authorization->withRequiredScope($v(['super_admin'])));
 
 /**
  * Runing the app alfter all configuration

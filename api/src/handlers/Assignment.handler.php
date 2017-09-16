@@ -129,6 +129,13 @@ class AssignmentHandler extends MainHandler{
             if(!$data['github_url']) throw new Exception('You need to specify a github URL to deliver an assignment');
             $assignment->github_url = $data['github_url'];
         }
+        
+        if($data['badges']){
+            foreach($data['badges'] as $slug => $points){
+                $badge = Badge::where('slug', $slug)->first();
+                if(!$badge) throw new Exception('The badge '.$slug.' does not exists and it is associateed to this project');
+            }
+        } 
 
         $savedBadges = [];
         if($data['status'] == 'reviewed') 

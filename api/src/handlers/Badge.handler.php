@@ -130,4 +130,46 @@ class BadgeHandler extends MainHandler{
         return $this->success($response,"ok");
     }
     
+    public function addBadgesToSpecialtyHandler(Request $request, Response $response) {
+        $specialtyId = $request->getAttribute('specialty_id');
+        
+        $badgesObj = $request->getParsedBody();
+        if(empty($badgesObj['badges'])) throw new Exception('There was an error retrieving the badges');
+        
+        $specialty = Specialty::find($specialtyId);
+        if(!$specialty) throw new Exception('Invalid specialty id: '.$specialtyId);
+        
+        $defenitiveBadges = [];
+        $currentBadges = $specialty->badges()->get();
+        foreach($badgesObj['badges'] as $badgeId) {
+            $badge = Badge::find($badgeId);
+            if(!$badge) throw new Exception('Invalid badge id: '.$badgeId);
+            if(!$currentBadges->contains($badgeId)) $defenitiveBadges[] = $badgeId;
+        }
+        
+        if($defenitiveBadges>0) $specialty->badges()->attach($defenitiveBadges);
+        
+        return $this->success($response,$specialty);
+    }
+    
+    public function deleteBadgesFromSpecialtyHandler(Request $request, Response $response) {
+        $specialtyId = $request->getAttribute('specialty_id');
+        
+        $badgesObj = $request->getParsedBody();
+        if(empty($badgesObj['badges'])) throw new Exception('There was an error retrieving the badges');
+        foreach($badgesObj['badges'] as $badgeId)
+        {
+            $badge = Badge::find($badgeId);
+            if(!$badge) throw new Exception('There is no badge with ID '.$badgeId);
+        }
+        
+        $specialty = Specialty::find($specialtyId);
+        if(!$specialty) throw new Exception('Invalid specialty id: '.$specialtyId);
+        
+        if($badgesObj['badges']>0) $specialty->badges()->detach($badgesObj['badges']);
+        else throw new Exception('The badges array is empty');
+        
+        return $this->success($response,$specialty);
+    }
+    
 }
