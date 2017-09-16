@@ -3,6 +3,8 @@
 use Slim\Http\Request as Request;
 use Slim\Http\Response as Response;
 
+use Helpers\BCValidator;
+
 class CohortHandler extends MainHandler{
     
     protected $slug = 'Cohort';
@@ -44,10 +46,11 @@ class CohortHandler extends MainHandler{
         if(!$location) throw new Exception('Invalid location_slug slug');
         
         $cohort = new Cohort();
-        $cohort->name = $data['name'];
+        $cohort = $this->setMandatory($cohort,$data,'name',BCValidator::NAME);
+        $cohort = $this->setMandatory($cohort,$data,'slug',BCValidator::SLUG);
         $cohort->stage = 'not-started';
-        $cohort->slug = $data['slug'];
-        $cohort = $this->setOptional($cohort,$data,'slack-url');
+        $cohort = $this->setOptional($cohort,$data,'slack-url',BCValidator::URL);
+        $cohort = $this->setOptional($cohort,$data,'kickoff-date',BCValidator::DATETIME);
         $location->cohorts()->save($cohort);
         
         return $this->success($response,$cohort);
@@ -67,11 +70,14 @@ class CohortHandler extends MainHandler{
         $cohort = Cohort::where('slug', $data['slug'])->first();
         if(!$cohort) $cohort = new Cohort();
         
+        if(!empty($data['stage']) && !in_array($data['stage'], ['not-started', 'on-prework', 'on-course','on-final-project','finished']))
+            throw new Exception('Invalid cohort stage');
         
-        $cohort->name = $data['name'];
-        $cohort->stage = 'not-started';
-        $cohort->slug = $data['slug'];
-        $cohort = $this->setOptional($cohort,$data,'slack-url');
+        $cohort = $this->setMandatory($cohort,$data,'name',BCValidator::NAME);
+        $cohort = $this->setMandatory($cohort,$data,'slug',BCValidator::SLUG);
+        $cohort = $this->setMandatory($cohort,$data,'stage',BCValidator::SLUG);
+        $cohort = $this->setOptional($cohort,$data,'slack-url',BCValidator::URL);
+        $cohort = $this->setOptional($cohort,$data,'kickoff-date',BCValidator::DATETIME);
         $location->cohorts()->save($cohort);
         $cohort->teachers()->attach($teacher);
         
@@ -88,11 +94,15 @@ class CohortHandler extends MainHandler{
         
         $cohort = Cohort::find($cohortId);
         if(!$cohort) throw new Exception('Invalid cohort id: '.$cohortId);
+        
+        if(!empty($data['stage']) && !in_array($data['stage'], ['not-started', 'on-prework', 'on-course','on-final-project','finished']))
+            throw new Exception('Invalid cohort stage');
 
-        $cohort = $this->setOptional($cohort,$data,'name');
-        $cohort = $this->setOptional($cohort,$data,'stage');
-        $cohort = $this->setOptional($cohort,$data,'slug');
-        $cohort = $this->setOptional($cohort,$data,'slack-url');
+        $cohort = $this->setOptional($cohort,$data,'name',BCValidator::NAME);
+        $cohort = $this->setOptional($cohort,$data,'stage',BCValidator::SLUG);
+        $cohort = $this->setOptional($cohort,$data,'slug',BCValidator::SLUG);
+        $cohort = $this->setOptional($cohort,$data,'slack-url',BCValidator::URL);
+        $cohort = $this->setOptional($cohort,$data,'kickoff-date',BCValidator::DATETIME);
         $cohort->save();
         
         return $this->success($response,$cohort);
