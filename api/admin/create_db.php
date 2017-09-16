@@ -86,8 +86,9 @@ if(!$schema->hasTable('cohorts')){
         $table->bigIncrements('id');
         $table->string('slug', 200)->unique();
         $table->string('name', 200);
+        $table->date('kickoff-date')->nullable();
         $table->unsignedBigInteger('location_id');
-        $table->enum('stage', ['not-started', 'on-prework', 'on-course','on-final-project','finished']);
+        $table->string('stage', 50);//['not-started', 'on-prework', 'on-course','on-final-project','finished']
         $table->string('slack-url', 200);
         $table->timestamps();
     

@@ -12,6 +12,7 @@ class BCValidator{
     const EMAIL = 'email';
     const URL = 'url';
     const SLUG = 'slug';
+    const DATETIME = 'datetime';
     const POINTS = 'points';
     const DESCRIPTION = 'description';
     const PHONE = 'phone';
@@ -49,6 +50,14 @@ class BCValidator{
                     new Rules\Alnum(),
                     new Rules\NoWhitespace(),
                     new Rules\Length(1, 15)
+                );
+                if(!$validator->validate($value)) throw new Exception('Parameter '.$name.' has an invalid value: '.$value);
+                
+            break;
+            case self::DATETIME:
+                
+                $validator = new Rules\AllOf(
+                    new Rules\Date()
                 );
                 if(!$validator->validate($value)) throw new Exception('Parameter '.$name.' has an invalid value: '.$value);
                 
