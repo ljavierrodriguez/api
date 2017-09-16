@@ -121,12 +121,16 @@ class SpecialtyHandler extends MainHandler{
         if(!$specialty) throw new Exception('Invalid specialty id: '.$specialtyId);
         
         $badges = $specialty->badges()->get();
-        if(count($badges)>0) throw new Exception('Remove all specialty badges first');
-        
+        if(count($badges)>2) throw new Exception('Only specialties with 2 or less badges can be removed, please remove badges from this specialty first');
+
+        /*
         $attributes = $specialty->getAttributes();
         $now = time(); // or your date as well
         $daysOld = floor(($now - strtotime($attributes['created_at'])) / DELETE_MAX_DAYS);
         if($daysOld>5) throw new Exception('The specialty is too old to delete');
+        */
+        $currentBadges = $specialty->badges()->get();
+        $specialty->badges()->detach($currentBadges);
         $specialty->delete();
         
         return $this->success($response,"ok");
@@ -178,4 +182,45 @@ class SpecialtyHandler extends MainHandler{
         return $this->success($response,$specialty);
     }
     
+    public function addSpecialtiesToProfileHandler(Request $request, Response $response) {
+        $profileId = $request->getAttribute('profile_id');
+        
+        $specialtiesObj = $request->getParsedBody();
+        if(empty($specialtiesObj['specialties'])) throw new Exception('There was an error retrieving the badges');
+        
+        $profile = Profile::find($profileId);
+        if(!$profile) throw new Exception('Invalid specialty id: '.$profileId);
+        
+        $definitiveSpecialties = [];
+        $currentSpecialties = $profile->specialties()->get();
+        foreach($specialtiesObj['specialties'] as $specialtyId) {
+            $specialty = Specialty::find($specialtyId);
+            if(!$specialty) throw new Exception('Invalid specialty id: '.$specialtyId);
+            if(!$currentSpecialties->contains($specialtyId)) $definitiveSpecialties[] = $specialtyId;
+        }
+        
+        if($definitiveSpecialties>0) $profile->specialties()->attach($definitiveSpecialties);
+        
+        return $this->success($response,$profile);
+    }
+    
+    public function deleteSpecialtiesFromProfileHandler(Request $request, Response $response) {
+        $profileId = $request->getAttribute('profile_id');
+        
+        $specialtiesObj = $request->getParsedBody();
+        if(empty($specialtiesObj['specialties'])) throw new Exception('There was an error retrieving the specialties');
+        foreach($specialtiesObj['specialties'] as $specialtyId)
+        {
+            $specialty = Specialty::find($specialtyId);
+            if(!$specialty) throw new Exception('There is no specialty with ID '.$specialtyId);
+        }
+        
+        $profile = Profile::find($profileId);
+        if(!$profile) throw new Exception('Invalid profile id: '.$profileId);
+        
+        if($specialtiesObj['specialties']>0) $profile->specialties()->detach($specialtiesObj['specialties']);
+        else throw new Exception('The specialties array is empty');
+        
+        return $this->success($response,$profile);
+    }
 }

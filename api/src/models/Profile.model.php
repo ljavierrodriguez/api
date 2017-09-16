@@ -5,7 +5,7 @@ class Profile extends \Illuminate\Database\Eloquent\Model
     protected $appends = ['total_points','specialties'];
     
     public function getSpecialtiesAttribute(){
-        return $this->specialties()->get();
+        return $this->specialties()->get()->pluck('slug');
     }
     
     public function getTotalPointsAttribute(){
