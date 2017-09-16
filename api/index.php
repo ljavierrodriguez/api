@@ -99,7 +99,7 @@ $app->post('/badges/import/', array($mainHandler, 'importBadges'))->add($authori
  * Every course is meant to trian students in one specific profile, for example: Full Stack Web Developer
  **/
 $profileHandler = new ProfileHandler($app);
-$app->get('/profiles/', array($profileHandler, 'getAllHandler'))->add($authorization->withRequiredScope($v(['read_talent_tree'])));
+$app->get('/profiles/', array($profileHandler, 'getAllHandler'));//->add($authorization->withRequiredScope($v(['read_talent_tree'])));
 $app->get('/profile/{profile_id}', array($profileHandler, 'getSingleHandler'))->add($authorization->withRequiredScope($v(['super_admin'])));
 
 $app->post('/profile/{profile_id}', array($profileHandler, 'updateProfileHandler'))->add($authorization->withRequiredScope($v(['super_admin'])));
