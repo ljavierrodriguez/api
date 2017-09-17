@@ -140,7 +140,7 @@ $app->post('/location/sync/', array($locationHandler, 'syncLocationHandler'))->a
  * Everything Related to the cohorts
  **/
 $cohortHandler = new CohortHandler($app);
-$app->get('/cohorts/', array($cohortHandler, 'getAllHandler'));//->add($authorization->withRequiredScope($v(['read_basic_info'])));
+$app->get('/cohorts/', array($cohortHandler, 'getAllCohortsHandler'));//->add($authorization->withRequiredScope($v(['read_basic_info'])));
 $app->get('/cohorts/location/{location_id}', array($cohortHandler, 'getAllCohortsFromLocationHandler'))->add($authorization->withRequiredScope($v(['read_basic_info'])));
 $app->get('/cohorts/teacher/{teacher_id}', array($cohortHandler, 'getAllCohortsFromTeacherHandler'))->add($authorization->withRequiredScope($v(['super_admin'])));
 $app->get('/cohort/{cohort_id}', array($cohortHandler, 'getSingleCohort'))->add($authorization->withRequiredScope($v(['read_basic_info'])));
