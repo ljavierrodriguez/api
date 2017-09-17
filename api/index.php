@@ -125,7 +125,7 @@ $app->get('/settings/user/{user_id}', array($userHandler, 'getUserSettings'))->a
  * Everything Related to the locations
  **/
 $locationHandler = new LocationHandler($app);
-$app->get('/locations/', array($locationHandler, 'getAllHandler'))->add($authorization->withRequiredScope($v(['read_basic_info'])));
+$app->get('/locations/', array($locationHandler, 'getAllHandler'));//->add($authorization->withRequiredScope($v(['read_basic_info'])));
 $app->get('/location/{location_id}', array($locationHandler, 'getSingleHandler'))->add($authorization->withRequiredScope($v(['read_basic_info'])));
 
 $app->post('/location/', array($locationHandler, 'createLocationHandler'))->add($authorization->withRequiredScope($v(['super_admin'])));
