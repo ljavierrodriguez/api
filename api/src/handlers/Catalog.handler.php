@@ -21,6 +21,10 @@ class CatalogHandler extends MainHandler{
         $technologies = ['CSS3','JS','PHP','GIT','C9','HTML5'];
         return $this->success($response,$technologies);
     }  
+    public function getAllCohortStages(Request $request, Response $response) {
+        $cohort_stages = Cohort::$possibleStages;
+        return $this->success($response,$cohort_stages);
+    }  
     /*
     public function getAllCountries(Request $request, Response $response) {
         $aux = [];
