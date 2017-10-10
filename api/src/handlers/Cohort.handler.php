@@ -68,7 +68,7 @@ class CohortHandler extends MainHandler{
         $cohort = new Cohort();
         $cohort = $this->setMandatory($cohort,$data,'name',BCValidator::NAME);
         $cohort = $this->setMandatory($cohort,$data,'slug',BCValidator::SLUG);
-        $cohort->stage = 'not-started';
+        $cohort->stage = Cohort::$possibleStages[0]; //not-started
         $cohort = $this->setOptional($cohort,$data,'language',BCValidator::SLUG);
         $cohort = $this->setOptional($cohort,$data,'slack-url',BCValidator::URL);
         $cohort = $this->setOptional($cohort,$data,'kickoff-date',BCValidator::DATETIME);
@@ -91,8 +91,9 @@ class CohortHandler extends MainHandler{
         $cohort = Cohort::where('slug', $data['slug'])->first();
         if(!$cohort) $cohort = new Cohort();
         
-        if(!empty($data['stage']) && !in_array($data['stage'], ['not-started', 'on-prework', 'on-course','on-final-project','finished']))
-            throw new Exception('Invalid cohort stage');
+        $currentTeachers = $cohort->teachers()->get();
+        $currentTeachersArray = $currentTeachers->pluck('id')->toArray();
+        //print_r($currentTeachersArray); die();
         
         $cohort = $this->setMandatory($cohort,$data,'name',BCValidator::NAME);
         $cohort = $this->setMandatory($cohort,$data,'slug',BCValidator::SLUG);
@@ -101,9 +102,8 @@ class CohortHandler extends MainHandler{
         $cohort = $this->setOptional($cohort,$data,'slack-url',BCValidator::URL);
         $cohort = $this->setOptional($cohort,$data,'kickoff-date',BCValidator::DATETIME);
         $location->cohorts()->save($cohort);
-        $cohort->teachers()->attach($teacher);
+        if(!in_array($teacher->id, $currentTeachersArray)) $cohort->teachers()->attach($teacher);
         
-        $currentTeachers = $cohort->teachers()->get();
         foreach($currentTeachers as $ct) $cohort->teachers()->updateExistingPivot($ct->id, ['is_instructor'=>false]);
         $cohort->teachers()->updateExistingPivot($teacher->id, ['is_instructor'=>true]);
         
@@ -117,7 +117,7 @@ class CohortHandler extends MainHandler{
         $cohort = Cohort::find($cohortId);
         if(!$cohort) throw new Exception('Invalid cohort id: '.$cohortId);
         
-        if(!empty($data['stage']) && !in_array($data['stage'], ['not-started', 'on-prework', 'on-course','on-final-project','finished']))
+        if(!empty($data['stage']) && !in_array($data['stage'], Cohort::$possibleStages))
             throw new Exception('Invalid cohort stage');
 
         $cohort = $this->setOptional($cohort,$data,'name',BCValidator::NAME);

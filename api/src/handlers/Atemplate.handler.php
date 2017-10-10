@@ -3,6 +3,8 @@
 use Slim\Http\Request as Request;
 use Slim\Http\Response as Response;
 
+use Helpers\BCValidator;
+
 class AtemplateHandler extends MainHandler{
     
     protected $slug = 'Atemplate';
@@ -13,19 +15,23 @@ class AtemplateHandler extends MainHandler{
 
         if(isset($data['wp_id'])){
             $at = Atemplate::where('wp_id', $data['wp_id'])->first();
-            if($at) throw new Exception('There is already a Project Template with this '.$data['wp_id']);
+            if($at) throw new Exception('There is already a Project Template with this wp_id: '.$data['wp_id']);
         } 
 
         if(isset($data['project_slug'])){
             $at = Atemplate::where('project_slug', $data['project_slug'])->first();
             if($at) throw new Exception('There is already a Project Template with project_slug '.$data['project_slug']);
         } 
+        
+        if(!empty($data['difficulty']) && !in_array($data['difficulty'], Atemplate::$possibleDifficulties))
+            throw new Exception('Invalid difficulty: '.$data['difficulty']);
 
         $at = new Atemplate();
-        $at->project_slug = $data['project_slug'];
-        $at->title = $data['title'];
-        $at->duration = $data['duration'];
-        $at->technologies = $data['technologies'];
+        $at = $this->setMandatory($at,$data,'project_slug', BCValidator::SLUG);
+        $at = $this->setMandatory($at,$data,'title');
+        $at = $this->setMandatory($at,$data,'duration');
+        $at = $this->setMandatory($at,$data,'difficulty');
+        $at = $this->setMandatory($at,$data,'technologies');
         $at = $this->setOptional($at,$data,'excerpt');
         $at = $this->setOptional($at,$data,'wp_id');
         $at->save();
@@ -75,10 +81,14 @@ class AtemplateHandler extends MainHandler{
             $at = Atemplate::where('project_slug', $data['project_slug'])->first();
             if(!$at) throw new Exception('Invalid template id or slug: '.$atId);
         }
+        
+        if(!empty($data['difficulty']) && !in_array($data['difficulty'], Atemplate::$possibleDifficulties))
+            throw new Exception('Invalid difficluty: '.$data['difficulty']);
 
-        $at = $this->setOptional($at,$data,'project_slug');
+        $at = $this->setOptional($at,$data,'project_slug', BCValidator::SLUG);
         $at = $this->setOptional($at,$data,'title');
         $at = $this->setOptional($at,$data,'excerpt');
+        $at = $this->setOptional($at,$data,'difficulty');
         $at = $this->setOptional($at,$data,'duration');
         $at = $this->setOptional($at,$data,'wp_id');
         $at = $this->setOptional($at,$data,'technologies');

@@ -5,6 +5,8 @@ class Cohort extends \Illuminate\Database\Eloquent\Model
     protected $hidden = ['pivot'];
     protected $appends = ['location_slug','teachers'];
     
+    public static $possibleStages = ['not-started', 'on-prework', 'on-course','on-final-project','finished'];
+    
     public function getTeachersAttribute(){
         return $this->teachers()->get()->pluck('id');
     }
@@ -23,10 +25,16 @@ class Cohort extends \Illuminate\Database\Eloquent\Model
         return $this->belongsTo('Location');
     }
     
-    public function teachers()
-    {
+    public function teachers(){
+        
         $teachers = $this->belongsToMany('Teacher','cohort_teacher','cohort_id','teacher_user_id')->withPivot('is_instructor')->withTimestamps();
         return $teachers;
+    }
+    
+    public function setStatusAttribute($value)
+    {
+        if(in_array($value, ['not-started', 'on-prework', 'post-prework','final-project','finished'])) $this->attributes['status'] = strtolower($value);
+        else throw new Exception('Invalid cohort stage: '.$value);
     }
     
 }

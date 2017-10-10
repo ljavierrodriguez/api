@@ -119,6 +119,7 @@ if(!$schema->hasTable('atemplates')){
         $table->integer('wp_id')->unique()->nullable();
         $table->string('title', 200);
         $table->string('excerpt', 200)->nullable();
+        $table->string('difficulty', 20)->nullable();
         $table->string('duration', 200);//in hours
         $table->string('technologies', 200);
         $table->timestamps();

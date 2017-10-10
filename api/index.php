@@ -77,6 +77,7 @@ $authorization = new Middleware\Authorization($server, $app->getContainer());
 $catalogHandler = new CatalogHandler($app);
 $app->get('/technologies/', array($catalogHandler, 'getAllTechnologies'));
 $app->get('/countries/', array($catalogHandler, 'getAllCountries'));
+$app->get('/cohort_stages/', array($catalogHandler, 'getAllCohortStages'));
 
 
 
