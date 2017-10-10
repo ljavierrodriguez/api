@@ -25,6 +25,10 @@ class CatalogHandler extends MainHandler{
         $cohort_stages = Cohort::$possibleStages;
         return $this->success($response,$cohort_stages);
     }  
+    public function getAllAtemplateDifficulties(Request $request, Response $response) {
+        $difficulties = Atemplate::$possibleDifficulties;
+        return $this->success($response,$difficulties);
+    }  
     /*
     public function getAllCountries(Request $request, Response $response) {
         $aux = [];
