@@ -18,7 +18,7 @@ class CatalogHandler extends MainHandler{
         ];
     
     public function getAllTechnologies(Request $request, Response $response) {
-        $technologies = ['CSS3','JS','PHP','GIT','C9','HTML5'];
+        $technologies = ['CSS3','JS','PHP','GIT','C9','HTML5','REACT','WORDPRESS','AJAX','DJANGO','MYSQL','MONGODB'];
         return $this->success($response,$technologies);
     }  
     public function getAllCohortStages(Request $request, Response $response) {

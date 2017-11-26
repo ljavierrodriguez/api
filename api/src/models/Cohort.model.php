@@ -3,7 +3,7 @@
 class Cohort extends \Illuminate\Database\Eloquent\Model 
 {
     protected $hidden = ['pivot'];
-    protected $appends = ['location_slug','teachers'];
+    protected $appends = ['location_slug','teachers','profile_slug'];
     
     public static $possibleStages = ['not-started', 'on-prework', 'on-course','on-final-project','finished'];
     
@@ -14,6 +14,10 @@ class Cohort extends \Illuminate\Database\Eloquent\Model
     public function getLocationSlugAttribute(){
         if($location = $this->location()->first()) return $location->slug;
         else return null;
+    }
+    public function getProfileSlugAttribute(){
+        if($profile = $this->profile()->first()) return $profile->slug;
+        return null;
     }
     
     public function students(){
@@ -29,6 +33,10 @@ class Cohort extends \Illuminate\Database\Eloquent\Model
         
         $teachers = $this->belongsToMany('Teacher','cohort_teacher','cohort_id','teacher_user_id')->withPivot('is_instructor')->withTimestamps();
         return $teachers;
+    }
+    
+    public function profile(){
+        return $this->belongsTo('Profile');
     }
     
     public function setStatusAttribute($value)

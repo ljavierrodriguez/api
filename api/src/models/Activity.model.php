@@ -11,6 +11,8 @@ class Activity extends \Illuminate\Database\Eloquent\Model
     protected $appends = ['badge_slug','url'];
     protected $hidden = ['badge'];
     
+    public static $possibleTypes = ['project', 'quiz', 'challenge', 'teacher_reward'];
+    
     public function getBadgeSlugAttribute()
     {
         return $this->badge()->first()->slug;

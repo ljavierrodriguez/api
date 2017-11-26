@@ -65,6 +65,9 @@ class CohortHandler extends MainHandler{
         $location = Location::where('slug', $data['location_slug'])->first();
         if(!$location) throw new Exception('Invalid location_slug slug');
         
+        $profile = Profile::where('slug', $data['profile_slug'])->first();
+        if(!$profile) throw new Exception('Invalid profile slug: '.$data['profile_slug']);
+        
         $cohort = new Cohort();
         $cohort = $this->setMandatory($cohort,$data,'name',BCValidator::NAME);
         $cohort = $this->setMandatory($cohort,$data,'slug',BCValidator::SLUG);
@@ -73,16 +76,22 @@ class CohortHandler extends MainHandler{
         $cohort = $this->setOptional($cohort,$data,'slack-url',BCValidator::URL);
         $cohort = $this->setOptional($cohort,$data,'kickoff-date',BCValidator::DATETIME);
         $location->cohorts()->save($cohort);
+        $cohort->profile()->dissociate();
+        $cohort->profile()->associate($profile);
         
         return $this->success($response,$cohort);
     }
     
     public function syncCohortHandler(Request $request, Response $response) {
         $data = $request->getParsedBody();
+
         if(empty($data)) throw new Exception('There was an error retrieving the request content, it needs to be a valid JSON');
         
         $location = Location::where('slug', $data['location_slug'])->first();
-        if(!$location) throw new Exception('Invalid location_slug slug');
+        if(!$location) throw new Exception('Invalid location_slug: '.$data['location_slug']);
+        
+        $profile = Profile::where('slug', $data['profile_slug'])->first();
+        if(!$profile) throw new Exception('Invalid profile slug: '.$data['profile_slug']);
         
         $teacher = Teacher::find($data['instructor_id']);
         if(!$teacher) throw new Exception('Invalid instructor_id: '.$data['instructor_id']);
@@ -102,10 +111,14 @@ class CohortHandler extends MainHandler{
         $cohort = $this->setOptional($cohort,$data,'slack-url',BCValidator::URL);
         $cohort = $this->setOptional($cohort,$data,'kickoff-date',BCValidator::DATETIME);
         $location->cohorts()->save($cohort);
+        $cohort->profile()->dissociate();
+        $cohort->profile()->associate($profile);
         if(!in_array($teacher->id, $currentTeachersArray)) $cohort->teachers()->attach($teacher);
         
         foreach($currentTeachers as $ct) $cohort->teachers()->updateExistingPivot($ct->id, ['is_instructor'=>false]);
         $cohort->teachers()->updateExistingPivot($teacher->id, ['is_instructor'=>true]);
+        
+        $cohort->save();
         
         return $this->success($response,$cohort);
     }
@@ -119,6 +132,20 @@ class CohortHandler extends MainHandler{
         
         if(!empty($data['stage']) && !in_array($data['stage'], Cohort::$possibleStages))
             throw new Exception('Invalid cohort stage');
+         
+        if(!empty($data['profile_slug']))
+        {
+            $profile = Profile::where('slug', $data['profile_slug'])->first();
+            if(!$profile) throw new Exception('Invalid profile slug: '.$data['profile_slug']);
+            $cohort->profile()->associate($profile);
+        }
+         
+        if(!empty($data['location_slug']))
+        {
+            $location = Location::where('slug', $data['location_slug'])->first();
+            if(!$location) throw new Exception('Invalid location slug: '.$data['location_slug']);
+            $cohort->location()->associate($location);
+        }
 
         $cohort = $this->setOptional($cohort,$data,'name',BCValidator::NAME);
         $cohort = $this->setOptional($cohort,$data,'stage',BCValidator::SLUG);

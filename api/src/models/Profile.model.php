@@ -27,8 +27,13 @@ class Profile extends \Illuminate\Database\Eloquent\Model
         return $totalPoints;
     }
     
-    public function specialties()
-    {
+    public function specialties(){
+        
         return $this->belongsToMany('Specialty')->withTimestamps();
+    }
+    
+    public function cohorts(){
+        
+        return $this->hasMany('Cohort');
     }
 }

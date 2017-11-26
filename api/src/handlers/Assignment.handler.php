@@ -122,15 +122,21 @@ class AssignmentHandler extends MainHandler{
         $assignment = Assignment::find($assignmentId);
         if(!$assignment) throw new Exception('Invalid assingment id');
 
-        if(!in_array($data['status'],['not-delivered', 'delivered', 'reviewed'])) throw new Exception("Invalid status ".$data['status'].", the only valid status are 'not-delivered', 'delivered' and 'reviewed'");
+        if(!in_array($data['status'],Assignment::$possibleStages)) throw new Exception("Invalid status ".$data['status'].", the only valid status are: ".implode(',',Assignment::$possibleStages));
 
         if($data['status'] == 'delivered') 
         {
-            if(!$data['github_url']) throw new Exception('You need to specify a github URL to deliver an assignment');
+            if(empty($data['github_url'])) throw new Exception('You need to specify a github URL to deliver an assignment');
             $assignment->github_url = $data['github_url'];
         }
+
+        if($data['status'] == 'rejected') 
+        {
+            if(empty($data['reject_reason'])) throw new Exception('You need to specify a the reason for this rejection');
+            $assignment->reject_reason = $data['reject_reason'];
+        }
         
-        if($data['badges']){
+        if(isset($data['badges'])){
             foreach($data['badges'] as $slug => $points){
                 $badge = Badge::where('slug', $slug)->first();
                 if(!$badge) throw new Exception('The badge '.$slug.' does not exists and it is associateed to this project');
