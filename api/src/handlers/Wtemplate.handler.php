@@ -56,4 +56,18 @@ class WtemplateHandler extends MainHandler{
         return $this->success($response,$wtemplate);
     }
     
+    public function deleteHandler(Request $request, Response $response) {
+        $wtId = $request->getAttribute('wtemplate_id');
+        
+        $wtemplate = Wtemplate::find($wtId);
+        if(!$wtemplate) throw new Exception('Invalid WorkshopTemplate id: '.$wtId);
+        
+        $workshops = $wtemplate->workshops()->get();
+        if(count($workshops)>0) throw new Exception('The WorkshopTemplate cannot be deleted because it has workshops');
+        
+        $wtemplate->delete();
+        
+        return $this->success($response,"The WorkshopTemplate was deleted");
+    }
+    
 }

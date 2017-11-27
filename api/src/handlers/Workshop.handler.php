@@ -89,4 +89,15 @@ class WorkshopHandler extends MainHandler{
         return $this->success($response,$workshop);
     }
     
+    public function deleteHandler(Request $request, Response $response) {
+        $workshopId = $request->getAttribute('workshop_id');
+        
+        $workshop = Workshop::find($workshopId);
+        if(!$workshop) throw new Exception('Invalid Workshop id: '.$workshopId);
+        
+        $workshop->delete();
+        
+        return $this->success($response,"The Workshop was deleted");
+    }
+    
 }

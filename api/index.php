@@ -296,7 +296,7 @@ $app->get('/workshop/{workshop_id}', array($workshopHandler, 'getSingleWorkshop'
 
 $app->post('/workshop/', array($workshopHandler, 'createWorkshopHandler'))->add($authorization->withRequiredScope($v(['super_admin'])));
 $app->post('/workshop/{workshop_id}', array($workshopHandler, 'updateWorkshopHandler'))->add($authorization->withRequiredScope($v(['super_admin'])));
-$app->delete('/workshop/{workshop_id}', array($workshopHandler, 'deleteWorkshopHandler'))->add($authorization->withRequiredScope($v(['super_admin'])));
+$app->delete('/workshop/{workshop_id}', array($workshopHandler, 'deleteHandler'))->add($authorization->withRequiredScope($v(['super_admin'])));
 /**
  * Everything Related to the workshop templates
  **/
@@ -305,7 +305,7 @@ $app->get('/wtemplates/', array($wtemplateHandler, 'getAllWtemplatesHandler'));/
 $app->get('/wtemplate/{wtemplate_id}', array($wtemplateHandler, 'getSingleWtemplate'))->add($authorization->withRequiredScope($v(['read_basic_info'])));
 $app->post('/wtemplate/', array($wtemplateHandler, 'createWtemplateHandler'))->add($authorization->withRequiredScope($v(['super_admin'])));
 $app->post('/wtemplate/{wtemplate_id}', array($wtemplateHandler, 'updateWtemplateHandler'))->add($authorization->withRequiredScope($v(['super_admin'])));
-$app->delete('/wtemplate/{wtemplate_id}', array($wtemplateHandler, 'deleteWtemplateHandler'))->add($authorization->withRequiredScope($v(['super_admin'])));
+$app->delete('/wtemplate/{wtemplate_id}', array($wtemplateHandler, 'deleteHandler'))->add($authorization->withRequiredScope($v(['super_admin'])));
 
 
 /**
