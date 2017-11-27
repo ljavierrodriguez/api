@@ -78,6 +78,7 @@ class CohortHandler extends MainHandler{
         $location->cohorts()->save($cohort);
         $cohort->profile()->dissociate();
         $cohort->profile()->associate($profile);
+        $cohort->save();
         
         return $this->success($response,$cohort);
     }
