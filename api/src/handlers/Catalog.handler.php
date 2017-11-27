@@ -18,12 +18,16 @@ class CatalogHandler extends MainHandler{
         ];
     
     public function getAllTechnologies(Request $request, Response $response) {
-        $technologies = ['CSS3','JS','PHP','GIT','C9','HTML5'];
+        $technologies = ['CSS3','JS','PHP','GIT','C9','HTML5','REACT','WORDPRESS','AJAX','DJANGO','MYSQL','MONGODB'];
         return $this->success($response,$technologies);
     }  
     public function getAllCohortStages(Request $request, Response $response) {
         $cohort_stages = Cohort::$possibleStages;
         return $this->success($response,$cohort_stages);
+    }  
+    public function getAllAtemplateDifficulties(Request $request, Response $response) {
+        $difficulties = Atemplate::$possibleDifficulties;
+        return $this->success($response,$difficulties);
     }  
     /*
     public function getAllCountries(Request $request, Response $response) {

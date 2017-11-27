@@ -5,6 +5,8 @@ class Assignment extends \Illuminate\Database\Eloquent\Model
     protected $hidden = ['student','teacher','atemplate_id'];
     protected $appends = ['template','student_name'];
     
+    public static $possibleStages = ['not-delivered', 'delivered', 'rejected', 'reviewed'];
+    
     public function getStudentNameAttribute(){
         return $this->student()->first()->full_name;
     }

@@ -154,7 +154,7 @@ class StudentHandler extends MainHandler{
         $student = Student::find($studentId);
         if(!$student) throw new Exception('Invalid student id: '.$studentId);
         
-        if(!in_array($data['type'],['project', 'quiz', 'challenge', 'teacher_reward']))  throw new Exception('Invalid activity type: '.$data['type']);
+        if(!in_array($data['type'],Activity::$possibleTypes))  throw new Exception('Invalid activity type: '.$data['type']);
         
         $activity = new Activity();
         $activity = $this->setMandatory($activity,$data,'type');

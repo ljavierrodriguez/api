@@ -88,11 +88,13 @@ if(!$schema->hasTable('cohorts')){
         $table->string('name', 200);
         $table->date('kickoff-date')->nullable();
         $table->unsignedBigInteger('location_id');
+        $table->unsignedBigInteger('profile_id');
         $table->string('stage', 50);//['not-started', 'on-prework', 'on-course','on-final-project','finished']
         $table->string('slack-url', 200);
         $table->timestamps();
     
         $table->foreign('location_id')->references('id')->on('locations')->onDelete('cascade');
+        $table->foreign('profile_id')->references('id')->on('profiles')->onDelete('cascade');
     });
 }
 
@@ -138,6 +140,7 @@ if(!$schema->hasTable('assignments')){
         $table->date('duedate');
         $table->unsignedBigInteger('atemplate_id');
         $table->string('status', 40);
+        $table->string('reject_reason', 500)->nullable();
         $table->string('github_url', 255)->nullable();
         $table->timestamps();
     

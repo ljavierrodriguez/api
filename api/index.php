@@ -75,9 +75,10 @@ $authorization = new Middleware\Authorization($server, $app->getContainer());
  * Static Data that will not be managed
  **/
 $catalogHandler = new CatalogHandler($app);
-$app->get('/technologies/', array($catalogHandler, 'getAllTechnologies'));
-$app->get('/countries/', array($catalogHandler, 'getAllCountries'));
-$app->get('/cohort_stages/', array($catalogHandler, 'getAllCohortStages'));
+$app->get('/catalog/technologies/', array($catalogHandler, 'getAllTechnologies'));
+$app->get('/catalog/countries/', array($catalogHandler, 'getAllCountries'));
+$app->get('/catalog/cohort_stages/', array($catalogHandler, 'getAllCohortStages'));
+$app->get('/catalog/atemplate_difficulties/', array($catalogHandler, 'getAllAtemplateDifficulties'));//getAllAtemplateDifficulties
 
 
 

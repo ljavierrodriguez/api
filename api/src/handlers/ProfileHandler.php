@@ -85,6 +85,9 @@ class ProfileHandler extends MainHandler{
         
         $specialties = $profile->specialties()->get();
         if(count($specialties)>2) throw new Exception('Only profiles wit 2 or less specialties can be removed, please remove specialties from this profile first');
+        
+        $cohorts = $profile->cohorts()->get();
+        if(count($cohorts)>0) throw new Exception('Only profiles with no cohorts can be deleted');
         /*
         $attributes = $specialty->getAttributes();
         $now = time(); // or your date as well
