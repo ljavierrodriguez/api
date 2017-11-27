@@ -12,10 +12,17 @@ class LocationHandler extends MainHandler{
         if(empty($data)) throw new Exception('There was an error retrieving the request content, it needs to be a valid JSON');
         
         $location = new Location();
-        $location->name = $data['name'];
-        $location->slug = $data['slug'];
-        //$location->country = $data['country'];
-        $location->address = $data['address'];
+        $location = $this->setMandatory($location,$data,'name',BCValidator::NAME);
+        $location = $this->setMandatory($location,$data,'slug',BCValidator::SLUG);
+        $location = $this->setOptional($location,$data,'address');
+
+        if(!empty($data['country']))
+        {
+            $data['country'] = strtolower($data['country']);
+            if(!isset(CatalogHandler::$countries[$data['country']])) throw new Exception('Invalid country value: '.$data['country']);
+            else $location->country = $data['country'];
+        }
+
         $location->save();
         
         return $this->success($response,$location);
@@ -29,10 +36,17 @@ class LocationHandler extends MainHandler{
         $location = Location::where('slug', $data['slug'])->first();
         
         if(!$location) $location = new Location();
-        $location->slug = $data['slug'];
-        $location->name = $data['name'];
-        $location = $this->setOptional($location,$data,'country');
+        $location = $this->setMandatory($location,$data,'name',BCValidator::NAME);
+        $location = $this->setMandatory($location,$data,'slug',BCValidator::SLUG);
         $location = $this->setOptional($location,$data,'address');
+
+        if(!empty($data['country']))
+        {
+            $data['country'] = strtolower($data['country']);
+            if(!isset(CatalogHandler::$countries[$data['country']])) throw new Exception('Invalid country value: '.$data['country']);
+            else $location->country = $data['country'];
+        }
+        
         $location->save();
         
         return $this->success($response,$location);
@@ -46,9 +60,15 @@ class LocationHandler extends MainHandler{
         $location = Location::find($locationId);
         if(empty($location)) throw new Exception('Location not found');
         
+        if(!empty($data['country']))
+        {
+            $data['country'] = strtolower($data['country']);
+            if(!isset(CatalogHandler::$countries[$data['country']])) throw new Exception('Invalid country value: '.$data['country']);
+            else $location->country = $data['country'];
+        }
+        
         $location->name = $data['name'];
         $location->slug = $data['slug'];
-        //$location->country = $data['country'];
         $location->address = $data['address'];
         $location->save();
         

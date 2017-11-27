@@ -5,7 +5,7 @@ use Slim\Http\Response as Response;
 
 class CatalogHandler extends MainHandler{
     
-    private $countries = [
+    public static $countries = [
         "venezuela" => ["Caracas", "Maracaibo", "Valencia"],
         "usa" => ["Miami", "Orlando", "New York"],
         "mexico" => ["Mexico City", "Guadalajara", 'Monterrey'],
@@ -38,9 +38,9 @@ class CatalogHandler extends MainHandler{
     
     public function getAllCountries(Request $request, Response $response) {
         $aux = [];
-        foreach($this->countries as $key => $val){
+        foreach(self::countries as $key => $val){
             if(!isset($aux[strtolower($key)])) $aux[strtolower($key)] = [];
-            foreach($this->countries[$key] as $val) $aux[strtolower($key)][] = ucwords($val);
+            foreach($self::countries[$key] as $val) $aux[strtolower($key)][] = ucwords($val);
         }
         
         ksort($aux);

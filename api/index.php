@@ -283,6 +283,31 @@ $app->post('/specialty/image/{specialty_id}', array($specialtyHandler, 'updateTh
 $app->post('/specialty/profile/{profile_id}', array($specialtyHandler, 'addSpecialtiesToProfileHandler'))->add($authorization->withRequiredScope($v(['super_admin'])));
 $app->delete('/specialty/profile/{profile_id}', array($specialtyHandler, 'deleteSpecialtiesFromProfileHandler'))->add($authorization->withRequiredScope($v(['super_admin'])));
 
+
+
+
+/**
+ * Everything Related to the workshops
+ **/
+$workshopHandler = new WorkshopHandler($app);
+$app->get('/workshops/', array($workshopHandler, 'getAllWorkshopsHandler'));//->add($authorization->withRequiredScope($v(['read_basic_info'])));
+$app->get('/workshop/location/{location_id}', array($workshopHandler, 'getAllWorkshopsFromLocationHandler'))->add($authorization->withRequiredScope($v(['read_basic_info'])));
+$app->get('/workshop/{workshop_id}', array($workshopHandler, 'getSingleWorkshop'))->add($authorization->withRequiredScope($v(['read_basic_info'])));
+
+$app->post('/workshop/', array($workshopHandler, 'createWorkshopHandler'))->add($authorization->withRequiredScope($v(['super_admin'])));
+$app->post('/workshop/{workshop_id}', array($workshopHandler, 'updateWorkshopHandler'))->add($authorization->withRequiredScope($v(['super_admin'])));
+$app->delete('/workshop/{workshop_id}', array($workshopHandler, 'deleteWorkshopHandler'))->add($authorization->withRequiredScope($v(['super_admin'])));
+/**
+ * Everything Related to the workshop templates
+ **/
+$wtemplateHandler = new WtemplateHandler($app);
+$app->get('/wtemplates/', array($wtemplateHandler, 'getAllWtemplatesHandler'));//->add($authorization->withRequiredScope($v(['read_basic_info'])));
+$app->get('/wtemplate/{wtemplate_id}', array($wtemplateHandler, 'getSingleWtemplate'))->add($authorization->withRequiredScope($v(['read_basic_info'])));
+$app->post('/wtemplate/', array($wtemplateHandler, 'createWtemplateHandler'))->add($authorization->withRequiredScope($v(['super_admin'])));
+$app->post('/wtemplate/{wtemplate_id}', array($wtemplateHandler, 'updateWtemplateHandler'))->add($authorization->withRequiredScope($v(['super_admin'])));
+$app->delete('/wtemplate/{wtemplate_id}', array($wtemplateHandler, 'deleteWtemplateHandler'))->add($authorization->withRequiredScope($v(['super_admin'])));
+
+
 /**
  * Runing the app alfter all configuration
  **/
