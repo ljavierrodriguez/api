@@ -127,6 +127,7 @@ class CohortHandler extends MainHandler{
     public function updateCohortHandler(Request $request, Response $response) {
         $cohortId = $request->getAttribute('cohort_id');
         $data = $request->getParsedBody();
+        if(!$data) throw new Exception('There was an error parsing the request information (JSON)');
         
         $cohort = Cohort::find($cohortId);
         if(!$cohort) throw new Exception('Invalid cohort id: '.$cohortId);

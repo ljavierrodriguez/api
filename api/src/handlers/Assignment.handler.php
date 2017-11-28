@@ -118,6 +118,7 @@ class AssignmentHandler extends MainHandler{
     public function updateAssignmentHandler(Request $request, Response $response) {
         $assignmentId = $request->getAttribute('assignment_id');
         $data = $request->getParsedBody();
+        if(!$data)  throw new Exception('Error parsing the request (invalid JSON)');
         
         $assignment = Assignment::find($assignmentId);
         if(!$assignment) throw new Exception('Invalid assingment id');
@@ -147,7 +148,7 @@ class AssignmentHandler extends MainHandler{
         if($data['status'] == 'reviewed') 
         {
             $student = $assignment->student()->get()->first();
-            if(!$data['badges']) throw new Exception('You need to specify what badges have been earned by the student');
+            if(!isset($data['badges'])) throw new Exception('You need to specify what badges have been earned by the student');
             
             try{
                 foreach($data['badges'] as $slug => $points){

@@ -38,9 +38,9 @@ class CatalogHandler extends MainHandler{
     
     public function getAllCountries(Request $request, Response $response) {
         $aux = [];
-        foreach(self::countries as $key => $val){
+        foreach(self::$countries as $key => $val){
             if(!isset($aux[strtolower($key)])) $aux[strtolower($key)] = [];
-            foreach($self::countries[$key] as $val) $aux[strtolower($key)][] = ucwords($val);
+            foreach(self::$countries[$key] as $val) $aux[strtolower($key)][] = ucwords($val);
         }
         
         ksort($aux);
