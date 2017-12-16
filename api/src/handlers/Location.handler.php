@@ -3,6 +3,8 @@
 use Slim\Http\Request as Request;
 use Slim\Http\Response as Response;
 
+use Helpers\BCValidator;
+
 class LocationHandler extends MainHandler{
     
     protected $slug = 'Location';

@@ -25,12 +25,12 @@ class AtemplateHandler extends MainHandler{
         
         if(!empty($data['difficulty']) && !in_array($data['difficulty'], Atemplate::$possibleDifficulties))
             throw new Exception('Invalid difficulty: '.$data['difficulty']);
-
+        //print_r($data); die();
         $at = new Atemplate();
         $at = $this->setMandatory($at,$data,'project_slug', BCValidator::SLUG);
+        $at = $this->setMandatory($at,$data,'difficulty');
         $at = $this->setMandatory($at,$data,'title');
         $at = $this->setMandatory($at,$data,'duration');
-        $at = $this->setMandatory($at,$data,'difficulty');
         $at = $this->setMandatory($at,$data,'technologies');
         $at = $this->setOptional($at,$data,'excerpt');
         $at = $this->setOptional($at,$data,'wp_id');

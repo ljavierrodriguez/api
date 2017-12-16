@@ -25,7 +25,7 @@ class CohortHandler extends MainHandler{
             });
             return $this->success($response,$filtered->values());
         }
-        
+
         return $this->success($response,$cohorts);
     }
     
@@ -75,9 +75,8 @@ class CohortHandler extends MainHandler{
         $cohort = $this->setOptional($cohort,$data,'language',BCValidator::SLUG);
         $cohort = $this->setOptional($cohort,$data,'slack-url',BCValidator::URL);
         $cohort = $this->setOptional($cohort,$data,'kickoff-date',BCValidator::DATETIME);
-        $location->cohorts()->save($cohort);
-        $cohort->profile()->dissociate();
         $cohort->profile()->associate($profile);
+        $location->cohorts()->save($cohort);
         $cohort->save();
         
         return $this->success($response,$cohort);
@@ -111,9 +110,9 @@ class CohortHandler extends MainHandler{
         $cohort = $this->setOptional($cohort,$data,'language',BCValidator::SLUG);
         $cohort = $this->setOptional($cohort,$data,'slack-url',BCValidator::URL);
         $cohort = $this->setOptional($cohort,$data,'kickoff-date',BCValidator::DATETIME);
-        $location->cohorts()->save($cohort);
         $cohort->profile()->dissociate();
         $cohort->profile()->associate($profile);
+        $location->cohorts()->save($cohort);
         if(!in_array($teacher->id, $currentTeachersArray)) $cohort->teachers()->attach($teacher);
         
         foreach($currentTeachers as $ct) $cohort->teachers()->updateExistingPivot($ct->id, ['is_instructor'=>false]);
