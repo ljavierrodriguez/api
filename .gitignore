@@ -4,3 +4,6 @@ php_errors.log
 php.ini
 config.php
 php_errorlog
+
+#ignoring images
+public/img/*
