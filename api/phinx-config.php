@@ -17,6 +17,14 @@ return [
       'user' => DATABASE_USERNAME,
       'pass' => DATABASE_PASSWORD,
       'port' => DATABASE_PORT
+    ],
+    'prod' => [
+      'adapter' => DATABASE_DRIVER,
+      'host' => DATABASE_HOST,
+      'name' => DATABASE_NAME,
+      'user' => DATABASE_USERNAME,
+      'pass' => DATABASE_PASSWORD,
+      'port' => DATABASE_PORT
     ]
   ]
 ];

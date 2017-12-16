@@ -12,6 +12,16 @@ Run the migrations
 ```php
 php vendor/bin/phinx migrate -c api/phinx-config.php
 ```
+
+Status of current migrations
+```php
+php vendor/bin/phinx status -e development -c api/phinx-config.php
+```
+Set a breakpoint
+```php
+php vendor/bin/phinx breakpoint -t <20171129101240> -e development -c api/phinx-config.php
+```
+
 ## Seeders
 
 Create a new seeder
