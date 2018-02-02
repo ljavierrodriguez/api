@@ -22,7 +22,6 @@ class BCValidator{
     }
     
     public static function validate($type, $value, $name){
-        
         $result = false;
         switch($type)
         {
@@ -59,7 +58,7 @@ class BCValidator{
                 $validator = new Rules\AllOf(
                     new Rules\Date()
                 );
-                if(!$validator->validate($value)) throw new Exception('Parameter '.$name.' has an invalid value: '.$value);
+                if(!$validator->validate($value)) throw new Exception('Parameter '.$name.' has an invalid value: '.$value.' format must be YYYY-MM-DD');
                 
             break;
             case self::PHONE:
@@ -108,10 +107,9 @@ class BCValidator{
                 
             break;
             default:
-                throw new Exception('Invalid validation type: '.$type);
+                if(empty($value)) throw new Exception('Parameter '.$name.' is required');
             break;
         }
-        
         return true;
     }
     

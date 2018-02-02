@@ -7,6 +7,12 @@ class Cohort extends \Illuminate\Database\Eloquent\Model
     
     public static $possibleStages = ['not-started', 'on-prework', 'on-course','on-final-project','finished'];
     
+    public function setStageAttribute($value){
+        if(!in_array($value, self::$possibleStages)) throw new Exception('Invalid stage value: '.$value);
+        
+        $this->attributes['stage'] = strtolower($value);
+    }
+    
     public function getTeachersAttribute(){
         return $this->teachers()->get()->pluck('id');
     }

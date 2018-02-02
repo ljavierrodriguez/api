@@ -5,7 +5,7 @@ use Slim\Http\Response as Response;
 use Helpers\BCValidator;
 
 class MainHandler{
-    
+
     protected $app;
     protected $slug;
     
@@ -58,12 +58,13 @@ class MainHandler{
     
     public function setMandatory($model,$data,$key,$validator=null){
         
-        if(isset($data[$key])) 
+        if(!empty($data[$key])) 
         {
-            if($validator && BCValidator::validate($validator,$data[$key],$key)){
-                $model[$key] = $data[$key];
+            if(BCValidator::validate($validator,$data[$key],$key)){
+                $model->$key = $data[$key];
             }
-        }else throw new Exception('Mising parameter: '.$key);   
+        }
+        else throw new Exception('Mising parameter: '.$key);   
         
         return $model;
     }

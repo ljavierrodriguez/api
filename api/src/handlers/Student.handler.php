@@ -114,6 +114,9 @@ class StudentHandler extends MainHandler{
             
             $student = new Student();
             $student = $this->setOptional($student,$data,'total_points');
+            $student = $this->setOptional($student,$data,'phone');
+            $student = $this->setOptional($student,$data,'github');
+            $student = $this->setOptional($student,$data,'internal_profile_url');
             $user->student()->save($student);
             $student->cohorts()->save($cohort);
             
@@ -136,7 +139,10 @@ class StudentHandler extends MainHandler{
         $user = $this->setOptional($user,$data,'avatar_url');
         $user = $this->setOptional($user,$data,'description');
         $user->save();
+        $student = $this->setOptional($student,$data,'internal_profile_url');
         $student = $this->setOptional($student,$data,'total_points');
+        $student = $this->setOptional($student,$data,'github');
+        $student = $this->setOptional($student,$data,'phone');
         $student->save();
         
         return $this->success($response,$student);
@@ -155,6 +161,8 @@ class StudentHandler extends MainHandler{
         if(!$student) throw new Exception('Invalid student id: '.$studentId);
         
         if(!in_array($data['type'],Activity::$possibleTypes))  throw new Exception('Invalid activity type: '.$data['type']);
+        
+        if(empty($data['points_earned'])) throw new Exception('It seems you are trying to give 0 or NULL points to the student');
         
         $activity = new Activity();
         $activity = $this->setMandatory($activity,$data,'type');
