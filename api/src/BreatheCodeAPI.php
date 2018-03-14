@@ -72,7 +72,7 @@ class BreatheCodeAPI
         $this->app->storage = $storage;
         
         $server = new OAuth2\Server($storage,array(
-            'access_lifetime' => 186400
+            'access_lifetime' => (43200 * 52) //one year (52 weeks)
         ));
         
         //Enable Authorization Code credentials to allow request from authorization code.
@@ -137,8 +137,8 @@ class BreatheCodeAPI
      *
      * @return \Slim\App
      */
-    public function run()
-    {
+    public function run(){
+        
         return $this->app->run();
     }
 }

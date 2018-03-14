@@ -6,7 +6,8 @@
         "slim/php-view": "^2.2",
         "monolog/monolog": "^1.22",
         "respect/validation": "^1.1",
-        "robmorgan/phinx": "^0.9.1"
+        "robmorgan/phinx": "^0.9.1",
+        "doctrine/dbal": "^2.5"
     },
     "require-dev": {
         "phpunit/phpunit": "*"

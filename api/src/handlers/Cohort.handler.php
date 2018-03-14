@@ -35,7 +35,7 @@ class CohortHandler extends MainHandler{
         $cohort = null;
         if(is_numeric($cohortId)) $cohort = Cohort::find($cohortId);
         else $cohort = Cohort::where('slug', $cohortId)->first();
-        if(!$cohort) throw new Exception('Invalid badge slug or id: '.$cohortId);
+        if(!$cohort) throw new Exception('Invalid cohort slug or id: '.$cohortId);
         
         return $this->success($response,$cohort);
     }

@@ -7,6 +7,9 @@ error_reporting(E_ALL);
 require 'config.php';
 require '../vendor/autoload.php';
 
+header('Access-Control-Allow-Origin: https://assets.breatheco.de/');
+header('Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token , Authorization');
+
 // Run app
 $app = new \BreatheCodeAPI([
     'settings' => [
@@ -32,5 +35,8 @@ $app = new \BreatheCodeAPI([
     ],
 ]);
 
-$app->addRoutes(['assignment','atemplate','badge','catalog','cohort','location','profile','specialty','student','teacher','user','util','workshop','wtemplate']);
+$app->addRoutes([
+    'assignment','atemplate','badge','catalog','cohort','location','profile',
+    'specialty','student','teacher','user','util','workshop','wtemplate',
+    'calendar']);
 $app->run();

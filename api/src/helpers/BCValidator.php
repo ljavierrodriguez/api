@@ -58,7 +58,7 @@ class BCValidator{
                 $validator = new Rules\AllOf(
                     new Rules\Date()
                 );
-                if(!$validator->validate($value)) throw new Exception('Parameter '.$name.' has an invalid value: '.$value.' format must be YYYY-MM-DD');
+                if(!$validator->validate($value)) throw new Exception('Parameter '.$name.' has an invalid value: '.$value.' format must be Y-M-D');
                 
             break;
             case self::PHONE:
