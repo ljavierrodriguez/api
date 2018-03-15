@@ -24,7 +24,17 @@ class UserHandler extends MainHandler{
         
         return $this->success($response,null);
         
-    }    
+    }   
+    
+    public function getUserHandler(Request $request, Response $response) {
+        $breathecodeId = $request->getAttribute('user_id');
+        
+        if(is_numeric($breathecodeId)) $badge = User::find($breathecodeId);
+        else $user = User::where('username', $breathecodeId)->first();
+        if(!$user) throw new Exception('Invalid user email or id: '.$breathecodeId);
+        
+        return $this->success($response,$user);
+    }
     
     public function syncUserHandler(Request $request, Response $response) {
         $data = $request->getParsedBody();
