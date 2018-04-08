@@ -50,11 +50,10 @@ class BadgeHandler extends MainHandler{
             
         } 
         else{
-            
+            $badge = new Badge();
             $imageUrl = $this->uploadThumb($badge,$request);
             if(!$imageUrl) $imageUrl = PUBLIC_URL.'img/badge/rand/chevron-'.rand(1,21).'.png';
             
-            $badge = new Badge();
             $badge = $this->setMandatory($badge,$data,'slug',BCValidator::SLUG);
             $badge->name = $data['name'];
             $badge->icon = $imageUrl;

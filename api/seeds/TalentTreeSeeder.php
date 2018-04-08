@@ -43,6 +43,7 @@ class TalentTreeSeeder extends Seeder
         $specialty->name = 'Data Master';
         $specialty->points_to_achieve = 100;
         $specialty->description = 'Get to know the business of data';
+        $specialty->icon = 'http://www.icon.png';
         $specialty->save();
         $specialty->badges()->attach([$badge1->id, $badge2->id]);
         $specialty->profiles()->attach($profile1);
@@ -51,6 +52,7 @@ class TalentTreeSeeder extends Seeder
         $specialty2 = new Specialty();
         $specialty2->slug = 'front-end';
         $specialty2->name = 'Front End';
+        $specialty2->icon = 'http://www.icon.png';
         $specialty2->points_to_achieve = 100;
         $specialty2->description = 'Render beautiful interactive apps';
         $specialty2->save();

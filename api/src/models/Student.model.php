@@ -86,6 +86,10 @@ class Student extends \Illuminate\Database\Eloquent\Model
         return $this->hasMany('Assignment');
     }
     
+    public function tasks(){
+        return $this->hasMany('Task');
+    }
+    
     public function badges(){
         return $this->belongsToMany('Badge')->withPivot('points_acumulated')->withTimestamps();
     }

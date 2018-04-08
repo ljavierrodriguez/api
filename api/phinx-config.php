@@ -9,7 +9,14 @@ return [
   'seed_base_class' => 'Migrations\Seeder',
   'environments' => [
     'default_migration_table' => 'phinxlog',
-    'default_database' => 'dev',
+    'utest' => [
+      'adapter' => UT_DB_DRIVER,
+      'host' => UT_DB_HOST,
+      'name' => UT_DB_NAME,
+      'user' => UT_DB_USERNAME,
+      'pass' => UT_DB_PASSWORD,
+      'port' => UT_DB_PORT
+    ],
     'dev' => [
       'adapter' => DATABASE_DRIVER,
       'host' => DATABASE_HOST,

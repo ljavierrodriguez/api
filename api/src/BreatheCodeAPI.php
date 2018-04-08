@@ -26,6 +26,17 @@ class BreatheCodeAPI
     public function __construct($config=null) {
 
         $this->app = new \Slim\App($config);
+        $this->app->options('/{routes:.+}', function ($request, $response, $args) {
+            return $response;
+        });
+        $this->app->add(function ($req, $res, $next) {
+            $response = $next($req, $res);
+            return $response
+                    ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization, X-PINGOTHER')
+                    ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE')
+                    ->withHeader('Allow', 'GET, POST, PUT, DELETE');
+        });
+        
         // Bootstrap Eloquent ORM
         $container = new Illuminate\Container\Container();
         $this->app->db = $this->getNewConnection($container, $config['settings']['db']);
@@ -35,8 +46,12 @@ class BreatheCodeAPI
         $resolver->setDefaultConnection('default');
         \Illuminate\Database\Eloquent\Model::setConnectionResolver($resolver);
         
+        $forceAllScopes = false;
+        if(isset($config['authenticate']) && $config['authenticate'] == false){
+            $forceAllScopes = true;
+        } 
         $this->server = $this->startOAuthServer($config['settings']['db']);
-        $this->authorization = $this->authorization();
+        $this->authorization = $this->authorization($forceAllScopes);
 
     }
     
@@ -90,7 +105,7 @@ class BreatheCodeAPI
             {
                 $user = User::where('username', $body['username'])->first();
                 //print_r($body); die();
-                if(!$user) throw new Exception('There is no user corresponding to these credentials in the platform: '.$body['username']);
+                if(!$user) throw new Exception('Invalid credentials for: '.$body['username'], 403);
             }
             
             $response = $next($request, $response);//do the next middleware layer action
@@ -108,20 +123,23 @@ class BreatheCodeAPI
         return $server;
     }
     
-    private function authorization(){
+    private function authorization($forceAllScopes = false){
         
-        $this->scopes = function($posibleScopes){
+        $this->scopes = function($posibleScopes) use ($forceAllScopes){
         
             if(!is_array($posibleScopes)) throw new Exception('The possible scopes must be an array');
             foreach($posibleScopes as $s) if(!in_array($s, GLOBAL_CONFIG['scopes']))  throw new Exception('Invalid scope type: '.$s);
             
-            if(count($posibleScopes)==0) return $this->authorization;        
+            if($forceAllScopes || count($posibleScopes)==0) return $this->authorization;        
             
             return $this->authorization->withRequiredScope($posibleScopes);
                 
         };
-        
-        return new Middleware\Authorization($this->server, $this->app->getContainer());
+
+        if($forceAllScopes) return function ($request, $response, $next) {
+            return $next($request, $response);
+        };
+        else return new Middleware\Authorization($this->server, $this->app->getContainer());
     }
     
     public function addRoutes($globalRoutes){
@@ -138,6 +156,13 @@ class BreatheCodeAPI
      * @return \Slim\App
      */
     public function run(){
+        
+        // Catch-all route to serve a 404 Not Found page if none of the routes match
+        // NOTE: make sure this route is defined last
+        $this->app->map(['GET', 'POST', 'PUT', 'DELETE'], '/{routes:.+}', function($req, $res) {
+            $handler = $this->notFoundHandler; // handle using the default Slim page not found handler
+            return $handler($req, $res);
+        });
         
         return $this->app->run();
     }

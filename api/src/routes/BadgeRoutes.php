@@ -5,7 +5,6 @@ namespace Routes;
 class BadgeRoutes{
     
     public function __construct($app, $scopes){
-        
         /**
          * Everything Related to the student badges
          **/

@@ -3,7 +3,7 @@
 
 $config = [
     'settings' => [
-        'displayErrorDetails' => true,
+        'displayErrorDetails' => false,
 
         'logger' => [
             'name' => 'slim-app',

@@ -16,10 +16,13 @@ class MainHandler{
         
         $this->app = $app;
         
-        $c = $this->app->getContainer();
-        $c['errorHandler'] = function ($c) {
-            return array($this, 'fail');
-        };
+        if(!defined(DEBUG) || !DEBUG)
+        {
+            $c = $this->app->getContainer();
+            $c['errorHandler'] = function ($c) {
+                return array($this, 'fail');
+            };
+        }
     }
     
     public function success ($response,$data) {
@@ -35,9 +38,11 @@ class MainHandler{
     
     public function fail($request, $response, $args) {
         
-        $errorArray = array( "code"=> 500, "msg"=>  $args->getMessage() );
-                    
-        return $response->withJson($errorArray,500);
+        $failCode = $args->getCode();
+        if(!$failCode || !in_array($failCode,[500,400,401,403,501,504])) $failCode = 500;
+        $errorArray = array( "code"=> $failCode, "msg"=>  $args->getMessage() );
+        
+        return $response->withJson($errorArray,$failCode);
     }
     
     public function setOptional($model,$data,$key,$validator=null){

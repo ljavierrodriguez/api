@@ -63,5 +63,15 @@ class CalendarMigration extends Migration
             });
         }
         
+        $this->schema->enableForeignKeyConstraints();
+    }
+    
+    public function down(){
+        $this->schema->disableForeignKeyConstraints();
+        
+        $this->schema->dropIfExists('calevents');
+        $this->schema->dropIfExists('calendars');
+        
+        $this->schema->enableForeignKeyConstraints();
     }
 }
