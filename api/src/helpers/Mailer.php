@@ -10,10 +10,16 @@ use \Exception;
 class Mailer{
     
     var $templates = null;
+    var $twig = null;
     
     function __construct(){
+
+        $loader = new \Twig_Loader_Filesystem('src/emails');
+        $this->twig = new \Twig_Environment($loader);
+        
         $this->templates = [
             "password_reminder" => [
+                    "path" => "remind.html",
                     "subject" => "You password reminder",
                     "body" => "<p>You password reminder</p>",
                     "alt" => "Your alternative text"
@@ -21,15 +27,18 @@ class Mailer{
         ];
     }
     
-    function getTemplate($templateSlug){
+    function getTemplate($templateSlug, $args=[]){
         if(!isset($this->templates[$templateSlug])) throw new Exception('Invalid email template: '.$templateSlug);
+        
+        $template = $this->twig->load($this->templates[$templateSlug]['path']);
+        $this->templates[$templateSlug]['body'] = $template->render($args);
         
         return $this->templates[$templateSlug];
     }
     
-    function sendAPI($templateSlug,$to){
+    function sendAPI($templateSlug,$to,$args=[]){
         
-        $template = $this->getTemplate($templateSlug);
+        $template = $this->getTemplate($templateSlug, $args);
         
         $client = SesClient::factory(array(
             'version'=> 'latest',     
