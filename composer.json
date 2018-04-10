@@ -7,7 +7,10 @@
         "monolog/monolog": "^1.22",
         "respect/validation": "^1.1",
         "robmorgan/phinx": "dev-master",
-        "doctrine/dbal": "^2.5"
+        "doctrine/dbal": "^2.5",
+        "phpmailer/phpmailer": "^6.0",
+        "daniel-zahariev/php-aws-ses": "^0.9.1",
+        "aws/aws-sdk-php": "^3.54"
     },
     "require-dev": {
         "phpunit/phpunit": "*"

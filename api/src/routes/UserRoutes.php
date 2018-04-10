@@ -16,6 +16,8 @@ class UserRoutes{
         $app->post('/credentials/user/{user_id}', array($userHandler, 'updateCredentialsHandler'))->add($scopes(['sync_data']));
         $app->delete('/user/{user_id}', array($userHandler, 'deleteUser'))->add($scopes(['super_admin']));
         
+        $app->post('/remind/user/{user_email}', array($userHandler, 'remindPassword'));
+        
         $app->post('/user/sync', array($userHandler, 'syncUserHandler'))->add($scopes(['sync_data']));
         $app->post('/settings/user/{user_id}', array($userHandler, 'updateUserSettings'))->add($scopes(['user_profile']));
         $app->get('/settings/user/{user_id}', array($userHandler, 'getUserSettings'))->add($scopes(['user_profile']));

@@ -2,6 +2,7 @@
 
 use Slim\Http\Request as Request;
 use Slim\Http\Response as Response;
+use Helpers\Mailer;
 
 class UserHandler extends MainHandler{
     
@@ -17,6 +18,11 @@ class UserHandler extends MainHandler{
                 $bcUser = User::where('username', $user['username'])->first();
                 if(!$bcUser) throw new Exception('This token does not correspond to any users');
                 
+                if($bcUser->type == 'student')
+                {
+                    return $this->success($response,$bcUser->student);
+                }
+
                 return $this->success($response,$bcUser);
                 
             }else throw new Exception('This token does not correspond to any users');
@@ -127,6 +133,28 @@ class UserHandler extends MainHandler{
         return $this->success($response,$user);
     }    
     
+    public function remindPassword(Request $request, Response $response) {
+        $userEmail = $request->getAttribute('user_email');
+        if(empty($userEmail)) throw new Exception('There was an error retrieving the user_email');
+        
+        else $user = User::where('username', $userEmail)->first();
+        if(!$user) throw new Exception('Invalid user email: '.$userEmail);
+        
+        $storage = $this->app->storage;
+        $newPassword = $this->randomPassword();
+        
+        $mailer = new Mailer();
+        $result = $mailer->sendAPI("password_reminder", ["email"=> $user->username, "name"=> "Random User"]);
+        
+        if($result){
+            $oauthUser = $storage->setUserWithoutHash($user->username, $newPassword, null, null);
+            if(empty($oauthUser)) throw new Exception('Unable to update User credentials');
+        }
+        else throw new Exception('Unable to change password');
+
+        return $this->success($response,$user);
+    }    
+    
     public function updateUserSettings(Request $request, Response $response) {
         $userId = $request->getAttribute('user_id');
         $data = $request->getParsedBody();
@@ -206,5 +234,14 @@ class UserHandler extends MainHandler{
         
     }
     
-    
+    private function randomPassword() {
+        $alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
+        $pass = array(); //remember to declare $pass as an array
+        $alphaLength = strlen($alphabet) - 1; //put the length -1 in cache
+        for ($i = 0; $i < 8; $i++) {
+            $n = rand(0, $alphaLength);
+            $pass[] = $alphabet[$n];
+        }
+        return implode($pass); //turn the array into a string
+    }
 }
