@@ -50,7 +50,11 @@ class Mailer{
         
         $client = SesClient::factory(array(
             'version'=> 'latest',     
-            'region' => 'us-west-2'
+            'region' => 'us-west-2',
+            'credentials' => [
+                'key'    => S3_KEY,
+                'secret' => S3_SECRETE,
+            ]
         ));
         
         try {
