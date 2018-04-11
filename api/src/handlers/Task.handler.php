@@ -86,7 +86,8 @@ class TaskHandler extends MainHandler{
         $tasks = $this->app->db->table('tasks')
         ->where([
             'tasks.student_user_id' => $student->user_id,
-            'tasks.associated_slug' => $data['associated_slug']
+            'tasks.associated_slug' => $data['associated_slug'],
+            'tasks.type' => $data['type']
         ])->select('tasks.id')->get();
         if(count($tasks)>0) throw new Exception("There is already a task for this resource '".$data['associated_slug']."' and the student '".$student->user_id."'");
         
