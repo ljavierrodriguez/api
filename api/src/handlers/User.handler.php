@@ -133,26 +133,85 @@ class UserHandler extends MainHandler{
         return $this->success($response,$user);
     }    
     
-    public function remindPassword(Request $request, Response $response) {
+    public function emailRemind(Request $request, Response $response) {
         $userEmail = $request->getAttribute('user_email');
         if(empty($userEmail)) throw new Exception('There was an error retrieving the user_email');
         
         else $user = User::where('username', $userEmail)->first();
         if(!$user) throw new Exception('Invalid user email: '.$userEmail);
         
-        $storage = $this->app->storage;
-        $newPassword = $this->randomPassword();
+        $token = new Passtoken();
+        $token->token = md5($this->randomPassword());
+        $token->user()->associate($user);
+        $token->save();
         
         $mailer = new Mailer();
-        $result = $mailer->sendAPI("password_reminder", ["email"=> $user->username, "name"=> "Random User"]);
+        $result = $mailer->sendAPI("password_reminder", [
+            "email"=> $user->username, 
+            "url"=> ASSETS_URL.'/apps/remind/?id='.$user->id.'&t='.$token->token
+        ]);
         
-        if($result){
-            $oauthUser = $storage->setUserWithoutHash($user->username, $newPassword, null, null);
-            if(empty($oauthUser)) throw new Exception('Unable to update User credentials');
-        }
-        else throw new Exception('Unable to change password');
+        if(!$result) throw new Exception('Unable to send email');
+        return $this->success($response,'ok');
+    }    
+    
+    public function getRemindToken(Request $request, Response $response) {
+        $userId = $request->getAttribute('user_id');
+        if(empty($userId)) throw new Exception('There was an error retrieving the user_id');
+        
+        $token = $request->getQueryParam('token', null);
+        if(!isset($token)) throw new Exception('Missing params');
+        
+        $user = $this->app->db->table('users')
+            ->join('passtokens', 'users.id', '=', 'passtokens.user_id')
+            ->where('users.id', $userId)
+            ->where('passtokens.token', $token)
+            ->select('users.*', 'passtokens.*')
+            ->get()->first();
+        if(!$user) throw new Exception('Invalid user or token or both');
 
+        $user = User::find($userId);
+        //TODO: The new token should expire after 15 min
+        //$user->passtokens()->delete();
+
+        $newToken = new Passtoken();
+        $newToken->token = md5($this->randomPassword());
+        $newToken->save();
+        $newToken->user()->associate($user->id);
+        $newToken->save();
+        if(!$newToken) throw new Exception('There was a problem');
+        
+        $user->token = $newToken->token;
+        
         return $this->success($response,$user);
+    }    
+    
+    public function changePassword(Request $request, Response $response) {
+        $userId = $request->getAttribute('user_id');
+        if(empty($userId)) throw new Exception('There was an error retrieving the user_id');
+        
+        else $user = User::where('id', $userId)->first();
+        if(!$user) throw new Exception('Invalid user id: '.$userId);
+        
+        $body = $request->getParsedBody();
+        if(!isset($body['password'])) throw new Exception('Missing param: password');
+        if(!isset($body['repeat'])) throw new Exception('Missing param: repeat');
+        if(!isset($body['token'])) throw new Exception('Missing param: token');
+        if($body['repeat'] != $body['password']) throw new Exception('Passwords must match');
+        
+        $storage = $this->app->storage;
+        $oauthUser = $storage->setUser($user->username, $body['password'], null, null);
+        if(empty($oauthUser)) throw new Exception('Unable to update User credentials');
+        else{
+            $user->passtokens()->delete();
+
+            $mailer = new Mailer();
+            $result = $mailer->sendAPI("password_changed", ["email"=> $user->username]);
+            
+            if($result) return $this->success($response,$user);
+            else return $this->success($response,$user);
+        }
+
     }    
     
     public function updateUserSettings(Request $request, Response $response) {

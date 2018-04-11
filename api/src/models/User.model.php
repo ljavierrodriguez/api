@@ -36,4 +36,8 @@ class User extends \Illuminate\Database\Eloquent\Model
     public function teacher(){
         return $this->hasOne('Teacher');
     }
+    
+    public function passtokens(){
+        return $this->hasMany('Passtoken');
+    }
 }

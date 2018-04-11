@@ -38,11 +38,12 @@ class TaskHandler extends MainHandler{
         if(!$student) throw new Exception('Invalid student id');
         
         $data = $request->getParsedBody();
-        if(empty($data)) throw new Exception('There was an error retrieving the request content, it needs to be a valid JSON');
-        
+        if(!is_array($data)) throw new Exception('There was an error retrieving the request content, it needs to be a valid JSON');
+
         $result = null;
         if(isset($data[0])) $result = $this->_addMultipleTodo($student, $data);
-        else $result = $this->_addSingleTodo($student, $data);
+        else if(!empty($data)) $result = $this->_addSingleTodo($student, $data);
+        else $result = "Nothing to add";
         
         return $this->success($response,$result);
     }
@@ -105,8 +106,8 @@ class TaskHandler extends MainHandler{
     }
     
     private function _addMultipleTodo($student, $todos){
-        
         $results = [];
+        if(count($todos)==0) return $results;
         foreach($todos as $singleTodo)
             $results[] = $this->_addSingleTodo($student, $singleTodo);
 

@@ -19,24 +19,32 @@ class Mailer{
         
         $this->templates = [
             "password_reminder" => [
-                    "path" => "remind.html",
+                    "path" => "remind_pass_email.html",
                     "subject" => "You password reminder",
                     "body" => "<p>You password reminder</p>",
                     "alt" => "Your alternative text"
+                ],
+            "password_changed" => [
+                    "path" => "password_changed.html",
+                    "subject" => "You password has been successfully changed",
+                    "body" => "<p>We are letting you know that you password was successfully changed</p>",
+                    "alt" => "We are letting you know that you password was successfully changed"
                 ]
         ];
     }
     
     function getTemplate($templateSlug, $args=[]){
         if(!isset($this->templates[$templateSlug])) throw new Exception('Invalid email template: '.$templateSlug);
-        
         $template = $this->twig->load($this->templates[$templateSlug]['path']);
         $this->templates[$templateSlug]['body'] = $template->render($args);
         
+        if(!$this->templates[$templateSlug]['body']) throw new Exception('Could not: '.$templateSlug);
         return $this->templates[$templateSlug];
     }
     
-    function sendAPI($templateSlug,$to,$args=[]){
+    function sendAPI($templateSlug,$args=[]){
+        
+        if(!isset($args['email'])) throw new Exception('You have to specify the recipient email');
         
         $template = $this->getTemplate($templateSlug, $args);
         
@@ -49,7 +57,7 @@ class Mailer{
              $result = $client->sendEmail([
             'Destination' => [
                 'ToAddresses' => [
-                    $to['email'],
+                    $args['email'],
                 ],
             ],
             'Message' => [

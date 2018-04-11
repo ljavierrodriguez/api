@@ -34,6 +34,7 @@ class ExtendedPDO extends \OAuth2\Storage\Pdo{
     // use a secure hashing algorithm when storing passwords. Override this for your application
     protected function hashPassword($password)
     {
+        //print_r($password); die();
         $hasher = new PasswordHash(8, true);
         return $hasher->HashPassword( trim( $password ) );
     }

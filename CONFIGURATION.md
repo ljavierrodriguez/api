@@ -20,16 +20,16 @@ php vendor/bin/phinx create MyFirstMigration -c api/phinx-config.php
 
 Run the migrations
 ```php
-php vendor/bin/phinx migrate -e utest -c api/phinx-config.php
+php vendor/bin/phinx migrate -e utest -c api/phinx-config.php -e utest
 ```
 
 Status of current migrations for enviroment "utest"
 ```php
-php vendor/bin/phinx status -e utest -c api/phinx-config.php
+php vendor/bin/phinx status -c api/phinx-config.php -e utest
 ```
 Set a breakpoint for environment "utest"
 ```php
-php vendor/bin/phinx breakpoint -t <20171129101240> -e utest -c api/phinx-config.php
+php vendor/bin/phinx breakpoint -t <20171129101240> -c api/phinx-config.php -e utest
 ```
 
 ## Seeders

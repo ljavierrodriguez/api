@@ -292,7 +292,6 @@ class MyFirstMigration extends Migration
         $this->schema->dropIfExists('requierments');
         $this->schema->dropIfExists('profiles');
         $this->schema->dropIfExists('profile_specialty');
-        
     }
     
     

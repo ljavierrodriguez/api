@@ -44,6 +44,18 @@ class Migration extends AbstractMigration {
                     'collation' => 'utf8_unicode_ci',
                 ];
             break;
+            case "dev":
+                return [
+                    'driver'    => DATABASE_DRIVER,
+                    'host'      => DATABASE_HOST,
+                    'port'      => DATABASE_PORT,
+                    'database'  => DATABASE_NAME,
+                    'username'  => DATABASE_USERNAME,
+                    'password'  => DATABASE_PASSWORD,
+                    'charset'   => 'utf8',
+                    'collation' => 'utf8_unicode_ci',
+                ];
+            break;
             default:
                 throw new \Exception('Please specify an environment: '.$environment);
             break;
