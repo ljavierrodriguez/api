@@ -38,7 +38,7 @@ class BCValidator{
                 
                 $validator = new Rules\AllOf(
                     new Rules\Slug(),
-                    new Rules\Length(1, 30)
+                    new Rules\Length(1, 100)
                 );
                 if(!$validator->validate($value)) throw new Exception('Parameter '.$name.' has an invalid value: '.$value);
                 

@@ -99,15 +99,16 @@ class UserHandler extends MainHandler{
         $data = $request->getParsedBody();
         if(empty($data)) throw new Exception('There was an error retrieving the request content, it needs to be a valid JSON');
 
-        if(!in_array($data['type'],['teacher','student'])) throw new Exception('The user type has to be a "teacher" or "student", "'.$data['type'].'" given');
+        if(!in_array($data['type'],User::$possibleTypes)) throw new Exception('Invalid user type: "'.$data['type'].'" given');
     
         $user = User::where('username', $data['email'])->first();
         if(!$user)
         {
             $user = new User;
-            $user->wp_id = $data['wp_id'];
+            $user = $this->setOptional($user,$data,'wp_id');
+            $user = $this->setOptional($user,$data,'full_name');
+            $user = $this->setMandatory($user,$data,'type',BCValidator::SLUG);
             $user->username = $data['email'];
-            $user->type = $data['type'];
             $user->save();
         }
         

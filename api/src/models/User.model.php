@@ -5,6 +5,7 @@ class User extends \Illuminate\Database\Eloquent\Model
     protected $appends = ['avatar_url'];
     protected $hidden = ['settings'];
 
+    public static $possibleTypes = ['teacher','student','admission','student_engagement'];
     /**
      * Get either a Gravatar URL or complete image tag for a specified email address.
      *
