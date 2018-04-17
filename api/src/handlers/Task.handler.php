@@ -109,8 +109,15 @@ class TaskHandler extends MainHandler{
     private function _addMultipleTodo($student, $todos){
         $results = [];
         if(count($todos)==0) return $results;
-        foreach($todos as $singleTodo)
-            $results[] = $this->_addSingleTodo($student, $singleTodo);
+        foreach($todos as $singleTodo){
+            try{
+                $results[] = $this->_addSingleTodo($student, $singleTodo);
+            }
+            catch(Exception $e){
+                foreach($results as $task) $task->delete();
+                throw $e;
+            }
+        }
 
         return $results;
     }
