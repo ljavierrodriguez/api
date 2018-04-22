@@ -11,6 +11,7 @@ class UserRoutes{
          **/
         $userHandler = new \UserHandler($app);
         $app->get('/me', array($userHandler, 'getMe'))->add($scopes([]));
+        $app->get('/user/', array($userHandler, 'getAllUsersHandler'))->add($scopes(['read_basic_info']));
         $app->get('/user/{user_id}', array($userHandler, 'getUserHandler'))->add($scopes(['read_basic_info']));
         $app->post('/credentials/user/', array($userHandler, 'createCredentialsHandler'))->add($scopes(['super_admin']));
         $app->post('/credentials/user/{user_id}', array($userHandler, 'updateCredentialsHandler'))->add($scopes(['sync_data']));

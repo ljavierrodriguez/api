@@ -3,6 +3,7 @@
 use Slim\Http\Request as Request;
 use Slim\Http\Response as Response;
 use Helpers\Mailer;
+use Helpers\BCValidator;
 
 class UserHandler extends MainHandler{
     
@@ -37,6 +38,11 @@ class UserHandler extends MainHandler{
         return $this->success($response,null);
         
     }   
+    
+    public function getAllUsersHandler(Request $request, Response $response) {
+        $users = User::all();        
+        return $this->success($response,$users);
+    }
     
     public function getUserHandler(Request $request, Response $response) {
         $breathecodeId = $request->getAttribute('user_id');
@@ -104,21 +110,28 @@ class UserHandler extends MainHandler{
         $user = User::where('username', $data['email'])->first();
         if(!$user)
         {
-            $user = new User;
+            $user = new User();
             $user = $this->setOptional($user,$data,'wp_id');
             $user = $this->setOptional($user,$data,'full_name');
             $user = $this->setMandatory($user,$data,'type',BCValidator::SLUG);
             $user->username = $data['email'];
             $user->save();
+            
+            $token = new Passtoken();
+            $token->token = md5($this->randomPassword());
+            $token->user()->associate($user);
+            $token->save();
+            
+            $mailer = new Mailer();
+            $callback = ($data['type'] == 'student') ? STUDENT_URL : ADMIN_URL;
+            $result = $mailer->sendAPI("invite", [
+                "email"=> $user->username, 
+                "url"=> ASSETS_URL.'/apps/remind/?id='.$user->id.'&t='.$token->token.'&invite=true&callback='.base64_encode($callback)
+            ]);
+            
         }
+        else throw new Exception('User already exists with email: '.$data['email']);
         
-        $storage = $this->app->storage;
-        $oauthUser = $storage->setUserWithoutHash($data['email'], $data['password'], null, null);
-        if(empty($oauthUser)){
-            $user->delete();
-            throw new Exception('Unable to create UserCredentials');
-        }
-
         return $this->success($response,$user);
     }    
     
@@ -153,9 +166,10 @@ class UserHandler extends MainHandler{
         $token->save();
         
         $mailer = new Mailer();
+        $callback = ($data['type'] == 'student') ? STUDENT_URL : ADMIN_URL;
         $result = $mailer->sendAPI("password_reminder", [
             "email"=> $user->username, 
-            "url"=> ASSETS_URL.'/apps/remind/?id='.$user->id.'&t='.$token->token
+            "url"=> ASSETS_URL.'/apps/remind/?id='.$user->id.'&t='.$token->token.'&callback='.base64_encode($callback)
         ]);
         
         if(!$result) throw new Exception('Unable to send email');

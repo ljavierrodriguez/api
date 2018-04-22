@@ -29,6 +29,12 @@ class Mailer{
                     "subject" => "You password has been successfully changed",
                     "body" => "<p>We are letting you know that you password was successfully changed</p>",
                     "alt" => "We are letting you know that you password was successfully changed"
+                ],
+            "invite" => [
+                    "path" => "invite.html",
+                    "subject" => "You have been invited to BreatheCo.de",
+                    "body" => "<p>You have been invited to BreatheCo.de</p>",
+                    "alt" => "You have been invited to BreatheCo.de"
                 ]
         ];
     }

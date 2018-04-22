@@ -17,6 +17,8 @@ class TaskMigration extends Migration
                 $table->string('type', 30); // ['project', 'quiz', 'challenge', 'lesson', 'replit'];
                 $table->string('title', 200);
                 $table->string('associated_slug', 200);
+                $table->string('github_url', 255)->nullable();
+                $table->string('revision_status', 200)->default('pending'); // ['pending','approved','rejected'];
                 $table->unsignedBigInteger('student_user_id')->nullable();
                 $table->text('description');
                 $table->timestamps();

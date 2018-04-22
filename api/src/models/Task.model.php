@@ -10,6 +10,7 @@ class Task extends \Illuminate\Database\Eloquent\Model
      */
     public static $possibleTypes = ['assignment', 'quiz', 'challenge', 'lesson', 'replit'];
     public static $possibleStages = ['pending','done'];
+    public static $revisionStages = ['pending','approved','rejected'];
     
     public function getURLAttribute(){
         

@@ -60,8 +60,15 @@ class TaskHandler extends MainHandler{
         if(!in_array($data['status'],Task::$possibleStages)) throw new Exception("Invalid status ".$data['status'].", the only valid status are: ".implode(',',Task::$possibleStages));
 
         try{
+            if($task->type === 'assignment' and $data['status'] === 'done'){
+                if(empty($data['github_url'])) throw new Exception("To mark an assignment as done, you need to specify the github url");
+                $task->github_url = $data['github_url'];
+                $task->revision_status = Task::$revisionStages[0]; //pending
+            }
+
             $task->status = $data['status'];
             $task->save();
+
         }
         catch(Exception $e){
             throw $e;

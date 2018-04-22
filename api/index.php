@@ -11,6 +11,7 @@ $origins = [
     'https://assets.breatheco.de/',
     'https://student.breatheco.de',
     'https://admin.breatheco.de',
+    'https://bc-js-clients-alesanchezr.c9users.io',
     'https://bc-admin-alesanchezr.c9users.io',
     'https://coding-editor-alesanchezr.c9users.io'
 ];
