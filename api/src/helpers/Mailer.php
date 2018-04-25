@@ -2,7 +2,6 @@
 
 namespace Helpers;
 
-require_once('src/emails/templates.php');
 use Aws\Ses\SesClient;
 use Aws\Ses\Exception\SesException;
 //use PHPMailer\PHPMailer\PHPMailer;
@@ -17,7 +16,7 @@ class Mailer{
 
         $loader = new \Twig_Loader_Filesystem('src/emails');
         $this->twig = new \Twig_Environment($loader);
-        
+        require_once('src/emails/templates.php');
         $this->templates = $emailTemplates;
     }
     
