@@ -1,8 +1,8 @@
 <?php
 
-require_once('src/emails/templates.php');
 namespace Helpers;
 
+require_once('src/emails/templates.php');
 use Aws\Ses\SesClient;
 use Aws\Ses\Exception\SesException;
 //use PHPMailer\PHPMailer\PHPMailer;
