@@ -1,5 +1,8 @@
-# BreatheCode API
+# ![alt text](/apis/img/images.php?blob&random&cat=icon&tags=breathecode,128) BreatheCode API
+
+This repository contains all the endpoints available in the main BreatheCode API
+you can find a details explanation of all the endpoints here:
+
+[https://documenter.getpostman.com/view/1757920/talent-tree-api/RVu2kq1k](https://documenter.getpostman.com/view/1757920/talent-tree-api/RVu2kq1k)
 
 
-Upgrade workspace to PHP verison 7
-https://community.c9.io/t/how-to-upgrade-a-php-workspace-to-version-7/8570
