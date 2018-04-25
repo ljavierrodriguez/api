@@ -1,7 +1,7 @@
 <?php
 namespace Tests;
 
-class BadgeTest extends BaseTestCase
+class TalentTreeBTest extends BaseTestCase
 {
     protected $app;
     

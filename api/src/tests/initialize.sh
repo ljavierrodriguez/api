@@ -11,5 +11,4 @@ php vendor/bin/phinx migrate -e utest -c api/phinx-config.php -t 20180205162021
 php vendor/bin/phinx migrate -e utest -c api/phinx-config.php -t 20180331233506
 
 # Test for Talent Tree
-./vendor/bin/phpunit api/src/tests/TalentTreeATest.php --colors
-./vendor/bin/phpunit api/src/tests/TalentTreeBTest.php --colors
+./vendor/bin/phpunit api/src/tests/ --colors

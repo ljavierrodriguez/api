@@ -91,6 +91,7 @@ class BaseTestCase extends TestCase {
         $responseObj = json_decode($responseBody);
         
         $this->assertSame($response->getStatusCode(), 200);
+        //if($response->getStatusCode() != 200){ print_r($responseBody); die(); }
         $this->assertSame($responseObj->code, 200);
         
         return $responseObj;

@@ -43,6 +43,10 @@ class Student extends \Illuminate\Database\Eloquent\Model
         return $this->cohorts()->get()->pluck('slug');
     }
     
+    public function getFullCohortsAttribute(){
+        return $this->cohorts()->get();
+    }
+    
     public function updateBasedOnActivity(){
         
         $pointsPerBadge = array();

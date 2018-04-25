@@ -22,7 +22,7 @@ class UserHandler extends MainHandler{
                 if($bcUser->type == 'student')
                 {
                     $bcUser->student->type = 'student';
-                    return $this->success($response,$bcUser->student);
+                    return $this->success($response,$bcUser->student->makeHidden('cohorts')->append('full_cohorts'));
                 }
                 else if($bcUser->type == 'teacher'){
                     
