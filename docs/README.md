@@ -1,4 +1,4 @@
-# ![alt text](/apis/img/images.php?blob&random&cat=icon&tags=breathecode,128) BreatheCode API
+# ![alt text](https://assets.breatheco.de/apis/img/images.php?blob&random&cat=icon&tags=breathecode,32) BreatheCode API
 
 This repository contains all the endpoints available in the main BreatheCode API
 you can find a details explanation of all the endpoints here:
@@ -60,7 +60,9 @@ $ php vendor/bin/phinx seed:run -s TalentTreeSeeder -c api/phinx-config.php -e u
 ```
 
 ### Running PHP on Sitegrground
+```
 For PHP 7 : /usr/local/php70/bin/php-cli
 For PHP 7.1: /usr/local/php70/bin/php-cli
 
 /usr/local/php70/bin/php-cli vendor/bin/phinx migrate -e utest -c api/phinx-config.php
+```

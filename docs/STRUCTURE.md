@@ -1,5 +1,6 @@
 [<-- back to main readme ](./README.md)
 
+# ![alt text](https://assets.breatheco.de/apis/img/images.php?blob&random&cat=icon&tags=breathecode,32) BreatheCode API
 # Project Structure
 
 Most of the code is written inside the /api/src/ directory:

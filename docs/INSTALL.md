@@ -1,6 +1,7 @@
 [<-- back to main readme ](./README.md)
+# ![alt text](https://assets.breatheco.de/apis/img/images.php?blob&random&cat=icon&tags=breathecode,32) BreatheCode API
 
-# Installation
+## Installation
 
 1. Clone the repo
 2. Composer install
