@@ -22,4 +22,8 @@ Most of the code is written inside the /api/src/ directory:
 - For sending emails: [Amazon Simple Email Service](https://aws.amazon.com/ses/) and the tempaltes are in /api/src/emails/
 - For testing we are using PHPUnit and the tests are located at /src/tests
 
+## Continuing Integration
+
+We are using [buddy.works](https://buddy.works/) for CI, it runs the migrations, then tests and if it succeds it pull from master into the production server.
+
 
