@@ -56,3 +56,5 @@ define('GLOBAL_CONFIG',[
     ]
 ]);
 ```
+4. Run the migrations
+5. Run the tests
