@@ -5,6 +5,7 @@
 
 1. Clone the repo
 2. Composer install
+3. Config your database (MySQL and SQLite)
 3. Create a config.php with the inital environment variables according to your
 ```php
 define('DEBUG',true);
