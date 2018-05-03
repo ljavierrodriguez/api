@@ -1,5 +1,7 @@
 # ![alt text](https://assets.breatheco.de/apis/img/images.php?blob&random&cat=icon&tags=breathecode,32) BreatheCode API
 
+### [Installation Instructions](./INSTALL.md) - [Project Structue](./STRUCTURE.md)
+
 This repository contains all the endpoints available in the main BreatheCode API
 you can find a details explanation of all the endpoints here:
 
@@ -10,9 +12,6 @@ you can find a details explanation of all the endpoints here:
 1. PHP 7 ([click here if you are using cloud 9](https://community.c9.io/t/how-to-upgrade-a-php-workspace-to-version-7/8570)
 2. Composer
 3. MySQL (for now)
-
-### [Installation Instructions](./INSTALL.md)
-### [Project Structue](./STRUCTURE.md)
  
 ### Tests
 
