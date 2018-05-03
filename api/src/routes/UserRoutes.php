@@ -12,7 +12,10 @@ class UserRoutes{
         $userHandler = new \UserHandler($app);
         $app->get('/me', array($userHandler, 'getMe'))->add($scopes([]));
         $app->get('/user/', array($userHandler, 'getAllUsersHandler'))->add($scopes(['read_basic_info']));
+        $app->put('/user/', array($userHandler, 'createUserHandler'))->add($scopes(['read_basic_info']));
+        $app->post('/user/sync', array($userHandler, 'syncUserHandler'))->add($scopes(['sync_data']));
         $app->get('/user/{user_id}', array($userHandler, 'getUserHandler'))->add($scopes(['read_basic_info']));
+        $app->post('/user/{user_id}', array($userHandler, 'updateUserHandler'))->add($scopes(['read_basic_info']));
         $app->post('/credentials/user/', array($userHandler, 'createCredentialsHandler'))->add($scopes(['super_admin']));
         $app->post('/credentials/user/{user_id}', array($userHandler, 'updateCredentialsHandler'))->add($scopes(['sync_data']));
         $app->delete('/user/{user_id}', array($userHandler, 'deleteUser'))->add($scopes(['super_admin']));
@@ -21,7 +24,6 @@ class UserRoutes{
         $app->get('/remind/user/{user_id}', array($userHandler, 'getRemindToken'))->add($scopes(['read_basic_info']));
         $app->post('/user/{user_id}/password', array($userHandler, 'changePassword'));
         
-        $app->post('/user/sync', array($userHandler, 'syncUserHandler'))->add($scopes(['sync_data']));
         $app->post('/settings/user/{user_id}', array($userHandler, 'updateUserSettings'))->add($scopes(['user_profile']));
         $app->get('/settings/user/{user_id}', array($userHandler, 'getUserSettings'))->add($scopes(['user_profile']));
 

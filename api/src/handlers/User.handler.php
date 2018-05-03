@@ -54,6 +54,21 @@ class UserHandler extends MainHandler{
         return $this->success($response,$user);
     }
     
+    public function createUserHandler(Request $request, Response $response) {
+        
+        $data = $request->getParsedBody();
+        if(empty($data)) throw new Exception('There was an error retrieving the request content, it needs to be a valid JSON');
+        
+        $user = new User();
+        $user = $this->setMandatory($user,$data,'type',BCValidator::SLUG);
+        $user = $this->setMandatory($user,$data,'full_name',BCValidator::NAME);
+        $user = $this->setMandatory($user,$data,'username',BCValidator::EMAIL);
+        //$user = $this->setMandatory($user,$data,'phone',BCValidator::PHONE);
+        $user->save();
+        
+        return $this->success($response,$user);
+    }
+    
     public function syncUserHandler(Request $request, Response $response) {
         $data = $request->getParsedBody();
         if(empty($data)) throw new Exception('There was an error retrieving the request content, it needs to be a valid JSON');
@@ -149,6 +164,21 @@ class UserHandler extends MainHandler{
         $oauthUser = $storage->setUserWithoutHash($user->username, $data['password'], null, null);
         
         if(empty($oauthUser)) throw new Exception('Unable to update User credentials');
+
+        return $this->success($response,$user);
+    }    
+    
+    public function updateUserHandler(Request $request, Response $response) {
+        $userId = $request->getAttribute('user_id');
+        if(empty($userId)) throw new Exception('There was an error retrieving the user_id');
+        
+        $data = $request->getParsedBody();
+        
+        $user = User::find($userId);
+        if(!$user) throw new Exception('Invalid user id: '.$userId);
+        
+        $user = $this->setOptional($user,$data,'full_name',BCValidator::NAME);
+        $user->save();
 
         return $this->success($response,$user);
     }    

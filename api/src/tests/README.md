@@ -33,12 +33,25 @@ function testForCreateBadge(){
           "technologies" => "css, html",
           "description" => "wululu"
     ];
-    $badge = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/badge/'], $body);
+    $badge = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/badge/'], $body)->expectSuccess();
 }
 ```
 
-The **mockAPICall** method is available to mock an API call, and it already asserts for a 200 response code,
-you will have to take care of the rest of the assertions, for example here we can check if the badge contains 
+The **mockAPICall** method is available to mock an API call.
+
+You can specify if you expect the call to be a success or to return an error by doing:
+
+```php
+//for success
+$badge = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/badge/'], $body)->expectSuccess();
+
+//for failure
+$badge = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/badge/'], $body)->expectFailure();
+```
+
+And it will asserts for a 200 response code or a 500 if failure.
+
+You will have to take care of the rest of the assertions, for example here we can check if the badge contains 
 name equal to what we sent in the body of the request.
 ```php
 $this->assertTrue($badge->name == $body["name"]); 

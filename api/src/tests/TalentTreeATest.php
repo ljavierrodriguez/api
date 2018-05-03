@@ -23,7 +23,7 @@ class TalentTreeATest extends BaseTestCase
               "technologies" => "css, html",
               "description" => "wululu"
         ];
-        $response = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/badge/'], $body);
+        $response = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/badge/'], $body)->expectSuccess();
         return $response->data;
     }
     
@@ -38,7 +38,7 @@ class TalentTreeATest extends BaseTestCase
               "technologies" => "css",
               "description" => "welele"
         ];
-        $responseObj = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/badge/'.$badge->id], $body);
+        $responseObj = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/badge/'.$badge->id], $body)->expectSuccess();
         $updatedBadge = $responseObj->data;
         
         //check that the updated badge matches the values that we wanted

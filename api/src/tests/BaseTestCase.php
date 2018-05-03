@@ -90,11 +90,8 @@ class BaseTestCase extends TestCase {
         $responseBody = $response->getBody();
         $responseObj = json_decode($responseBody);
         
-        $this->assertSame($response->getStatusCode(), 200);
         //if($response->getStatusCode() != 200){ print_r($responseBody); die(); }
-        $this->assertSame($responseObj->code, 200);
-        
-        return $responseObj;
+        return new AssertResponse($this, $response, $responseObj);
     }
     
     protected function assertContainsProperties($obj, $properties){
@@ -102,5 +99,26 @@ class BaseTestCase extends TestCase {
         foreach($properties as $prop) if(!property_exists($obj, $prop)) return false;
         
         return true;
+    }
+}
+
+class AssertResponse{
+    private $test;
+    private $response;
+    private $responseObj;
+    function __construct($test, $response, $responseObj){
+        $this->test = $test;
+        $this->response = $response;
+        $this->responseObj = $responseObj;
+    }
+    function expectSuccess(){
+        $this->test->assertSame($this->response->getStatusCode(), 200);
+        $this->test->assertSame($this->responseObj->code, 200);
+        return $this->responseObj;
+    }
+    function expectFailure($test, $response, $responseObj){
+        $this->test->assertSame($this->response->getStatusCode(), 500);
+        $this->test->assertSame($this->responseObj->code, 500);
+        return $this->responseObj;
     }
 }

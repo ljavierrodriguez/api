@@ -16,7 +16,7 @@ class StudentRoutes{
         $app->get('/students/', array($this->studentHandler, 'getAllHandler'))->add($scopes(['super_admin']));
         $app->get('/student/{student_id}', array($this->studentHandler, 'getStudentHandler'))->add($scopes(['super_admin']));
         
-        $app->post('/student/', array($this->studentHandler, 'createStudentHandler'))->add($scopes(['super_admin']));
+        $app->put('/student/', array($this->studentHandler, 'createStudentHandler'))->add($scopes(['super_admin']));
         $app->post('/student/{student_id}', array($this->studentHandler, 'updateStudentHandler'))->add($scopes(['super_admin']));
         $app->delete('/student/{student_id}', array($this->studentHandler, 'deleteStudentHandler'))->add($scopes(['super_admin']));
         
