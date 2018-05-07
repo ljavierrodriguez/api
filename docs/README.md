@@ -35,10 +35,13 @@ You need to create the content of the files manually.
 
 ***Run the migrations***
 ```sh
-// For the dev environment
+
+// For the *dev* environment
 php vendor/bin/phinx migrate -e dev -c api/phinx-config.php -e dev
-// For unit testing environment
+
+// For unit *testing* environment
 php vendor/bin/phinx migrate -e utest -c api/phinx-config.php -e utest
+
 ```
 ***Status of current migrations for enviroment "utest"***
 ```sh
