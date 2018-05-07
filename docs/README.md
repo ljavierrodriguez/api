@@ -34,31 +34,35 @@ php vendor/bin/phinx create MyFirstMigration -c api/phinx-config.php
 You need to create the content of the files manually.
 
 ***Run the migrations***
-```php
+```sh
+// For the dev environment
+php vendor/bin/phinx migrate -e dev -c api/phinx-config.php -e dev
+// For unit testing environment
 php vendor/bin/phinx migrate -e utest -c api/phinx-config.php -e utest
 ```
 ***Status of current migrations for enviroment "utest"***
-```php
+```sh
 php vendor/bin/phinx status -c api/phinx-config.php -e utest
 ```
 ***Set a breakpoint for environment "utest"***
-```php
+```sh
 php vendor/bin/phinx breakpoint -t <20171129101240> -c api/phinx-config.php -e utest
 ```
 
 ## Seeders
 
 Create a new seeder
-```php
+```sh
 php vendor/bin/phinx seed:create UserSeeder -c api/phinx-config.php -e utest
 ```
 
 Run the seeder
-```php
+```sh
 $ php vendor/bin/phinx seed:run -s TalentTreeSeeder -c api/phinx-config.php -e utest
 ```
 
-### Running PHP on Sitegrground
+### Running PHP on Sitegrground (production)
+Sitegroung has several versions of PHP, you can pick the right one by typing:
 ```
 For PHP 7 : /usr/local/php70/bin/php-cli
 For PHP 7.1: /usr/local/php70/bin/php-cli
