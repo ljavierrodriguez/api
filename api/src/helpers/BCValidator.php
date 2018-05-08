@@ -31,7 +31,7 @@ class BCValidator{
                     new Rules\StringType(),
                     new Rules\Length(1, 35)
                 );
-                if(!$validator->validate($value)) throw new Exception('Parameter '.$name.' has an invalid value: '.$value);
+                if(!$validator->validate($value)) throw new Exception('Parameter '.$name.' has an invalid value: '.$value, 400);
                 
             break;
             case self::SLUG:
@@ -40,7 +40,7 @@ class BCValidator{
                     new Rules\Slug(),
                     new Rules\Length(1, 100)
                 );
-                if(!$validator->validate($value)) throw new Exception('Parameter '.$name.' has an invalid value: '.$value);
+                if(!$validator->validate($value)) throw new Exception('Parameter '.$name.' has an invalid value: '.$value, 400);
                 
             break;
             case self::USERNAME:
@@ -50,7 +50,7 @@ class BCValidator{
                     new Rules\NoWhitespace(),
                     new Rules\Length(1, 15)
                 );
-                if(!$validator->validate($value)) throw new Exception('Parameter '.$name.' has an invalid value: '.$value);
+                if(!$validator->validate($value)) throw new Exception('Parameter '.$name.' has an invalid value: '.$value, 400);
                 
             break;
             case self::DATETIME:
@@ -58,7 +58,7 @@ class BCValidator{
                 $validator = new Rules\AllOf(
                     new Rules\Date()
                 );
-                if(!$validator->validate($value)) throw new Exception('Parameter '.$name.' has an invalid value: '.$value.' format must be Y-M-D');
+                if(!$validator->validate($value)) throw new Exception('Parameter '.$name.' has an invalid value: '.$value.' format must be Y-M-D', 400);
                 
             break;
             case self::PHONE:
@@ -66,7 +66,7 @@ class BCValidator{
                 $validator = new Rules\AllOf(
                     new Rules\Phone()
                 );
-                if(!$validator->validate($value)) throw new Exception('Parameter '.$name.' has an invalid value: '.$value);
+                if(!$validator->validate($value)) throw new Exception('Parameter '.$name.' has an invalid value: '.$value, 400);
                 
             break;
             case self::EMAIL:
@@ -76,7 +76,7 @@ class BCValidator{
                     new Rules\NoWhitespace(),
                     new Rules\Length(1, 255)
                 );
-                if(!$validator->validate($value)) throw new Exception('Parameter '.$name.' has an invalid value: '.$value);
+                if(!$validator->validate($value)) throw new Exception('Parameter '.$name.' has an invalid value: '.$value, 400);
                 
             break;
             case self::URL:
@@ -86,7 +86,7 @@ class BCValidator{
                     new Rules\NoWhitespace(),
                     new Rules\Length(0, 255)
                 );
-                if(!$validator->validate($value)) throw new Exception('Parameter '.$name.' has an invalid value: '.$value);
+                if(!$validator->validate($value)) throw new Exception('Parameter '.$name.' has an invalid value: '.$value, 400);
                 
             break;
             case self::POINTS:
@@ -95,7 +95,7 @@ class BCValidator{
                     new Rules\IntVal(),
                     new Rules\Length(0, 255)
                 );
-                if(!$validator->validate($value)) throw new Exception('Parameter '.$name.' has an invalid value: '.$value);
+                if(!$validator->validate($value)) throw new Exception('Parameter '.$name.' has an invalid value: '.$value, 400);
                 
             break;
             case self::DESCRIPTION:
@@ -103,15 +103,19 @@ class BCValidator{
                 $validator = new Rules\AllOf(
                     new Rules\Length(0, 255)
                 );
-                if(!$validator->validate($value)) throw new Exception('Parameter '.$name.' has an invalid value: '.$value);
+                if(!$validator->validate($value)) throw new Exception('Parameter '.$name.' has an invalid value: '.$value, 400);
                 
             break;
             default:
-                if(empty($value)) throw new Exception('Parameter '.$name.' is required');
+                if(empty($value)) throw new Exception('Parameter '.$name.' is required', 400);
             break;
         }
         return true;
     }
     
+}
+
+class ArgumentException extends Exception{
+    protected $code = 400;   
 }
 ?>

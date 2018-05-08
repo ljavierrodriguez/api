@@ -2,6 +2,7 @@
 
 use Slim\Http\Request as Request;
 use Slim\Http\Response as Response;
+use Helpers\ArgumentException;
 
 class CatalogHandler extends MainHandler{
     

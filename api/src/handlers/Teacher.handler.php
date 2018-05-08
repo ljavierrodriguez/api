@@ -2,6 +2,7 @@
 
 use Slim\Http\Request as Request;
 use Slim\Http\Response as Response;
+use Helpers\ArgumentException;
 
 class TeacherHandler extends MainHandler{
     
@@ -14,17 +15,17 @@ class TeacherHandler extends MainHandler{
         $cohort = null;
         if(is_numeric($cohortId)) $cohort = Cohort::find($cohortId);
         else $cohort = Cohort::where('slug', $cohort_id)->first();
-        if(!$cohort) throw new Exception('Invalid cohort id: '.$cohortId);
+        if(!$cohort) throw new ArgumentException('Invalid cohort id: '.$cohortId);
         
         return $this->success($response,$cohort->teachers()->get());
     }
     
     public function createTeacherHandler(Request $request, Response $response) {
         $data = $request->getParsedBody();
-        if(empty($data)) throw new Exception('There was an error retrieving the request content, it needs to be a valid JSON');
+        if(empty($data)) throw new ArgumentException('There was an error retrieving the request content, it needs to be a valid JSON');
         
         $user = User::where('username', $data['email'])->first();
-        if($user && $user->teacher) throw new Exception('There is already a user with this email on te API');
+        if($user && $user->teacher) throw new ArgumentException('There is already a user with this email on te API');
         $created = false;
         if(!$user)
         {
@@ -63,9 +64,9 @@ class TeacherHandler extends MainHandler{
         $data = $request->getParsedBody();
         
         $teacher = Teacher::find($teacherId);
-        if(!$teacher) throw new Exception('Invalid teacher id: '.$teacherId);
+        if(!$teacher) throw new ArgumentException('Invalid teacher id: '.$teacherId);
 
-        if($data['email']) throw new Exception('Teacher emails cannot be updated through this service');
+        if($data['email']) throw new ArgumentException('Teacher emails cannot be updated through this service');
         
         $teacher->user = $this->setOptional($teacher->user,$data,'wp_id');
         $teacher->user = $this->setOptional($teacher->user,$data,'full_name');
@@ -80,13 +81,13 @@ class TeacherHandler extends MainHandler{
         $teacherId = $request->getAttribute('teacher_id');
         
         $teacher = Teacher::find($teacherId);
-        if(!$teacher) throw new Exception('Invalid teacher id');
+        if(!$teacher) throw new ArgumentException('Invalid teacher id');
         
         /*
         $attributes = $teacher->getAttributes();
         $now = time(); // or your date as well
         $daysOld = floor(($now - strtotime($attributes['created_at'])) / DELETE_MAX_DAYS);
-        if($daysOld>5) throw new Exception('The teacher is to old to delete');
+        if($daysOld>5) throw new ArgumentException('The teacher is to old to delete');
         */
         $teacher->delete();
         

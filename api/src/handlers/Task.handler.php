@@ -3,6 +3,7 @@
 use Slim\Http\Request as Request;
 use Slim\Http\Response as Response;
 use Helpers\BCValidator;
+use Helpers\ArgumentException;
 
 class TaskHandler extends MainHandler{
     
@@ -12,7 +13,7 @@ class TaskHandler extends MainHandler{
         $studentId = $request->getAttribute('student_id');
         
         $student = Student::find($studentId);
-        if(!$student) throw new Exception('Invalid student id');
+        if(!$student) throw new ArgumentException('Invalid student id');
         
         return $this->success($response,$student->tasks()->get());
     }
@@ -21,7 +22,7 @@ class TaskHandler extends MainHandler{
         $studentId = $request->getAttribute('student_id');
         
         $student = Student::find($studentId);
-        if(!$student) throw new Exception('Invalid student id');
+        if(!$student) throw new ArgumentException('Invalid student id');
         
         $tasks = $student->tasks()->get();
         foreach($tasks as $t) $t->delete();
@@ -32,13 +33,13 @@ class TaskHandler extends MainHandler{
     public function createTaskHandler(Request $request, Response $response) {
         
         $studentId = $request->getAttribute('student_id');
-        if(!$studentId) throw new Exception('Invalid student id');
+        if(!$studentId) throw new ArgumentException('Invalid student id');
         
         $student = Student::find($studentId);
-        if(!$student) throw new Exception('Invalid student id');
+        if(!$student) throw new ArgumentException('Invalid student id');
         
         $data = $request->getParsedBody();
-        if(!is_array($data)) throw new Exception('There was an error retrieving the request content, it needs to be a valid JSON');
+        if(!is_array($data)) throw new ArgumentException('There was an error retrieving the request content, it needs to be a valid JSON');
 
         $result = null;
         if(isset($data[0])) $result = $this->_addMultipleTodo($student, $data);
@@ -52,16 +53,16 @@ class TaskHandler extends MainHandler{
         $taskId = $request->getAttribute('task_id');
         
         $data = $request->getParsedBody();
-        if(!$data)  throw new Exception('Error parsing the request (invalid JSON)');
+        if(!$data)  throw new ArgumentException('Error parsing the request (invalid JSON)');
         
         $task = Task::find($taskId);
-        if(!$task) throw new Exception('Invalid task id');
+        if(!$task) throw new ArgumentException('Invalid task id');
 
-        if(!in_array($data['status'],Task::$possibleStages)) throw new Exception("Invalid status ".$data['status'].", the only valid status are: ".implode(',',Task::$possibleStages));
+        if(!in_array($data['status'],Task::$possibleStages)) throw new ArgumentException("Invalid status ".$data['status'].", the only valid status are: ".implode(',',Task::$possibleStages));
 
         try{
             if($task->type === 'assignment' and $data['status'] === 'done'){
-                if(empty($data['github_url'])) throw new Exception("To mark an assignment as done, you need to specify the github url");
+                if(empty($data['github_url'])) throw new ArgumentException("To mark an assignment as done, you need to specify the github url");
                 $task->github_url = $data['github_url'];
                 $task->revision_status = Task::$revisionStages[0]; //pending
             }
@@ -70,7 +71,7 @@ class TaskHandler extends MainHandler{
             $task->save();
 
         }
-        catch(Exception $e){
+        catch(ArgumentException $e){
             throw $e;
         }
         
@@ -81,7 +82,7 @@ class TaskHandler extends MainHandler{
         $taskId = $request->getAttribute('task_id');
         
         $task = Task::find($taskId);
-        if(!$task) throw new Exception('Invalid task id');
+        if(!$task) throw new ArgumentException('Invalid task id');
         
         $task->delete();
         
@@ -96,9 +97,9 @@ class TaskHandler extends MainHandler{
             'tasks.associated_slug' => $data['associated_slug'],
             'tasks.type' => $data['type']
         ])->select('tasks.id')->get();
-        if(count($tasks)>0) throw new Exception("There is already a task for this resource '".$data['associated_slug']."' and the student '".$student->user_id."'");
+        if(count($tasks)>0) throw new ArgumentException("There is already a task for this resource '".$data['associated_slug']."' and the student '".$student->user_id."'");
         
-        if(!in_array($data['type'],Task::$possibleTypes)) throw new Exception("Invalid type ".$data['type'].", the only valid types are: ".implode(',',Task::$possibleTypes));
+        if(!in_array($data['type'],Task::$possibleTypes)) throw new ArgumentException("Invalid type ".$data['type'].", the only valid types are: ".implode(',',Task::$possibleTypes));
         
         $task = new Task();
         $task = $this->setMandatory($task,$data,'associated_slug',BCValidator::SLUG);
@@ -120,7 +121,7 @@ class TaskHandler extends MainHandler{
             try{
                 $results[] = $this->_addSingleTodo($student, $singleTodo);
             }
-            catch(Exception $e){
+            catch(ArgumentException $e){
                 foreach($results as $task) $task->delete();
                 throw $e;
             }
