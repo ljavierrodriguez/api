@@ -38,7 +38,6 @@ class MainHandler{
     }
     
     public function fail($request, $response, $args) {
-        
         $failCode = $args->getCode();
         if(!$failCode || !in_array($failCode,[500,400,401,403,501,504])) $failCode = 500;
         $errorArray = array( "code"=> $failCode, "msg"=>  $args->getMessage() );

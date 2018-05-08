@@ -91,6 +91,7 @@ class StudentHandler extends MainHandler{
     
     public function createStudentHandler(Request $request, Response $response) {
         $data = $request->getParsedBody();
+
         if(empty($data)) throw new ArgumentException('There was an error retrieving the request content, it needs to be a valid JSON');
         
         $cohort = Cohort::where('slug', $data['cohort_slug'])->first();
