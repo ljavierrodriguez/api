@@ -190,12 +190,13 @@ class CohortHandler extends MainHandler{
         $studentsArray = $request->getParsedBody();
         if(empty($studentsArray)) throw new ArgumentException('There was an error retrieving the request content, it needs to be a valid JSON');
        
-        $cohort = Cohort::find($cohortId);
-        if(!$cohort) throw new ArgumentException('Invalid cohort id:'.$cohortId);
+        $cohort = null;
+        if(is_numeric($cohortId)) $cohort = Cohort::find($cohortId);
+        else $cohort = Cohort::where('slug', $cohortId)->first();
+        if(!$cohort) throw new ArgumentException('Invalid cohort slug or id: '.$cohortId);
         
         $auxStudents = [];
         foreach($studentsArray as $stu) $auxStudents[] = $stu['student_id'];
-
         if($auxStudents>0) $cohort->students()->attach($auxStudents);
         else throw new ArgumentException('Error retreving Students form the body request');
         
