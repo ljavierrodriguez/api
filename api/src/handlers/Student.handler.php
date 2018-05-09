@@ -155,7 +155,7 @@ class StudentHandler extends MainHandler{
         $student = Student::find($studentId);
         if(!$student) throw new ArgumentException('Invalid student id: '.$studentId);
 
-        if($data['email']) throw new ArgumentException('Students emails cannot be updated through this service');
+        if(isset($data['email'])) throw new ArgumentException('Students emails cannot be updated through this service');
         
         $user = $student->user;
         $user = $this->setOptional($user,$data,'full_name');
