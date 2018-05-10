@@ -73,8 +73,8 @@ class CohortHandler extends MainHandler{
         $cohort = $this->setMandatory($cohort,$data,'slug',BCValidator::SLUG);
         $cohort->stage = Cohort::$possibleStages[0]; //not-started
         $cohort = $this->setOptional($cohort,$data,'language',BCValidator::SLUG);
-        $cohort = $this->setOptional($cohort,$data,'slack-url',BCValidator::URL);
-        $cohort = $this->setOptional($cohort,$data,'kickoff-date',BCValidator::DATETIME);
+        $cohort = $this->setOptional($cohort,$data,'slack_url',BCValidator::URL);
+        $cohort = $this->setOptional($cohort,$data,'kickoff_date',BCValidator::DATETIME);
         $cohort->profile()->associate($profile);
         $location->cohorts()->save($cohort);
         $cohort->save();
@@ -108,8 +108,8 @@ class CohortHandler extends MainHandler{
         $cohort = $this->setMandatory($cohort,$data,'slug',BCValidator::SLUG);
         $cohort = $this->setMandatory($cohort,$data,'stage',BCValidator::SLUG);
         $cohort = $this->setOptional($cohort,$data,'language',BCValidator::SLUG);
-        $cohort = $this->setOptional($cohort,$data,'slack-url',BCValidator::URL);
-        $cohort = $this->setOptional($cohort,$data,'kickoff-date',BCValidator::DATETIME);
+        $cohort = $this->setOptional($cohort,$data,'slack_url',BCValidator::URL);
+        $cohort = $this->setOptional($cohort,$data,'kickoff_date',BCValidator::DATETIME);
         $cohort->profile()->dissociate();
         $cohort->profile()->associate($profile);
         $location->cohorts()->save($cohort);
@@ -152,8 +152,8 @@ class CohortHandler extends MainHandler{
         $cohort = $this->setOptional($cohort,$data,'stage',BCValidator::SLUG);
         $cohort = $this->setOptional($cohort,$data,'slug',BCValidator::SLUG);
         $cohort = $this->setOptional($cohort,$data,'language',BCValidator::SLUG);
-        $cohort = $this->setOptional($cohort,$data,'slack-url',BCValidator::URL);
-        $cohort = $this->setOptional($cohort,$data,'kickoff-date',BCValidator::DATETIME);
+        $cohort = $this->setOptional($cohort,$data,'slack_url',BCValidator::URL);
+        $cohort = $this->setOptional($cohort,$data,'kickoff_date',BCValidator::DATETIME);
         $cohort->save();
         
         return $this->success($response,$cohort);

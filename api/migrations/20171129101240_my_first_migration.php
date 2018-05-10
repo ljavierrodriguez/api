@@ -62,12 +62,12 @@ class MyFirstMigration extends Migration
                 $table->bigIncrements('id');
                 $table->string('slug', 200)->unique();
                 $table->string('name', 200);
-                $table->date('kickoff-date')->nullable();
+                $table->date('kickoff_date')->nullable();
                 $table->unsignedBigInteger('location_id');
                 $table->unsignedBigInteger('profile_id');
                 $table->string('stage', 50);//['not-started', 'on-prework', 'on-course','on-final-project','finished']
                 $table->string('language', 2);//['es','en']
-                $table->string('slack-url', 200);
+                $table->string('slack_url', 200);
                 $table->timestamps();
             
                 $table->foreign('location_id')->references('id')->on('locations')->onDelete('cascade');
