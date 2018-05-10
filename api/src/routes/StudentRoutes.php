@@ -13,12 +13,12 @@ class StudentRoutes{
          * Everything Related to the student itself
          **/
         $this->studentHandler = new \StudentHandler($app);
-        $app->get('/students/', array($this->studentHandler, 'getAllHandler'))->add($scopes(['super_admin']));
-        $app->get('/student/{student_id}', array($this->studentHandler, 'getStudentHandler'))->add($scopes(['super_admin']));
+        $app->get('/students/', array($this->studentHandler, 'getAllHandler'))->add($scopes(['read_basic_info']));
+        $app->get('/student/{student_id}', array($this->studentHandler, 'getStudentHandler'))->add($scopes(['read_basic_info']));
         
-        $app->put('/student/', array($this->studentHandler, 'createStudentHandler'))->add($scopes(['super_admin']));
-        $app->post('/student/{student_id}', array($this->studentHandler, 'updateStudentHandler'))->add($scopes(['super_admin']));
-        $app->delete('/student/{student_id}', array($this->studentHandler, 'deleteStudentHandler'))->add($scopes(['super_admin']));
+        $app->put('/student/', array($this->studentHandler, 'createStudentHandler'))->add($scopes(['crud_student']));
+        $app->post('/student/{student_id}', array($this->studentHandler, 'updateStudentHandler'))->add($scopes(['crud_student']));
+        $app->delete('/student/{student_id}', array($this->studentHandler, 'deleteStudentHandler'))->add($scopes(['crud_student']));
         
         $app->get('/briefing/student/{student_id}', array($this->studentHandler, 'getStudentBriefing'))->add($scopes(['read_basic_info']));
         
