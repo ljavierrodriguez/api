@@ -91,11 +91,13 @@ class StudentHandler extends MainHandler{
     
     public function createStudentHandler(Request $request, Response $response) {
         $data = $request->getParsedBody();
-
         if(empty($data)) throw new ArgumentException('There was an error retrieving the request content, it needs to be a valid JSON');
         
         $cohort = Cohort::where('slug', $data['cohort_slug'])->first();
         if(!$cohort) throw new ArgumentException('Invalid cohort slug');
+        
+        if(!empty($data['email'])) $data['email'] = urldecode($data['email']);
+        else throw new ArgumentException('Invalid email');
         
         $user = User::where('username', $data['email'])->first();
         if($user && $user->student) throw new ArgumentException('There is already a student with this email on te API');
@@ -132,6 +134,8 @@ class StudentHandler extends MainHandler{
     }
     
     private function _sendUserInvitation($user){
+        
+        if(empty($user->username)) throw new Exception('Imposible to send email', 500);
         
         $token = new Passtoken();
         $token->token = md5(AuthHelper::randomToken());
