@@ -17,7 +17,8 @@ class StudentHandler extends MainHandler{
         
         if(is_numeric($breathecodeId)) $user = User::find($breathecodeId);
         else $user = User::where('username', $breathecodeId)->first();
-        if(!$user or !$user->student) throw new ArgumentException('Invalid student email or id');
+        if(!$user) throw new ArgumentException('Invalid student email or id: '.$breathecodeId, 404);
+        if(!$user->student) throw new ArgumentException('The user '.$breathecodeId.' is not a student', 404);
         
         return $this->success($response,$user->student);
     }
