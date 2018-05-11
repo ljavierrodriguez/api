@@ -3,7 +3,7 @@
 
 use Migrations\Migration;
 
-class CalendarMigration extends Migration
+class Calendar extends Migration
 {
     /**
      * Change Method.
@@ -26,8 +26,8 @@ class CalendarMigration extends Migration
      * Remember to call "create()" or "update()" and NOT "save()" when working
      * with the Table class.
      */
-    public function up()
-    {
+    
+    public function up(){
         $this->schema->disableForeignKeyConstraints();
         
         if(!$this->schema->hasTable('calendars')){
