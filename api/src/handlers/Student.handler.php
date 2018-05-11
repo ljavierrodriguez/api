@@ -15,8 +15,10 @@ class StudentHandler extends MainHandler{
     public function getStudentHandler(Request $request, Response $response) {
         $breathecodeId = $request->getAttribute('student_id');
         
-        $user = User::find($breathecodeId);
-        if(!$user or !$user->student) throw new ArgumentException('Invalid student_id');
+        if(is_numeric($breathecodeId)) $user = User::find($breathecodeId);
+        else $user = User::where('username', $breathecodeId)->first();
+        if(!$user) throw new ArgumentException('Invalid student email or id: '.$breathecodeId, 404);
+        if(!$user->student) throw new ArgumentException('The user '.$breathecodeId.' is not a student', 404);
         
         return $this->success($response,$user->student);
     }
@@ -91,11 +93,13 @@ class StudentHandler extends MainHandler{
     
     public function createStudentHandler(Request $request, Response $response) {
         $data = $request->getParsedBody();
-
         if(empty($data)) throw new ArgumentException('There was an error retrieving the request content, it needs to be a valid JSON');
         
         $cohort = Cohort::where('slug', $data['cohort_slug'])->first();
         if(!$cohort) throw new ArgumentException('Invalid cohort slug');
+        
+        if(!empty($data['email'])) $data['email'] = urldecode($data['email']);
+        else throw new ArgumentException('Invalid email');
         
         $user = User::where('username', $data['email'])->first();
         if($user && $user->student) throw new ArgumentException('There is already a student with this email on te API');
@@ -133,6 +137,8 @@ class StudentHandler extends MainHandler{
     
     private function _sendUserInvitation($user){
         
+        if(empty($user->username)) throw new Exception('Imposible to send email', 500);
+        
         $token = new Passtoken();
         $token->token = md5(AuthHelper::randomToken());
         $token->user()->associate($user);
@@ -155,7 +161,7 @@ class StudentHandler extends MainHandler{
         $student = Student::find($studentId);
         if(!$student) throw new ArgumentException('Invalid student id: '.$studentId);
 
-        if($data['email']) throw new ArgumentException('Students emails cannot be updated through this service');
+        if(isset($data['email'])) throw new ArgumentException('Students emails cannot be updated through this service');
         
         $user = $student->user;
         $user = $this->setOptional($user,$data,'full_name');

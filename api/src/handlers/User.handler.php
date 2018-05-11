@@ -49,7 +49,7 @@ class UserHandler extends MainHandler{
     public function getUserHandler(Request $request, Response $response) {
         $breathecodeId = $request->getAttribute('user_id');
         
-        if(is_numeric($breathecodeId)) $badge = User::find($breathecodeId);
+        if(is_numeric($breathecodeId)) $user = User::find($breathecodeId);
         else $user = User::where('username', $breathecodeId)->first();
         if(!$user) throw new ArgumentException('Invalid user email or id: '.$breathecodeId);
         

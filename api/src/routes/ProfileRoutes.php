@@ -14,7 +14,7 @@ class ProfileRoutes{
         $app->get('/profile/{profile_id}', array($profileHandler, 'getSingleHandler'))->add($scopes(['super_admin']));
         
         $app->post('/profile/{profile_id}', array($profileHandler, 'updateProfileHandler'))->add($scopes(['super_admin']));
-        $app->post('/profile/', array($profileHandler, 'createProfileHandler'))->add($scopes(['super_admin']));
+        $app->put('/profile/', array($profileHandler, 'createProfileHandler'))->add($scopes(['super_admin']));
         $app->delete('/profile/{profile_id}', array($profileHandler, 'deleteProfileHandler'))->add($scopes(['super_admin']));
 
     }

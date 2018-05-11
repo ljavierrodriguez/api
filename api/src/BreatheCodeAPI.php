@@ -132,7 +132,7 @@ class BreatheCodeAPI
             
             if($forceAllScopes || count($posibleScopes)==0) return $this->authorization;        
             
-            return $this->authorization->withRequiredScope($posibleScopes);
+            return $this->authorization->withRequiredScope(array_merge($posibleScopes,['super_admin']));
                 
         };
 
