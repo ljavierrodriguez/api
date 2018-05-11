@@ -30,14 +30,14 @@ SCHEMA;
     			'client_id' => "alesanchezr",
     			'client_secret' => "714bfa43e7c312be999d0afea89148e7",
     			'redirect_uri' => "http://fake/",
-    			'scope' => "sync_data read_basic_info read_talent_tree student_assignments teacher_assignments super_admin"
+    			'scope' => implode(' ' ,GLOBAL_CONFIG['scopes']))
     		));
     		
     	    Capsule::table('oauth_clients')->insert(array(
     			'client_id' => "nbernal",
     			'client_secret' => "8ca0854a441cc4c201f925d6bfb36dafa48829c5",
     			'redirect_uri' => "http://fake/",
-    			'scope' => "read_basic_info read_talent_tree student_assignments teacher_assignments super_admin"
+    			'scope' => implode(' ' ,GLOBAL_CONFIG['scopes']))
     		));
         }
         $this->schema->enableForeignKeyConstraints();

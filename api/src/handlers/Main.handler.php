@@ -79,7 +79,8 @@ class MainHandler{
     }
     
     public function getAllHandler(Request $request, Response $response) {
-        $all = call_user_func($this->slug . '::all');
+        $limit = $request->getQueryParam('limit',null);
+        $all = $this->app->db->table(strtolower($this->slug).'s')->limit($limit)->get();
         return $this->success($response,$all);
     }
     
