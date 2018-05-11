@@ -15,8 +15,9 @@ class StudentHandler extends MainHandler{
     public function getStudentHandler(Request $request, Response $response) {
         $breathecodeId = $request->getAttribute('student_id');
         
-        $user = User::find($breathecodeId);
-        if(!$user or !$user->student) throw new ArgumentException('Invalid student_id');
+        if(is_numeric($breathecodeId)) $user = User::find($breathecodeId);
+        else $user = User::where('username', $breathecodeId)->first();
+        if(!$user or !$user->student) throw new ArgumentException('Invalid student email or id');
         
         return $this->success($response,$user->student);
     }
