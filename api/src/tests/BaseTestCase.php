@@ -111,14 +111,14 @@ class AssertResponse{
         $this->response = $response;
         $this->responseObj = $responseObj;
     }
-    function expectSuccess(){
+    function expectSuccess($code=200){
         $this->test->assertSame($this->response->getStatusCode(), 200);
         $this->test->assertSame($this->responseObj->code, 200);
         return $this->responseObj;
     }
-    function expectFailure($test, $response, $responseObj){
-        $this->test->assertSame($this->response->getStatusCode(), 500);
-        $this->test->assertSame($this->responseObj->code, 500);
+    function expectFailure($code=400){
+        $this->test->assertSame($this->response->getStatusCode(), $code);
+        $this->test->assertSame($this->responseObj->code, $code);
         return $this->responseObj;
     }
 }

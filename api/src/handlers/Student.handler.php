@@ -4,6 +4,9 @@ use Slim\Http\Request as Request;
 use Slim\Http\Response as Response;
 use Carbon\Carbon;
 use Helpers\BCValidator;
+use Helpers\AuthHelper;
+use Helpers\Mailer;
+use Helpers\ArgumentException;
 
 class StudentHandler extends MainHandler{
     
@@ -13,7 +16,7 @@ class StudentHandler extends MainHandler{
         $breathecodeId = $request->getAttribute('student_id');
         
         $user = User::find($breathecodeId);
-        if(!$user or !$user->student) throw new Exception('Invalid student_id');
+        if(!$user or !$user->student) throw new ArgumentException('Invalid student_id');
         
         return $this->success($response,$user->student);
     }
@@ -24,11 +27,11 @@ class StudentHandler extends MainHandler{
         
         $updated = false;
         $student = Student::find($studentId);
-        if(!$student) throw new Exception('Invalid student id: '.$studentId);
+        if(!$student) throw new ArgumentException('Invalid student id: '.$studentId);
 
         if(!empty($data['status'])){
             if(!in_array($data['status'], ['currently_active', 'under_review', 'blocked', 'studies_finished', 'student_dropped']))
-                throw new Exception('Invalid student status: '.$data['status']);
+                throw new ArgumentException('Invalid student status: '.$data['status']);
                 
             $updated = true;
             $student->status = $data['status'];
@@ -36,14 +39,14 @@ class StudentHandler extends MainHandler{
         
         if(!empty($data['financial_status'])){
             if(!in_array($data['financial_status'], ['fully_paid', 'up_to_date', 'late', 'uknown']))
-                throw new Exception('Invalid student finantial status: '.$data['financial_status']);
+                throw new ArgumentException('Invalid student finantial status: '.$data['financial_status']);
             
             $updated = true;
             $student->financial_status = $data['financial_status'];
         }
 
         if($updated) $student->save();
-        else throw new Exception('You have to specify either the financial_status or status.');
+        else throw new ArgumentException('You have to specify either the financial_status or status.');
         
         return $this->success($response,$student);
     }
@@ -58,7 +61,7 @@ class StudentHandler extends MainHandler{
         if(isset($data["start"])) $skip = $data["start"];
         
         $activities = Activity::where('student_user_id', $studentId)->orderBy('created_at', 'desc')->skip($skip)->take($limit)->get();
-        if(!$activities) throw new Exception('Invalid student id:'.$studentId);
+        if(!$activities) throw new ArgumentException('Invalid student id:'.$studentId);
         
         return $this->success($response,$activities);
     }
@@ -67,7 +70,7 @@ class StudentHandler extends MainHandler{
         $studentId = $request->getAttribute('student_id');
         
         $student = Student::find($studentId);
-        if(!$student) throw new Exception('Invalid student id: '.$studentId);
+        if(!$student) throw new ArgumentException('Invalid student id: '.$studentId);
         
         $acumulatedPoints = $this->app->db->table('activities')->where([
             'activities.student_user_id' => $studentId
@@ -88,13 +91,14 @@ class StudentHandler extends MainHandler{
     
     public function createStudentHandler(Request $request, Response $response) {
         $data = $request->getParsedBody();
-        if(empty($data)) throw new Exception('There was an error retrieving the request content, it needs to be a valid JSON');
+
+        if(empty($data)) throw new ArgumentException('There was an error retrieving the request content, it needs to be a valid JSON');
         
         $cohort = Cohort::where('slug', $data['cohort_slug'])->first();
-        if(!$cohort) throw new Exception('Invalid cohort slug');
+        if(!$cohort) throw new ArgumentException('Invalid cohort slug');
         
         $user = User::where('username', $data['email'])->first();
-        if($user && $user->student) throw new Exception('There is already a student with this email on te API');
+        if($user && $user->student) throw new ArgumentException('There is already a student with this email on te API');
         else if(!$user)
         {
             $user = new User;
@@ -120,19 +124,38 @@ class StudentHandler extends MainHandler{
             $user->student()->save($student);
             $student->cohorts()->save($cohort);
             
+            $this->_sendUserInvitation($user);
+            
         }
         
         return $this->success($response,$student);
     }
     
+    private function _sendUserInvitation($user){
+        
+        $token = new Passtoken();
+        $token->token = md5(AuthHelper::randomToken());
+        $token->user()->associate($user);
+        $token->save();
+        
+        $mailer = new Mailer();
+        $callback = ($user->type == 'student') ? STUDENT_URL.'/login' : ADMIN_URL;
+        $result = $mailer->sendAPI("invite", [
+            "email"=> $user->username, 
+            "url"=> ASSETS_URL.'/apps/remind/?invite=true&id='.$user->id.'&t='.$token->token.'&callback='.base64_encode($callback)
+        ]);
+        
+    }
+    
     public function updateStudentHandler(Request $request, Response $response) {
+        
         $studentId = $request->getAttribute('student_id');
         $data = $request->getParsedBody();
         
         $student = Student::find($studentId);
-        if(!$student) throw new Exception('Invalid student id: '.$studentId);
+        if(!$student) throw new ArgumentException('Invalid student id: '.$studentId);
 
-        if($data['email']) throw new Exception('Students emails cannot be updated through this service');
+        if($data['email']) throw new ArgumentException('Students emails cannot be updated through this service');
         
         $user = $student->user;
         $user = $this->setOptional($user,$data,'full_name');
@@ -152,17 +175,17 @@ class StudentHandler extends MainHandler{
         $studentId = $request->getAttribute('student_id');
         $data = $request->getParsedBody();
 
-        if(empty($data)) throw new Exception('There was an error retrieving the request content, it needs to be a valid JSON');
+        if(empty($data)) throw new ArgumentException('There was an error retrieving the request content, it needs to be a valid JSON');
         
         $badge = Badge::where('slug', $data['badge_slug'])->first();
-        if(!$badge) throw new Exception('Invalid badge slug: '.$data['badge_slug']);
+        if(!$badge) throw new ArgumentException('Invalid badge slug: '.$data['badge_slug']);
         
         $student = Student::find($studentId);
-        if(!$student) throw new Exception('Invalid student id: '.$studentId);
+        if(!$student) throw new ArgumentException('Invalid student id: '.$studentId);
         
-        if(!in_array($data['type'],Activity::$possibleTypes))  throw new Exception('Invalid activity type: '.$data['type']);
+        if(!in_array($data['type'],Activity::$possibleTypes))  throw new ArgumentException('Invalid activity type: '.$data['type']);
         
-        if(empty($data['points_earned'])) throw new Exception('It seems you are trying to give 0 or NULL points to the student');
+        if(empty($data['points_earned'])) throw new ArgumentException('It seems you are trying to give 0 or NULL points to the student');
         
         $activity = new Activity();
         $activity = $this->setMandatory($activity,$data,'type');
@@ -186,12 +209,12 @@ class StudentHandler extends MainHandler{
         $activityId = $request->getAttribute('activity_id');
         
         $activity = Activity::find($activityId);
-        if(!$activity) throw new Exception('Invalid activity id');
+        if(!$activity) throw new ArgumentException('Invalid activity id');
         
         $attributes = $activity->getAttributes();
         $now = time(); // or your date as well
         $daysOld = floor(($now - strtotime($attributes['created_at'])) / DELETE_MAX_DAYS);
-        if($daysOld>5) throw new Exception('The activity is to old to delete');
+        if($daysOld>5) throw new ArgumentException('The activity is to old to delete');
         
         $student = $activity->student()->first();
         $activity->delete();
@@ -204,12 +227,12 @@ class StudentHandler extends MainHandler{
         $studentId = $request->getAttribute('student_id');
         
         $student = Student::find($studentId);
-        if(!$student) throw new Exception('Invalid student id');
+        if(!$student) throw new ArgumentException('Invalid student id');
         
         $attributes = $student->getAttributes();
         $now = time(); // or your date as well
         $daysOld = floor(($now - strtotime($attributes['created_at'])) / DELETE_MAX_DAYS);
-        if($daysOld>5) throw new Exception('The student is to old to delete');
+        if($daysOld>5) throw new ArgumentException('The student is to old to delete');
         
         $student->activities()->delete();
         $student->badges()->delete();

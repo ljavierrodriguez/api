@@ -3,7 +3,9 @@
 use Slim\Http\Request as Request;
 use Slim\Http\Response as Response;
 use Helpers\Mailer;
+use Helpers\AuthHelper;
 use Helpers\BCValidator;
+use Helpers\ArgumentException;
 
 class UserHandler extends MainHandler{
     
@@ -17,7 +19,7 @@ class UserHandler extends MainHandler{
             if(!empty($user) and isset($user['username'])) 
             {
                 $bcUser = User::where('username', $user['username'])->first();
-                if(!$bcUser) throw new Exception('This token does not correspond to any users');
+                if(!$bcUser) throw new ArgumentException('This token does not correspond to any users');
                 
                 if($bcUser->type == 'student')
                 {
@@ -32,8 +34,8 @@ class UserHandler extends MainHandler{
 
                 return $this->success($response,$bcUser);
                 
-            }else throw new Exception('This token does not correspond to any users');
-        }else throw new Exception('No access_token provided');
+            }else throw new ArgumentException('This token does not correspond to any users');
+        }else throw new ArgumentException('No access_token provided');
         
         return $this->success($response,null);
         
@@ -49,7 +51,7 @@ class UserHandler extends MainHandler{
         
         if(is_numeric($breathecodeId)) $badge = User::find($breathecodeId);
         else $user = User::where('username', $breathecodeId)->first();
-        if(!$user) throw new Exception('Invalid user email or id: '.$breathecodeId);
+        if(!$user) throw new ArgumentException('Invalid user email or id: '.$breathecodeId);
         
         return $this->success($response,$user);
     }
@@ -57,7 +59,7 @@ class UserHandler extends MainHandler{
     public function createUserHandler(Request $request, Response $response) {
         
         $data = $request->getParsedBody();
-        if(empty($data)) throw new Exception('There was an error retrieving the request content, it needs to be a valid JSON');
+        if(empty($data)) throw new ArgumentException('There was an error retrieving the request content, it needs to be a valid JSON');
         
         $user = new User();
         $user = $this->setMandatory($user,$data,'type',BCValidator::SLUG);
@@ -71,17 +73,17 @@ class UserHandler extends MainHandler{
     
     public function syncUserHandler(Request $request, Response $response) {
         $data = $request->getParsedBody();
-        if(empty($data)) throw new Exception('There was an error retrieving the request content, it needs to be a valid JSON');
+        if(empty($data)) throw new ArgumentException('There was an error retrieving the request content, it needs to be a valid JSON');
 
-        if(!isset($data['email'])) throw new Exception('You have to specify the user email');
-        if(!in_array($data['type'],['teacher','student'])) throw new Exception('The user type has to be a "teacher" or "student", "'.$data['type'].'" given');
+        if(!isset($data['email'])) throw new ArgumentException('You have to specify the user email');
+        if(!in_array($data['type'],['teacher','student'])) throw new ArgumentException('The user type has to be a "teacher" or "student", "'.$data['type'].'" given');
     
         $cohortIds = [];
-        if(!isset($data['cohorts']) && $data['type']=='student') throw new Exception('You have to specify the user cohorts');
+        if(!isset($data['cohorts']) && $data['type']=='student') throw new ArgumentException('You have to specify the user cohorts');
         
         if(isset($data['cohorts'])) foreach($data['cohorts'] as $cohortSlug){
             $auxCohort = Cohort::where('slug', $cohortSlug)->first();
-            if(!$auxCohort) throw new Exception('The cohort '.$cohortSlug.' is invalid.');
+            if(!$auxCohort) throw new ArgumentException('The cohort '.$cohortSlug.' is invalid.');
             $cohortIds[] = $auxCohort->id;
         }
         
@@ -109,7 +111,7 @@ class UserHandler extends MainHandler{
             $oauthUser = $storage->setUserWithoutHash($data['email'], $data['password'], null, null);
             if(empty($oauthUser)){
                 $user->delete();
-                throw new Exception('Unable to create UserCredentials');
+                throw new ArgumentException('Unable to create UserCredentials');
             }
         }
 
@@ -118,9 +120,9 @@ class UserHandler extends MainHandler{
     
     public function createCredentialsHandler(Request $request, Response $response) {
         $data = $request->getParsedBody();
-        if(empty($data)) throw new Exception('There was an error retrieving the request content, it needs to be a valid JSON');
+        if(empty($data)) throw new ArgumentException('There was an error retrieving the request content, it needs to be a valid JSON');
 
-        if(!in_array($data['type'],User::$possibleTypes)) throw new Exception('Invalid user type: "'.$data['type'].'" given');
+        if(!in_array($data['type'],User::$possibleTypes)) throw new ArgumentException('Invalid user type: "'.$data['type'].'" given');
     
         $user = User::where('username', $data['email'])->first();
         if(!$user)
@@ -145,37 +147,37 @@ class UserHandler extends MainHandler{
             ]);
             
         }
-        else throw new Exception('User already exists with email: '.$data['email']);
+        else throw new ArgumentException('User already exists with email: '.$data['email']);
         
         return $this->success($response,$user);
     }    
     
     public function updateCredentialsHandler(Request $request, Response $response) {
         $userId = $request->getAttribute('user_id');
-        if(empty($userId)) throw new Exception('There was an error retrieving the user_id');
+        if(empty($userId)) throw new ArgumentException('There was an error retrieving the user_id');
         
         $data = $request->getParsedBody();
-        if(empty($data) || empty($data['password'])) throw new Exception('You need to specify a password');
+        if(empty($data) || empty($data['password'])) throw new ArgumentException('You need to specify a password');
 
         $user = User::find($userId);
-        if(!$user) throw new Exception('Invalid user id: '.$userId);
+        if(!$user) throw new ArgumentException('Invalid user id: '.$userId);
         
         $storage = $this->app->storage;
         $oauthUser = $storage->setUserWithoutHash($user->username, $data['password'], null, null);
         
-        if(empty($oauthUser)) throw new Exception('Unable to update User credentials');
+        if(empty($oauthUser)) throw new ArgumentException('Unable to update User credentials');
 
         return $this->success($response,$user);
     }    
     
     public function updateUserHandler(Request $request, Response $response) {
         $userId = $request->getAttribute('user_id');
-        if(empty($userId)) throw new Exception('There was an error retrieving the user_id');
+        if(empty($userId)) throw new ArgumentException('There was an error retrieving the user_id');
         
         $data = $request->getParsedBody();
         
         $user = User::find($userId);
-        if(!$user) throw new Exception('Invalid user id: '.$userId);
+        if(!$user) throw new ArgumentException('Invalid user id: '.$userId);
         
         $user = $this->setOptional($user,$data,'full_name',BCValidator::NAME);
         $user->save();
@@ -185,13 +187,13 @@ class UserHandler extends MainHandler{
     
     public function emailRemind(Request $request, Response $response) {
         $userEmail = $request->getAttribute('user_email');
-        if(empty($userEmail)) throw new Exception('There was an error retrieving the user_email');
+        if(empty($userEmail)) throw new ArgumentException('There was an error retrieving the user_email');
         
         else $user = User::where('username', $userEmail)->first();
-        if(!$user) throw new Exception('Invalid user email: '.$userEmail);
+        if(!$user) throw new ArgumentException('Invalid user email: '.$userEmail);
         
         $token = new Passtoken();
-        $token->token = md5($this->randomPassword());
+        $token->token = md5(AuthHelper::randomToken());
         $token->user()->associate($user);
         $token->save();
         
@@ -202,16 +204,16 @@ class UserHandler extends MainHandler{
             "url"=> ASSETS_URL.'/apps/remind/?id='.$user->id.'&t='.$token->token.'&callback='.base64_encode($callback)
         ]);
         
-        if(!$result) throw new Exception('Unable to send email');
+        if(!$result) throw new ArgumentException('Unable to send email');
         return $this->success($response,'ok');
     }    
     
     public function getRemindToken(Request $request, Response $response) {
         $userId = $request->getAttribute('user_id');
-        if(empty($userId)) throw new Exception('There was an error retrieving the user_id');
+        if(empty($userId)) throw new ArgumentException('There was an error retrieving the user_id');
         
         $token = $request->getQueryParam('token', null);
-        if(!isset($token)) throw new Exception('Missing params');
+        if(!isset($token)) throw new ArgumentException('Missing params');
         
         $user = $this->app->db->table('users')
             ->join('passtokens', 'users.id', '=', 'passtokens.user_id')
@@ -219,18 +221,18 @@ class UserHandler extends MainHandler{
             ->where('passtokens.token', $token)
             ->select('users.*', 'passtokens.*')
             ->get()->first();
-        if(!$user) throw new Exception('Invalid user or token or both');
+        if(!$user) throw new ArgumentException('Invalid user or token or both');
 
         $user = User::find($userId);
         //TODO: The new token should expire after 15 min
         //$user->passtokens()->delete();
 
         $newToken = new Passtoken();
-        $newToken->token = md5($this->randomPassword());
+        $newToken->token = md5(AuthHelper::randomToken());
         $newToken->save();
         $newToken->user()->associate($user->id);
         $newToken->save();
-        if(!$newToken) throw new Exception('There was a problem');
+        if(!$newToken) throw new ArgumentException('There was a problem');
         
         $user->token = $newToken->token;
         
@@ -239,20 +241,20 @@ class UserHandler extends MainHandler{
     
     public function changePassword(Request $request, Response $response) {
         $userId = $request->getAttribute('user_id');
-        if(empty($userId)) throw new Exception('There was an error retrieving the user_id');
+        if(empty($userId)) throw new ArgumentException('There was an error retrieving the user_id');
         
         else $user = User::where('id', $userId)->first();
-        if(!$user) throw new Exception('Invalid user id: '.$userId);
+        if(!$user) throw new ArgumentException('Invalid user id: '.$userId);
         
         $body = $request->getParsedBody();
-        if(!isset($body['password'])) throw new Exception('Missing param: password');
-        if(!isset($body['repeat'])) throw new Exception('Missing param: repeat');
-        if(!isset($body['token'])) throw new Exception('Missing param: token');
-        if($body['repeat'] != $body['password']) throw new Exception('Passwords must match');
+        if(!isset($body['password'])) throw new ArgumentException('Missing param: password');
+        if(!isset($body['repeat'])) throw new ArgumentException('Missing param: repeat');
+        if(!isset($body['token'])) throw new ArgumentException('Missing param: token');
+        if($body['repeat'] != $body['password']) throw new ArgumentException('Passwords must match');
         
         $storage = $this->app->storage;
         $oauthUser = $storage->setUser($user->username, $body['password'], null, null);
-        if(empty($oauthUser)) throw new Exception('Unable to update User credentials');
+        if(empty($oauthUser)) throw new ArgumentException('Unable to update User credentials');
         else{
             $user->passtokens()->delete();
 
@@ -270,9 +272,9 @@ class UserHandler extends MainHandler{
         $data = $request->getParsedBody();
         
         $user = User::find($userId);
-        if(!$user) throw new Exception('Invalid student id: '.$userId);
+        if(!$user) throw new ArgumentException('Invalid student id: '.$userId);
 
-        if(!$this->_validateSettings($data)) throw new Exception('Invalid user settings');
+        if(!$this->_validateSettings($data)) throw new ArgumentException('Invalid user settings');
         
         $settings = $user->getUserSettings();
         foreach($data as $key => $val) $settings[$key] = $val;
@@ -290,7 +292,7 @@ class UserHandler extends MainHandler{
         $userId = $request->getAttribute('user_id');
         
         $user = User::find($userId);
-        if(!$user) throw new Exception('Invalid student id: '.$userId);
+        if(!$user) throw new ArgumentException('Invalid student id: '.$userId);
 
         $settings = $user->getUserSettings();
         
@@ -299,10 +301,10 @@ class UserHandler extends MainHandler{
     
     public function deleteUser(Request $request, Response $response) {
         $userId = $request->getAttribute('user_id');
-        if(empty($userId)) throw new Exception('There was an error retrieving the user_id');
+        if(empty($userId)) throw new ArgumentException('There was an error retrieving the user_id');
     
         $user = User::find($userId);
-        if(!$user) throw new Exception('User not found');
+        if(!$user) throw new ArgumentException('User not found');
         
         $user->delete();
 
@@ -344,14 +346,4 @@ class UserHandler extends MainHandler{
         
     }
     
-    private function randomPassword() {
-        $alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
-        $pass = array(); //remember to declare $pass as an array
-        $alphaLength = strlen($alphabet) - 1; //put the length -1 in cache
-        for ($i = 0; $i < 8; $i++) {
-            $n = rand(0, $alphaLength);
-            $pass[] = $alphabet[$n];
-        }
-        return implode($pass); //turn the array into a string
-    }
 }

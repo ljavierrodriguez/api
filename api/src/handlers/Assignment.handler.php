@@ -2,6 +2,7 @@
 
 use Slim\Http\Request as Request;
 use Slim\Http\Response as Response;
+use Helpers\ArgumentException;
 
 class AssignmentHandler extends MainHandler{
     
@@ -11,7 +12,7 @@ class AssignmentHandler extends MainHandler{
         $studentId = $request->getAttribute('student_id');
         
         $student = Student::find($studentId);
-        if(!$student) throw new Exception('Invalid student id');
+        if(!$student) throw new ArgumentException('Invalid student id');
         
         return $this->success($response,$student->assignments()->get());
     }
@@ -21,7 +22,7 @@ class AssignmentHandler extends MainHandler{
         $data = $request->getQueryParams();
         
         $teacher = Teacher::find($teacherId);
-        if(!$teacher) throw new Exception('Invalid teacher id: '.$teacherId);
+        if(!$teacher) throw new ArgumentException('Invalid teacher id: '.$teacherId);
         $results = $teacher->assignments()->get();
 
         if(!empty($data['cohort_slug'])){
@@ -43,23 +44,23 @@ class AssignmentHandler extends MainHandler{
     
     public function createAssignmentHandler(Request $request, Response $response) {
         $data = $request->getParsedBody();
-        if(empty($data)) throw new Exception('There was an error retrieving the request content, it needs to be a valid JSON');
+        if(empty($data)) throw new ArgumentException('There was an error retrieving the request content, it needs to be a valid JSON');
         
         $template = Atemplate::find($data['template_id']);
-        if(!$template) throw new Exception('Invalid template id');
+        if(!$template) throw new ArgumentException('Invalid template id');
         
         $student = Student::find($data['student_id']);
-        if(!$student) throw new Exception('Invalid student id');
+        if(!$student) throw new ArgumentException('Invalid student id');
         
         $teacher = Teacher::find($data['teacher_id']);
-        if(!$teacher) throw new Exception('Invalid teacher id');
+        if(!$teacher) throw new ArgumentException('Invalid teacher id');
         
         $assignments = $this->app->db->table('assignments')
         ->where([
             'assignments.student_user_id' => $student->user_id,
             'assignments.atemplate_id' => $template->id
         ])->select('assignments.id')->get();
-        if(count($assignments)>0) throw new Exception('There is already an assignment for this student on template: '.$template->id);
+        if(count($assignments)>0) throw new ArgumentException('There is already an assignment for this student on template: '.$template->id);
         
         $this->_createStudentAssignment($student,$template,$teacher,$data['duedate']);
         
@@ -68,16 +69,16 @@ class AssignmentHandler extends MainHandler{
     
     public function syncFromWPHandler(Request $request, Response $response){
         $data = $request->getParsedBody();
-        if(empty($data)) throw new Exception('There was an error retrieving the request content, it needs to be a valid JSON');
+        if(empty($data)) throw new ArgumentException('There was an error retrieving the request content, it needs to be a valid JSON');
         
         $template = Atemplate::where('project_slug', $data['template_slug'])->first();
-        if(!$template) throw new Exception('Invalid template slug: '.$data['template_slug']);
+        if(!$template) throw new ArgumentException('Invalid template slug: '.$data['template_slug']);
         
         $student = Student::find($data['student_id']);
-        if(!$student) throw new Exception('Invalid student id: '.$data['student_id']);
+        if(!$student) throw new ArgumentException('Invalid student id: '.$data['student_id']);
         
         $teacher = Teacher::find($data['teacher_id']);
-        if(!$teacher) throw new Exception('Invalid teacher id: '.$data['teacher_id']);
+        if(!$teacher) throw new ArgumentException('Invalid teacher id: '.$data['teacher_id']);
         
         $assignment = $this->_createStudentAssignment($student,$template,$teacher->user_id,$data['duedate'], $data['status']);
         
@@ -86,28 +87,28 @@ class AssignmentHandler extends MainHandler{
     
     public function createCohortAssignmentHandler(Request $request, Response $response) {
         $data = $request->getParsedBody();
-        if(empty($data)) throw new Exception('There was an error retrieving the request content, it needs to be a valid JSON');
+        if(empty($data)) throw new ArgumentException('There was an error retrieving the request content, it needs to be a valid JSON');
         
         $duedate = date('Y-m-d',strtotime($data['duedate']));
-        if(!$duedate) throw new Exception('Invalid date format');
+        if(!$duedate) throw new ArgumentException('Invalid date format');
         
         $cohort_id = $request->getAttribute('cohort_id');
         
         $template = Atemplate::find($data['template_id']);
-        if(!$template) throw new Exception('Invalid template id');
+        if(!$template) throw new ArgumentException('Invalid template id');
         
         //retrieve the cohor by slug or id
         $cohort = null;
         if(is_numeric($cohort_id)) $cohort = Cohort::find($cohort_id);
         else $cohort = Cohort::where('slug', $cohort_id)->first();
-        if(!$cohort) throw new Exception('Invalid cohort id: '.$cohort_id);
+        if(!$cohort) throw new ArgumentException('Invalid cohort id: '.$cohort_id);
         
         $teachers = $this->app->db->table('cohort_teacher')
         ->where([
             'cohort_teacher.cohort_id' => $cohort->id,
             'cohort_teacher.is_instructor' => true
         ])->select('cohort_teacher.teacher_user_id')->get();
-        if(count($teachers)==0) throw new Exception('There cohort needs a main teacher in order to accept assignments');
+        if(count($teachers)==0) throw new ArgumentException('There cohort needs a main teacher in order to accept assignments');
         
         $students = $cohort->students()->get();
         foreach($students as $student) $this->_createStudentAssignment($student,$template,$teachers->first()->teacher_user_id,$duedate);
@@ -118,29 +119,29 @@ class AssignmentHandler extends MainHandler{
     public function updateAssignmentHandler(Request $request, Response $response) {
         $assignmentId = $request->getAttribute('assignment_id');
         $data = $request->getParsedBody();
-        if(!$data)  throw new Exception('Error parsing the request (invalid JSON)');
+        if(!$data)  throw new ArgumentException('Error parsing the request (invalid JSON)');
         
         $assignment = Assignment::find($assignmentId);
-        if(!$assignment) throw new Exception('Invalid assingment id');
+        if(!$assignment) throw new ArgumentException('Invalid assingment id');
 
-        if(!in_array($data['status'],Assignment::$possibleStages)) throw new Exception("Invalid status ".$data['status'].", the only valid status are: ".implode(',',Assignment::$possibleStages));
+        if(!in_array($data['status'],Assignment::$possibleStages)) throw new ArgumentException("Invalid status ".$data['status'].", the only valid status are: ".implode(',',Assignment::$possibleStages));
 
         if($data['status'] == 'delivered') 
         {
-            if(empty($data['github_url'])) throw new Exception('You need to specify a github URL to deliver an assignment');
+            if(empty($data['github_url'])) throw new ArgumentException('You need to specify a github URL to deliver an assignment');
             $assignment->github_url = $data['github_url'];
         }
 
         if($data['status'] == 'rejected') 
         {
-            if(empty($data['reject_reason'])) throw new Exception('You need to specify a the reason for this rejection');
+            if(empty($data['reject_reason'])) throw new ArgumentException('You need to specify a the reason for this rejection');
             $assignment->reject_reason = $data['reject_reason'];
         }
         
         if(isset($data['badges'])){
             foreach($data['badges'] as $slug => $points){
                 $badge = Badge::where('slug', $slug)->first();
-                if(!$badge) throw new Exception('The badge '.$slug.' does not exists and it is associateed to this project');
+                if(!$badge) throw new ArgumentException('The badge '.$slug.' does not exists and it is associateed to this project');
             }
         } 
 
@@ -148,7 +149,7 @@ class AssignmentHandler extends MainHandler{
         if($data['status'] == 'reviewed') 
         {
             $student = $assignment->student()->get()->first();
-            if(!isset($data['badges'])) throw new Exception('You need to specify what badges have been earned by the student');
+            if(!isset($data['badges'])) throw new ArgumentException('You need to specify what badges have been earned by the student');
             
             try{
                 foreach($data['badges'] as $slug => $points){
@@ -156,7 +157,7 @@ class AssignmentHandler extends MainHandler{
                     $savedBadges[] = $this->_updateStudentActivity($slug,$student, $stuff);
                 }
             }
-            catch(Exception $e)
+            catch(ArgumentException $e)
             {
                 $this->_deleteBadges($savedBadges, $student);
                 throw $e;
@@ -170,7 +171,7 @@ class AssignmentHandler extends MainHandler{
             $assignment->status = $data['status'];
             $assignment->save();
         }
-        catch(Exception $e){
+        catch(ArgumentException $e){
             if($data['status'] == 'reviewed') $this->_deleteBadges($savedBadges, $student);
             throw $e;
         }
@@ -182,7 +183,7 @@ class AssignmentHandler extends MainHandler{
         $assignmentId = $request->getAttribute('assignment_id');
         
         $assignment = Assignment::find($assignmentId);
-        if(!$assignment) throw new Exception('Invalid assignment id');
+        if(!$assignment) throw new ArgumentException('Invalid assignment id');
         
         $assignment->delete();
         
@@ -196,7 +197,7 @@ class AssignmentHandler extends MainHandler{
             'assignments.student_user_id' => $student->user_id,
             'assignments.atemplate_id' => $template->id
         ])->select('assignments.id')->get();
-        if(count($assignments)>0) throw new Exception('There is already an assignment using this template and student');
+        if(count($assignments)>0) throw new ArgumentException('There is already an assignment using this template and student');
 
         $assignment = new Assignment();
         $assignment->status = $status;
@@ -212,7 +213,7 @@ class AssignmentHandler extends MainHandler{
     private function _updateStudentActivity($badgeSlug, $student, $data){
         
         $badge = Badge::where('slug', $badgeSlug)->first();
-        if(!$badge) throw new Exception('Invalid badge slug: '.$badgeSlug);
+        if(!$badge) throw new ArgumentException('Invalid badge slug: '.$badgeSlug);
         
         $activity = new Activity();
         $activity->type = 'project';

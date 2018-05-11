@@ -30,8 +30,7 @@ class PasswordHash {
 	var $portable_hashes;
 	var $random_state;
 
-	function __construct($iteration_count_log2, $portable_hashes)
-	{
+	function __construct($iteration_count_log2, $portable_hashes){
 		$this->itoa64 = './0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
 
 		if ($iteration_count_log2 < 4 || $iteration_count_log2 > 31)
@@ -45,13 +44,11 @@ class PasswordHash {
 			$this->random_state .= getmypid();
 	}
 
-	function PasswordHash($iteration_count_log2, $portable_hashes)
-	{
+	function PasswordHash($iteration_count_log2, $portable_hashes){
 		self::__construct($iteration_count_log2, $portable_hashes);
 	}
 
-	function get_random_bytes($count)
-	{
+	function get_random_bytes($count){
 		$output = '';
 		if (@is_readable('/dev/urandom') &&
 		    ($fh = @fopen('/dev/urandom', 'rb'))) {
@@ -72,8 +69,7 @@ class PasswordHash {
 		return $output;
 	}
 
-	function encode64($input, $count)
-	{
+	function encode64($input, $count){
 		$output = '';
 		$i = 0;
 		do {
@@ -95,8 +91,7 @@ class PasswordHash {
 		return $output;
 	}
 
-	function gensalt_private($input)
-	{
+	function gensalt_private($input){
 		$output = '$P$';
 		$output .= $this->itoa64[min($this->iteration_count_log2 +
 			((PHP_VERSION >= '5') ? 5 : 3), 30)];
@@ -105,8 +100,7 @@ class PasswordHash {
 		return $output;
 	}
 
-	function crypt_private($password, $setting)
-	{
+	function crypt_private($password, $setting){
 		$output = '*0';
 		if (substr($setting, 0, 2) === $output)
 			$output = '*1';
@@ -143,8 +137,7 @@ class PasswordHash {
 		return $output;
 	}
 
-	function gensalt_blowfish($input)
-	{
+	function gensalt_blowfish($input){
 		# This one needs to use a different order of characters and a
 		# different encoding scheme from the one in encode64() above.
 		# We care because the last character in our encoded string will
@@ -184,8 +177,7 @@ class PasswordHash {
 		return $output;
 	}
 
-	function HashPassword($password)
-	{
+	function HashPassword($password){
 		$random = '';
 
 		if (CRYPT_BLOWFISH === 1 && !$this->portable_hashes) {
@@ -210,8 +202,8 @@ class PasswordHash {
 		return '*';
 	}
 
-	function CheckPassword($password, $stored_hash)
-	{
+	function CheckPassword($password, $stored_hash){
+		
 		$hash = $this->crypt_private($password, $stored_hash);
 		if ($hash[0] === '*')
 			$hash = crypt($password, $stored_hash);

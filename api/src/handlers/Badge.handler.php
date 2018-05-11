@@ -3,6 +3,7 @@
 use Slim\Http\Request as Request;
 use Slim\Http\Response as Response;
 use Helpers\BCValidator;
+use Helpers\ArgumentException;
 
 class BadgeHandler extends MainHandler{
     
@@ -14,7 +15,7 @@ class BadgeHandler extends MainHandler{
         $badge = null;
         if(is_numeric($badgeId)) $badge = Badge::find($badgeId);
         else $badge = Badge::where('slug', $badgeId)->first();
-        if(!$badge) throw new Exception('Invalid badge slug or id: '.$badgeId);
+        if(!$badge) throw new ArgumentException('Invalid badge slug or id: '.$badgeId);
         
         return $this->success($response,$badge);
     }
@@ -26,7 +27,7 @@ class BadgeHandler extends MainHandler{
         ->join('badge_student','badge_student.badge_id','=','badges.id')
         ->where('badge_student.student_user_id',$studentId)
         ->select('badges.*','badge_student.is_achieved','badge_student.points_acumulated')->get();
-        if(!$badges) throw new Exception('Invalid student id');
+        if(!$badges) throw new ArgumentException('Invalid student id');
         
         return $this->success($response,$badges);
     }
@@ -35,12 +36,12 @@ class BadgeHandler extends MainHandler{
         $badgeId = $request->getAttribute('badge_id');
         
         $data = $request->getParsedBody();
-        if(empty($data)) throw new Exception('There was an error retrieving the request content, it needs to be a valid JSON');
+        if(empty($data)) throw new ArgumentException('There was an error retrieving the request content, it needs to be a valid JSON');
         
         if($badgeId){
             if(is_numeric($badgeId)) $badge = Badge::find($badgeId);
             else $badge = Badge::where('slug', $badgeId)->first();
-            if(!$badge) throw new Exception('Invalid badge slug or id: '.$badgeId);
+            if(!$badge) throw new ArgumentException('Invalid badge slug or id: '.$badgeId);
         
             $badge = $this->setOptional($badge,$data,'slug',BCValidator::SLUG);
             $badge = $this->setOptional($badge,$data,'name');
@@ -85,16 +86,16 @@ class BadgeHandler extends MainHandler{
                 $oldName = $newfile->getClientFilename();
                 $name_parts = explode(".", $oldName);
                 $ext = end($name_parts);
-                if(!in_array($ext, VALID_IMG_EXTENSIONS)) throw new Exception('Invalid image thumb extension: '.$ext);
+                if(!in_array($ext, VALID_IMG_EXTENSIONS)) throw new ArgumentException('Invalid image thumb extension: '.$ext);
                 
                 $newURL = $destination.$badge->slug.'.'.$ext;
                 //print_r($newURL); die();
                 $newfile->moveTo($newURL);
                 return $newURL;
                 
-            }else throw new Exception('Invalid thumb file destination: '.$destination);
+            }else throw new ArgumentException('Invalid thumb file destination: '.$destination);
             
-        }else throw new Exception('Invalid PUBLIC_URL destination: '.PUBLIC_URL);
+        }else throw new ArgumentException('Invalid PUBLIC_URL destination: '.PUBLIC_URL);
         
         return false;
     }
@@ -103,10 +104,10 @@ class BadgeHandler extends MainHandler{
         $badgeId = $request->getAttribute('badge_id');
         
         $badge = Badge::find($badgeId);
-        if(!$badge) throw new Exception('Invalid badge id: '.$badgeId);
+        if(!$badge) throw new ArgumentException('Invalid badge id: '.$badgeId);
         
         $imageUrl = $this->uploadThumb($badge,$request);
-        if(empty($imageUrl)) throw new Exception('Unable to upload thumb');
+        if(empty($imageUrl)) throw new ArgumentException('Unable to upload thumb');
         $badge->icon = substr($imageUrl,2);
         $badge->save();
         
@@ -117,12 +118,12 @@ class BadgeHandler extends MainHandler{
         $badgeId = $request->getAttribute('badge_id');
         
         $badge = Badge::find($badgeId);
-        if(!$badge) throw new Exception('Invalid badge id: '.$badgeId);
+        if(!$badge) throw new ArgumentException('Invalid badge id: '.$badgeId);
         /*
         $attributes = $badge->getAttributes();
         $now = time(); // or your date as well
         $daysOld = floor(($now - strtotime($attributes['created_at'])) / DELETE_MAX_DAYS);
-        if($daysOld>5) throw new Exception('The badge is too old to delete');
+        if($daysOld>5) throw new ArgumentException('The badge is too old to delete');
         */
         $badge->delete();
         
@@ -133,16 +134,16 @@ class BadgeHandler extends MainHandler{
         $specialtyId = $request->getAttribute('specialty_id');
         
         $badgesObj = $request->getParsedBody();
-        if(empty($badgesObj['badges'])) throw new Exception('There was an error retrieving the badges');
+        if(empty($badgesObj['badges'])) throw new ArgumentException('There was an error retrieving the badges');
         
         $specialty = Specialty::find($specialtyId);
-        if(!$specialty) throw new Exception('Invalid specialty id: '.$specialtyId);
+        if(!$specialty) throw new ArgumentException('Invalid specialty id: '.$specialtyId);
         
         $defenitiveBadges = [];
         $currentBadges = $specialty->badges()->get();
         foreach($badgesObj['badges'] as $badgeId) {
             $badge = Badge::find($badgeId);
-            if(!$badge) throw new Exception('Invalid badge id: '.$badgeId);
+            if(!$badge) throw new ArgumentException('Invalid badge id: '.$badgeId);
             if(!$currentBadges->contains($badgeId)) $defenitiveBadges[] = $badgeId;
         }
         
@@ -155,18 +156,18 @@ class BadgeHandler extends MainHandler{
         $specialtyId = $request->getAttribute('specialty_id');
         
         $badgesObj = $request->getParsedBody();
-        if(empty($badgesObj['badges'])) throw new Exception('There was an error retrieving the badges');
+        if(empty($badgesObj['badges'])) throw new ArgumentException('There was an error retrieving the badges');
         foreach($badgesObj['badges'] as $badgeId)
         {
             $badge = Badge::find($badgeId);
-            if(!$badge) throw new Exception('There is no badge with ID '.$badgeId);
+            if(!$badge) throw new ArgumentException('There is no badge with ID '.$badgeId);
         }
         
         $specialty = Specialty::find($specialtyId);
-        if(!$specialty) throw new Exception('Invalid specialty id: '.$specialtyId);
+        if(!$specialty) throw new ArgumentException('Invalid specialty id: '.$specialtyId);
         
         if($badgesObj['badges']>0) $specialty->badges()->detach($badgesObj['badges']);
-        else throw new Exception('The badges array is empty');
+        else throw new ArgumentException('The badges array is empty');
         
         return $this->success($response,$specialty);
     }

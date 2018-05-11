@@ -2,23 +2,28 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a08ac380-d432-48e1-baa4-49edeb5d0117" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/api.iml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/copyright/profiles_settings.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/modules.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/api/src/tests/badge/BadgeGetTest.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/api/src/tests/badge/BadgePostTest.php" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/api/migrations/20171129104946_oauth_server.php" afterPath="" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/api/migrations/20171129101240_my_first_migration.php" afterPath="$PROJECT_DIR$/api/migrations/20180507130418_tables.php" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/api/migrations/20171129110420_workshop_structure.php" afterPath="$PROJECT_DIR$/api/migrations/20180507130506_workshop.php" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/api/migrations/20180205162021_calendar_migration.php" afterPath="$PROJECT_DIR$/api/migrations/20180507130548_calendar.php" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/api/migrations/20180331233506_task_migration.php" afterPath="$PROJECT_DIR$/api/migrations/20180507130637_task.php" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/api/migrations/20180410203728_remin_password.php" afterPath="$PROJECT_DIR$/api/migrations/20180507130720_passtokens.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/tests/README.md" afterPath="$PROJECT_DIR$/api/src/tests/README.md" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/tests/TalentTreeATest.php" afterPath="$PROJECT_DIR$/api/src/tests/TalentTreeATest.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/tests/initialize.sh" afterPath="$PROJECT_DIR$/api/src/tests/initialize.sh" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/api/src/helpers/AuthHelper.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/emails/parts/footer.html" afterPath="$PROJECT_DIR$/api/src/emails/parts/footer.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/handlers/Assignment.handler.php" afterPath="$PROJECT_DIR$/api/src/handlers/Assignment.handler.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/handlers/Atemplate.handler.php" afterPath="$PROJECT_DIR$/api/src/handlers/Atemplate.handler.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/handlers/Badge.handler.php" afterPath="$PROJECT_DIR$/api/src/handlers/Badge.handler.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/handlers/Calendar.handler.php" afterPath="$PROJECT_DIR$/api/src/handlers/Calendar.handler.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/handlers/Catalog.handler.php" afterPath="$PROJECT_DIR$/api/src/handlers/Catalog.handler.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/handlers/Cohort.handler.php" afterPath="$PROJECT_DIR$/api/src/handlers/Cohort.handler.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/handlers/Location.handler.php" afterPath="$PROJECT_DIR$/api/src/handlers/Location.handler.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/handlers/Main.handler.php" afterPath="$PROJECT_DIR$/api/src/handlers/Main.handler.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/handlers/ProfileHandler.php" afterPath="$PROJECT_DIR$/api/src/handlers/ProfileHandler.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/handlers/Specialty.handler.php" afterPath="$PROJECT_DIR$/api/src/handlers/Specialty.handler.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/handlers/Student.handler.php" afterPath="$PROJECT_DIR$/api/src/handlers/Student.handler.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/handlers/Task.handler.php" afterPath="$PROJECT_DIR$/api/src/handlers/Task.handler.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/handlers/Teacher.handler.php" afterPath="$PROJECT_DIR$/api/src/handlers/Teacher.handler.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/handlers/User.handler.php" afterPath="$PROJECT_DIR$/api/src/handlers/User.handler.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/handlers/Workshop.handler.php" afterPath="$PROJECT_DIR$/api/src/handlers/Workshop.handler.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/handlers/Wtemplate.handler.php" afterPath="$PROJECT_DIR$/api/src/handlers/Wtemplate.handler.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/helpers/BCValidator.php" afterPath="$PROJECT_DIR$/api/src/helpers/BCValidator.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/helpers/PasswordHash.php" afterPath="$PROJECT_DIR$/api/src/helpers/PasswordHash.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/tests/BaseTestCase.php" afterPath="$PROJECT_DIR$/api/src/tests/BaseTestCase.php" />
     </list>
     <ignored path="api.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -130,12 +135,20 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1526060884523</updated>
-      <workItem from="1526060885947" duration="567000" />
+      <workItem from="1526060885947" duration="703000" />
     </task>
+    <task id="LOCAL-00001" summary="Creacion de archivos test, mejora de migraciones y modificacion de readme (se agrego el link del doc de tests)">
+      <created>1526061589412</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1526061589412</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="567000" />
+    <option name="totallyTimeSpent" value="703000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1280" height="724" extended-state="6" />
@@ -188,6 +201,10 @@
   </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Creacion de archivos test, mejora de migraciones y modificacion de readme (se agrego el link del doc de tests)" />
+    <option name="LAST_COMMIT_MESSAGE" value="Creacion de archivos test, mejora de migraciones y modificacion de readme (se agrego el link del doc de tests)" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />

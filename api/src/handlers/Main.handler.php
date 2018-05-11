@@ -3,6 +3,7 @@
 use Slim\Http\Request as Request;
 use Slim\Http\Response as Response;
 use Helpers\BCValidator;
+use Helpers\ArgumentException;
 
 class MainHandler{
 
@@ -37,7 +38,6 @@ class MainHandler{
     }
     
     public function fail($request, $response, $args) {
-        
         $failCode = $args->getCode();
         if(!$failCode || !in_array($failCode,[500,400,401,403,501,504])) $failCode = 500;
         $errorArray = array( "code"=> $failCode, "msg"=>  $args->getMessage() );
@@ -69,7 +69,7 @@ class MainHandler{
                 $model->$key = $data[$key];
             }
         }
-        else throw new Exception('Mising parameter: '.$key);   
+        else throw new ArgumentException('Mising parameter: '.$key);   
         
         return $model;
     }
@@ -87,7 +87,7 @@ class MainHandler{
         $id = $request->getAttribute(strtolower($this->slug).'_id');
         
         $single = call_user_func_array($this->slug . '::find',[$id]);;
-        if(!$single) throw new Exception('Invalid '.strtolower($this->slug).'_id');
+        if(!$single) throw new ArgumentException('Invalid '.strtolower($this->slug).'_id');
         
         return $this->success($response,$single);
     }
@@ -116,9 +116,9 @@ class MainHandler{
         $files = $request->getUploadedFiles();
         $params = $request->getParsedBody();
         //print_r($files); die();
-        if (empty($files['badges'])) throw new Exception('The file parameter name needs to be "badges"');
-        if(empty($params['force_update'])) throw new Exception('You need to specify a force_update parameter value');
-        if(empty($params['validate_specialty'])) throw new Exception('You need to specify a validate_specialty parameter value');
+        if (empty($files['badges'])) throw new ArgumentException('The file parameter name needs to be "badges"');
+        if(empty($params['force_update'])) throw new ArgumentException('You need to specify a force_update parameter value');
+        if(empty($params['validate_specialty'])) throw new ArgumentException('You need to specify a validate_specialty parameter value');
         
         $forceUpdate = ($params['force_update'] == 'true') ? true : false; //si queremos actualizar incluso cuando ya el badge fue creado anteriormente
         $validateSpecialty = ($params['validate_specialty'] == 'true') ? true : false; //si queremos actualizar incluso cuando ya el badge fue creado anteriormente
@@ -134,7 +134,7 @@ class MainHandler{
         foreach ($lines as $line) {
             $array[] = str_getcsv($line);
         }
-		if(!$array) throw new Exception('The CSV has invalid caracters or format');
+		if(!$array) throw new ArgumentException('The CSV has invalid caracters or format');
 		
 		//Create the badges posts into wordpress
 		$log = null;
@@ -196,8 +196,8 @@ class MainHandler{
     		}
     	}
     	
-    	if(count($errors)>10) throw new Exception('More than 10 errors where found in the calendar, here is a few: '.$this->arrayToHTML($errors));
-    	if(count($errors)>0) throw new Exception('The calendar was not imported because the following erros have been found: '.$this->arrayToHTML($errors));
+    	if(count($errors)>10) throw new ArgumentException('More than 10 errors where found in the calendar, here is a few: '.$this->arrayToHTML($errors));
+    	if(count($errors)>0) throw new ArgumentException('The calendar was not imported because the following erros have been found: '.$this->arrayToHTML($errors));
     	
     	return true;
     }

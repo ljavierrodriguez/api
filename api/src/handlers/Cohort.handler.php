@@ -2,8 +2,8 @@
 
 use Slim\Http\Request as Request;
 use Slim\Http\Response as Response;
-
 use Helpers\BCValidator;
+use Helpers\ArgumentException;
 
 class CohortHandler extends MainHandler{
     
@@ -35,7 +35,7 @@ class CohortHandler extends MainHandler{
         $cohort = null;
         if(is_numeric($cohortId)) $cohort = Cohort::find($cohortId);
         else $cohort = Cohort::where('slug', $cohortId)->first();
-        if(!$cohort) throw new Exception('Invalid cohort slug or id: '.$cohortId);
+        if(!$cohort) throw new ArgumentException('Invalid cohort slug or id: '.$cohortId);
         
         return $this->success($response,$cohort);
     }
@@ -44,7 +44,7 @@ class CohortHandler extends MainHandler{
         $locationId = $request->getAttribute('location_id');
         
         $location = Location::find($locationId);
-        if(!$location) throw new Exception('Invalid location id:'.$locationId);
+        if(!$location) throw new ArgumentException('Invalid location id:'.$locationId);
         
         return $this->success($response,$location->cohorts()->get());
     }
@@ -53,20 +53,20 @@ class CohortHandler extends MainHandler{
         $teacherId = $request->getAttribute('teacher_id');
         
         $teacher = Teacher::find($teacherId);
-        if(!$teacher) throw new Exception('Invalid teacher id:'.$teacherId);
+        if(!$teacher) throw new ArgumentException('Invalid teacher id:'.$teacherId);
         
         return $this->success($response,$teacher->cohorts()->get());
     }
     
     public function createCohortHandler(Request $request, Response $response) {
         $data = $request->getParsedBody();
-        if(empty($data)) throw new Exception('There was an error retrieving the request content, it needs to be a valid JSON');
+        if(empty($data)) throw new ArgumentException('There was an error retrieving the request content, it needs to be a valid JSON');
         
         $location = Location::where('slug', $data['location_slug'])->first();
-        if(!$location) throw new Exception('Invalid location_slug slug');
+        if(!$location) throw new ArgumentException('Invalid location_slug slug');
         
         $profile = Profile::where('slug', $data['profile_slug'])->first();
-        if(!$profile) throw new Exception('Invalid profile slug: '.$data['profile_slug']);
+        if(!$profile) throw new ArgumentException('Invalid profile slug: '.$data['profile_slug']);
         
         $cohort = new Cohort();
         $cohort = $this->setMandatory($cohort,$data,'name',BCValidator::NAME);
@@ -85,18 +85,18 @@ class CohortHandler extends MainHandler{
     public function syncCohortHandler(Request $request, Response $response) {
         $data = $request->getParsedBody();
 
-        if(empty($data)) throw new Exception('There was an error retrieving the request content, it needs to be a valid JSON');
+        if(empty($data)) throw new ArgumentException('There was an error retrieving the request content, it needs to be a valid JSON');
         
         $location = Location::where('slug', $data['location_slug'])->first();
-        if(!$location) throw new Exception('Invalid location_slug: '.$data['location_slug']);
+        if(!$location) throw new ArgumentException('Invalid location_slug: '.$data['location_slug']);
         
         $profile = Profile::where('slug', $data['profile_slug'])->first();
-        if(!$profile) throw new Exception('Invalid profile slug: '.$data['profile_slug']);
+        if(!$profile) throw new ArgumentException('Invalid profile slug: '.$data['profile_slug']);
         
         $teacher = Teacher::find($data['instructor_id']);
-        if(!$teacher) throw new Exception('Invalid instructor_id: '.$data['instructor_id']);
+        if(!$teacher) throw new ArgumentException('Invalid instructor_id: '.$data['instructor_id']);
         
-        if(!isset($data['slug']))  throw new Exception('You have to specify a cohort slug');
+        if(!isset($data['slug']))  throw new ArgumentException('You have to specify a cohort slug');
         $cohort = Cohort::where('slug', $data['slug'])->first();
         if(!$cohort) $cohort = new Cohort();
         
@@ -126,25 +126,25 @@ class CohortHandler extends MainHandler{
     public function updateCohortHandler(Request $request, Response $response) {
         $cohortId = $request->getAttribute('cohort_id');
         $data = $request->getParsedBody();
-        if(!$data) throw new Exception('There was an error parsing the request information (JSON)');
+        if(!$data) throw new ArgumentException('There was an error parsing the request information (JSON)');
         
         $cohort = Cohort::find($cohortId);
-        if(!$cohort) throw new Exception('Invalid cohort id: '.$cohortId);
+        if(!$cohort) throw new ArgumentException('Invalid cohort id: '.$cohortId);
         
         if(!empty($data['stage']) && !in_array($data['stage'], Cohort::$possibleStages))
-            throw new Exception('Invalid cohort stage');
+            throw new ArgumentException('Invalid cohort stage');
          
         if(!empty($data['profile_slug']))
         {
             $profile = Profile::where('slug', $data['profile_slug'])->first();
-            if(!$profile) throw new Exception('Invalid profile slug: '.$data['profile_slug']);
+            if(!$profile) throw new ArgumentException('Invalid profile slug: '.$data['profile_slug']);
             $cohort->profile()->associate($profile);
         }
          
         if(!empty($data['location_slug']))
         {
             $location = Location::where('slug', $data['location_slug'])->first();
-            if(!$location) throw new Exception('Invalid location slug: '.$data['location_slug']);
+            if(!$location) throw new ArgumentException('Invalid location slug: '.$data['location_slug']);
             $cohort->location()->associate($location);
         }
 
@@ -163,10 +163,10 @@ class CohortHandler extends MainHandler{
         $cohortId = $request->getAttribute('cohort_id');
         
         $cohort = Cohort::find($cohortId);
-        if(!$cohort) throw new Exception('Invalid cohort id');
+        if(!$cohort) throw new ArgumentException('Invalid cohort id');
         
         $students = $cohort->students()->get();
-        if(count($students)>0) throw new Exception('Remove all students from the cohort first.');
+        if(count($students)>0) throw new ArgumentException('Remove all students from the cohort first.');
         
         $cohort->delete();
         
@@ -177,7 +177,7 @@ class CohortHandler extends MainHandler{
         $cohortId = $request->getAttribute('cohort_id');
         
         $cohort = Cohort::find($cohortId);
-        if(!$cohort) throw new Exception('Invalid cohort id:'.$cohortId);
+        if(!$cohort) throw new ArgumentException('Invalid cohort id:'.$cohortId);
         
         $students = $cohort->students()->get();
         
@@ -188,16 +188,17 @@ class CohortHandler extends MainHandler{
         $cohortId = $request->getAttribute('cohort_id');
         
         $studentsArray = $request->getParsedBody();
-        if(empty($studentsArray)) throw new Exception('There was an error retrieving the request content, it needs to be a valid JSON');
+        if(empty($studentsArray)) throw new ArgumentException('There was an error retrieving the request content, it needs to be a valid JSON');
        
-        $cohort = Cohort::find($cohortId);
-        if(!$cohort) throw new Exception('Invalid cohort id:'.$cohortId);
+        $cohort = null;
+        if(is_numeric($cohortId)) $cohort = Cohort::find($cohortId);
+        else $cohort = Cohort::where('slug', $cohortId)->first();
+        if(!$cohort) throw new ArgumentException('Invalid cohort slug or id: '.$cohortId);
         
         $auxStudents = [];
         foreach($studentsArray as $stu) $auxStudents[] = $stu['student_id'];
-
         if($auxStudents>0) $cohort->students()->attach($auxStudents);
-        else throw new Exception('Error retreving Students form the body request');
+        else throw new ArgumentException('Error retreving Students form the body request');
         
         return $this->success($response,"There are ".count($cohort->students())." students in the cohort.");
     }
@@ -206,26 +207,26 @@ class CohortHandler extends MainHandler{
         $cohortId = $request->getAttribute('cohort_id');
         
         $teachersArray = $request->getParsedBody();
-        if(empty($teachersArray)) throw new Exception('There was an error retrieving the request content, it needs to be a valid JSON');
+        if(empty($teachersArray)) throw new ArgumentException('There was an error retrieving the request content, it needs to be a valid JSON');
         
         //there can only be a max of one main instructor
         $mainInstructors = [];
         foreach($teachersArray as $t) if(isset($t['is_instructor']) && $t['is_instructor']=='true') $mainInstructors[] = $t['teacher_id'];
-        if(count($mainInstructors)>1) throw new Exception('There can only be one main instructor');
+        if(count($mainInstructors)>1) throw new ArgumentException('There can only be one main instructor');
        
         $cohort = Cohort::find($cohortId);
-        if(!$cohort) throw new Exception('Invalid cohort id: '.$cohortId);
+        if(!$cohort) throw new ArgumentException('Invalid cohort id: '.$cohortId);
         
         $auxTeachers = [];
         $currentTeachers = $cohort->teachers()->get();
         foreach($teachersArray as $tea) {
             $teacher = Teacher::find($tea['teacher_id']);
-            if(!$teacher) throw new Exception('Invalid teacher id: '.$tea['teacher_id']);
+            if(!$teacher) throw new ArgumentException('Invalid teacher id: '.$tea['teacher_id']);
             if(!$currentTeachers->contains($tea['teacher_id'])) $auxTeachers[] = $tea['teacher_id'];
         }
 
         if($auxTeachers>0) $cohort->teachers()->attach($auxTeachers);
-        else throw new Exception('Error retreving Teachers form the body request');
+        else throw new ArgumentException('Error retreving Teachers form the body request');
         
         foreach($currentTeachers as $ct) $cohort->teachers()->updateExistingPivot($ct->id, ['is_instructor'=>false]);
         $cohort->teachers()->updateExistingPivot($mainInstructors[0], ['is_instructor'=>true]);
@@ -237,20 +238,20 @@ class CohortHandler extends MainHandler{
         $cohortId = $request->getAttribute('cohort_id');
         
         $teachersArray = $request->getParsedBody();
-        if(empty($teachersArray)) throw new Exception('There was an error retrieving the request content, it needs to be a valid JSON');
+        if(empty($teachersArray)) throw new ArgumentException('There was an error retrieving the request content, it needs to be a valid JSON');
         
         $cohort = Cohort::find($cohortId);
-        if(!$cohort) throw new Exception('Invalid cohort id: '.$cohortId);
+        if(!$cohort) throw new ArgumentException('Invalid cohort id: '.$cohortId);
         
         $auxTeachers = [];
         foreach($teachersArray as $tea) {
             $teacher = Teacher::find($tea['teacher_id']);
-            if(!$teacher) throw new Exception('Invalid teacher id: '.$tea['teacher_id']);
+            if(!$teacher) throw new ArgumentException('Invalid teacher id: '.$tea['teacher_id']);
             $auxTeachers[] = $tea['teacher_id'];
         }
 
         if($auxTeachers>0) $cohort->teachers()->detach($auxTeachers);
-        else throw new Exception('Error deleting teachers');
+        else throw new ArgumentException('Error deleting teachers');
         
         return $this->success($response,"There are ".count($cohort->teachers()->get())." teachers in the cohort.");
     }
