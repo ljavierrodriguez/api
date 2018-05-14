@@ -25,7 +25,7 @@ class StudentHandler extends MainHandler{
     public function getAllHandler(Request $request, Response $response) {
         $limit = $request->getQueryParam('limit',null);
         $all = $this->app->db->table(strtolower($this->slug).'s')
-                    ->select('students.*','users.full_name', 'users.username')
+                    ->select('students.*','users.id','users.full_name', 'users.username')
                     ->join('users', 'users.id', '=', 'students.user_id')
                     ->limit($limit)->get();
         return $this->success($response,$all);
