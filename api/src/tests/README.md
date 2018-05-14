@@ -43,10 +43,10 @@ You can specify if you expect the call to be a success or to return an error by 
 
 ```php
 //for success
-$badge = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/badge/'], $body)->expectSuccess();
+$badge = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/badge/'], $body)->expectSuccess()->getParsedBody();
 
 //for failure
-$badge = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/badge/'], $body)->expectFailure();
+$badge = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/badge/'], $body)->expectFailure()->getParsedBody();
 ```
 
 And it will asserts for a 200 response code or a 500 if failure.
