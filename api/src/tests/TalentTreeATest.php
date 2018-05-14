@@ -23,7 +23,9 @@ class TalentTreeATest extends BaseTestCase
               "technologies" => "css, html",
               "description" => "wululu"
         ];
-        $response = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/badge/'], $body)->expectSuccess();
+        $response = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/badge/'], $body)
+                        ->expectSuccess()
+                        ->getParsedBody();
         return $response->data;
     }
     
@@ -38,14 +40,14 @@ class TalentTreeATest extends BaseTestCase
               "technologies" => "css",
               "description" => "welele"
         ];
-        $responseObj = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/badge/'.$badge->id], $body)->expectSuccess();
-        $updatedBadge = $responseObj->data;
-        
-        //check that the updated badge matches the values that we wanted
-        $this->assertTrue($updatedBadge->name == $body["name"]); 
-        $this->assertTrue($updatedBadge->points_to_achieve == $body["points_to_achieve"]); 
-        $this->assertTrue($updatedBadge->technologies == $body["technologies"]); 
-        $this->assertTrue($updatedBadge->description == $body["description"]); 
+        $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/badge/'.$badge->id], $body)
+                        ->expectSuccess()
+                        ->withPropertiesAndValues([
+                                "name" => $body["name"],
+                                "points_to_achieve" => $body["points_to_achieve"],
+                                "technologies" => $body["technologies"],
+                                "description" => $body["description"],
+                            ]);
     }
     
 }
