@@ -33,7 +33,8 @@ function testForCreateBadge(){
           "technologies" => "css, html",
           "description" => "wululu"
     ];
-    $badge = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/badge/'], $body)->expectSuccess();
+    $badge = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/badge/'], $body)
+                ->getParsedBody();
 }
 ```
 
@@ -43,10 +44,12 @@ You can specify if you expect the call to be a success or to return an error by 
 
 ```php
 //for success
-$badge = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/badge/'], $body)->expectSuccess();
+$asserter = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/badge/'], $body)
+                ->expectSuccess();
 
 //for failure
-$badge = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/badge/'], $body)->expectFailure();
+$asserter = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/badge/'], $body)
+                ->expectFailure();
 ```
 
 And it will asserts for a 200 response code or a 500 if failure.
