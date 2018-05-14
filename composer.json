@@ -11,8 +11,7 @@
         "phpmailer/phpmailer": "^6.0",
         "daniel-zahariev/php-aws-ses": "^0.9.1",
         "aws/aws-sdk-php": "^3.54",
-        "twig/twig": "^2.4",
-        "wrapi/slack": "^1.0"
+        "twig/twig": "^2.4"
     },
     "require-dev": {
         "phpunit/phpunit": "*"

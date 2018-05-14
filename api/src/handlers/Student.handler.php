@@ -14,13 +14,21 @@ class StudentHandler extends MainHandler{
     
     public function getStudentHandler(Request $request, Response $response) {
         $breathecodeId = $request->getAttribute('student_id');
-        
         if(is_numeric($breathecodeId)) $user = User::find($breathecodeId);
         else $user = User::where('username', $breathecodeId)->first();
         if(!$user) throw new ArgumentException('Invalid student email or id: '.$breathecodeId, 404);
         if(!$user->student) throw new ArgumentException('The user '.$breathecodeId.' is not a student', 404);
         
         return $this->success($response,$user->student);
+    }
+    
+    public function getAllHandler(Request $request, Response $response) {
+        $limit = $request->getQueryParam('limit',null);
+        $all = $this->app->db->table(strtolower($this->slug).'s')
+                    ->select('students.*','users.full_name', 'users.username')
+                    ->join('users', 'users.id', '=', 'students.user_id')
+                    ->limit($limit)->get();
+        return $this->success($response,$all);
     }
     
     public function updateStudentStatus(Request $request, Response $response) {
