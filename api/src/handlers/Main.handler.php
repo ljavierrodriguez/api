@@ -80,7 +80,8 @@ class MainHandler{
     
     public function getAllHandler(Request $request, Response $response) {
         $limit = $request->getQueryParam('limit',null);
-        $all = $this->app->db->table(strtolower($this->slug).'s')->limit($limit)->get();
+        $all = call_user_func_array($this->slug . '::limit', [$limit])->get();
+        //$all = ::limit(30)->offset(30)->get();
         return $this->success($response,$all);
     }
     
