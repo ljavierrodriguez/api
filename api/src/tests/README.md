@@ -37,7 +37,8 @@ function testForCreateBadge(){
           "technologies" => "css, html",
           "description" => "wululu"
     ];
-    $badge = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/badge/'], $body)->expectSuccess();
+    $badge = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/badge/'], $body)
+                ->getParsedBody();
 }
 ```
 
@@ -47,16 +48,45 @@ You can specify if you expect the call to be a success or to return an error by 
 
 ```php
 //for success
-$badge = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/badge/'], $body)->expectSuccess();
+$asserter = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/badge/'], $body)
+                ->expectSuccess();
 
 //for failure
-$badge = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/badge/'], $body)->expectFailure();
+$asserter = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/badge/'], $body)
+                ->expectFailure();
 ```
 
 And it will asserts for a 200 response code or a 500 if failure.
 
-You will have to take care of the rest of the assertions, for example here we can check if the badge contains 
-name equal to what we sent in the body of the request.
+### Assertin the response body:
+
+Two methods have been created for that purpose:
+
+#### withProperties
+Checks that the response body contains specific properties
 ```php
-$this->assertTrue($badge->name == $body["name"]); 
+$this->mockAPICall(['REQUEST_METHOD' => 'GET', 'REQUEST_URI' => '/student/2'])
+                        ->expectSuccess()
+                        ->withProperties(["name", "last_name"]);
+```
+#### withPropertiesAndValues
+Checks that the response body contains specific proprtes but also checks for their values
+```php
+$this->mockAPICall(['REQUEST_METHOD' => 'GET', 'REQUEST_URI' => '/student/2'])
+                        ->expectSuccess()
+                        ->withPropertiesAndValues([
+                                "name" => $body["name"]
+                            ]);
+```
+
+### Other assertions
+
+You can retrieve the response body and do your own assertions by calling **getParsedBody** like this:
+```php
+$response = $this->mockAPICall(['REQUEST_METHOD' => 'GET', 'REQUEST_URI' => '/student/2'])
+                        ->expectSuccess()
+                        ->getParsedBody();
+
+//You can use any PHP unit assertion method like this:
+$this->assertTrue($response->foo == $var); 
 ```

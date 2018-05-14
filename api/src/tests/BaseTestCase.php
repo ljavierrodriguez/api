@@ -93,13 +93,6 @@ class BaseTestCase extends TestCase {
         //if($response->getStatusCode() != 200){ print_r($responseBody); die(); }
         return new AssertResponse($this, $response, $responseObj);
     }
-    
-    protected function assertContainsProperties($obj, $properties){
-        
-        foreach($properties as $prop) if(!property_exists($obj, $prop)) return false;
-        
-        return true;
-    }
 }
 
 class AssertResponse{
@@ -114,11 +107,29 @@ class AssertResponse{
     function expectSuccess($code=200){
         $this->test->assertSame($this->response->getStatusCode(), 200);
         $this->test->assertSame($this->responseObj->code, 200);
-        return $this->responseObj;
+        return new AssertResponse($this->test, $this->response, $this->responseObj);
     }
     function expectFailure($code=400){
         $this->test->assertSame($this->response->getStatusCode(), $code);
         $this->test->assertSame($this->responseObj->code, $code);
+        return new AssertResponse($this->test, $this->response, $this->responseObj);
+    }
+    function withProperties($properties){
+        $hasProperties = true;
+        foreach($properties as $prop) 
+            if(!property_exists($this->responseObj->data, $prop)) $hasProperties = false;
+        $this->test->assertTrue($hasProperties);
+        return new AssertResponse($this->test, $this->response, $this->responseObj);
+    }
+    function withPropertiesAndValues($properties){
+        $hasProperties = true;
+        foreach($properties as $key => $value) 
+            if(!property_exists($this->responseObj->data, $key))
+                $this->test->assertTrue($this->responseObj->data[$key] == $value);
+                
+        return new AssertResponse($this->test, $this->response, $this->responseObj);
+    }
+    function getParsedBody(){
         return $this->responseObj;
     }
 }

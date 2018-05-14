@@ -16,7 +16,9 @@ class TalentTreeBTest extends BaseTestCase
     }
     
     public function testForGetAll(){
-        $responseObj = $this->mockAPICall(['REQUEST_METHOD' => 'GET', 'REQUEST_URI' => '/badges/'])->expectSuccess();
+        $responseObj = $this->mockAPICall(['REQUEST_METHOD' => 'GET', 'REQUEST_URI' => '/badges/'])
+                            ->expectSuccess()
+                            ->getParsedBody();
         $this->assertTrue(is_array($responseObj->data)); //needs to be an array
         $this->assertTrue(isset($responseObj->data[0])); //needs to be an array
         return $responseObj->data;
@@ -26,7 +28,9 @@ class TalentTreeBTest extends BaseTestCase
      */
     public function testForDeleteAll($badges) {
         
-        $responseObj = $this->mockAPICall(['REQUEST_METHOD' => 'DELETE', 'REQUEST_URI' => '/badge/'.$badges[0]->id])->expectSuccess();
+        $responseObj = $this->mockAPICall(['REQUEST_METHOD' => 'DELETE', 'REQUEST_URI' => '/badge/'.$badges[0]->id])    
+                            ->expectSuccess()
+                            ->getParsedBody();
         $this->assertTrue($responseObj->data == 'ok');
     } 
     
