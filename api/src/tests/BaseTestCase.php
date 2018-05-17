@@ -95,6 +95,14 @@ class BaseTestCase extends TestCase {
         return new AssertResponse($this, $response, $responseObj);
     }
     
+    function log($msg){
+        if(DEBUG){
+            echo "\033[33m";
+            print_r($msg);
+            echo "\033[0m";
+        }
+    }
+    
     function _logTest($params, $response, $responseObj){
         if(DEBUG){
             $code = $response->getStatusCode();
