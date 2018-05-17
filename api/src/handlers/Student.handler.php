@@ -107,7 +107,7 @@ class StudentHandler extends MainHandler{
             $user = new User;
             $user->username = $data['email'];
             $user->type = 'student';
-            $user->full_name = $data['full_name'];
+            $user = $this->setMandatory($user,$data,'full_name');
             $user = $this->setOptional($user,$data,'wp_id');
             $user->save();
         }

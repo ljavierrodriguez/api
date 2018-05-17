@@ -66,7 +66,7 @@ class TeacherHandler extends MainHandler{
         $teacher = Teacher::find($teacherId);
         if(!$teacher) throw new ArgumentException('Invalid teacher id: '.$teacherId);
 
-        if($data['email']) throw new ArgumentException('Teacher emails cannot be updated through this service');
+        if(isset($data['email'])) throw new ArgumentException('Teacher emails cannot be updated through this service');
         
         $teacher->user = $this->setOptional($teacher->user,$data,'wp_id');
         $teacher->user = $this->setOptional($teacher->user,$data,'full_name');
