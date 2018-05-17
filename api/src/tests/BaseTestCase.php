@@ -19,6 +19,7 @@ class BaseTestCase extends TestCase {
         $this->createDatabase();
         $this->runSeeds();
         $this->createVirtualAPI();
+        define('RUNING_TEST',true);
     }
  
     /**

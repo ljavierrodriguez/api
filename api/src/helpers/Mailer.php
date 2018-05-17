@@ -31,6 +31,8 @@ class Mailer{
     
     function sendAPI($templateSlug,$args=[]){
         
+        if(defined(RUNING_TEST) && RUNING_TEST) return true;
+        
         if(!isset($args['email'])) throw new Exception('You have to specify the recipient email');
         
         $template = $this->getTemplate($templateSlug, $args);

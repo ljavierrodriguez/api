@@ -107,19 +107,20 @@ class StudentHandler extends MainHandler{
             $user = new User;
             $user->username = $data['email'];
             $user->type = 'student';
-            $user = $this->setMandatory($user,$data,'full_name');
+            $user = $this->setMandatory($user,$data,'full_name',BCValidator::NAME);
             $user = $this->setOptional($user,$data,'wp_id');
             $user->save();
         }
 
         if($user)
         {
-            $user = $this->setOptional($user,$data,'full_name');
+            $user = $this->setMandatory($user,$data,'full_name',BCValidator::NAME);
             $user = $this->setOptional($user,$data,'avatar_url');
             $user = $this->setOptional($user,$data,'bio');
             $user->save();
             
             $student = new Student();
+            $student = $this->setMandatory($student,$data,'full_name',BCValidator::NAME);
             $student = $this->setOptional($student,$data,'total_points');
             $student = $this->setOptional($student,$data,'phone');
             $student = $this->setOptional($student,$data,'github');
