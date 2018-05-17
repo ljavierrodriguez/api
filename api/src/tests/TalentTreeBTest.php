@@ -1,5 +1,5 @@
 <?php
-namespace Tests;
+/*namespace Tests;
 
 class TalentTreeBTest extends BaseTestCase
 {
@@ -23,16 +23,17 @@ class TalentTreeBTest extends BaseTestCase
         $this->assertTrue(isset($responseObj->data[0])); //needs to be an array
         return $responseObj->data;
     }
+
     /**
      * @depends testForGetAll
      */
-    public function testForDeleteAll($badges) {
+    /*public function testForDeleteAll($badges) {
         
         $responseObj = $this->mockAPICall(['REQUEST_METHOD' => 'DELETE', 'REQUEST_URI' => '/badge/'.$badges[0]->id])    
                             ->expectSuccess()
                             ->getParsedBody();
         $this->assertTrue($responseObj->data == 'ok');
-    } 
+    }
     
     
-}
+}*/

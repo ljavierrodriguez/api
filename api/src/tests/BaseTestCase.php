@@ -90,7 +90,7 @@ class BaseTestCase extends TestCase {
         $responseBody = $response->getBody();
         $responseObj = json_decode($responseBody);
         
-        //if($response->getStatusCode() != 200){ print_r($responseBody); die(); }
+        //if($response->getStatusCode() == 500){ print_r($responseBody); die(); }
         return new AssertResponse($this, $response, $responseObj);
     }
 }

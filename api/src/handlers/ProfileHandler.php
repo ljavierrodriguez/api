@@ -14,29 +14,31 @@ class ProfileHandler extends MainHandler{
         $data = $request->getParsedBody();
         if(empty($data)) throw new ArgumentException('There was an error retrieving the request content, it needs to be a valid JSON');
         
-        if(count($data['specialties'])<2) throw new ArgumentException('A profile must be created with at least two specialties');
+        //if(count($data['specialties'])<2) throw new ArgumentException('A profile must be created with at least two specialties');
         
         $profile = new Profile();
-        $specialties = [];
+        /*$specialties = [];
         foreach($data['specialties'] as $bslug)
         {
-            $specialty = Specialty::where('slug', $bslug)->first();
-            if($specialty) $specialties[] = $specialty->id;
-            else throw new ArgumentException('Invalid specialty slug: '.$bslug);
-        }
+            //$specialty = Specialty::where('slug', $bslug)->first();
+            //if($specialty) $specialties[] = $specialty->id;
+            //else throw new ArgumentException('Invalid specialty slug: '.$bslug);
+
+            $specialties[] = $bslug;
+        }*/
         $profile = $this->setMandatory($profile,$data,'slug',BCValidator::SLUG);
         $profile = $this->setMandatory($profile,$data,'name',BCValidator::NAME);
         $profile = $this->setMandatory($profile,$data,'description',BCValidator::DESCRIPTION);
         $profile->save();
         
-        try{
+        /*try{
             $profile->specialties()->attach($specialties);
         }
         catch(ArgumentException $e)
         {
             $profile->delete();
             throw new ArgumentException($e->getMessage());
-        }
+        }*/
         
         return $this->success($response,$profile);
     }
