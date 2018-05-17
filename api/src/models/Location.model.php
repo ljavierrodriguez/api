@@ -6,7 +6,4 @@ class Location extends \Illuminate\Database\Eloquent\Model
         return $this->hasMany('Cohort');
     }
     
-    public function workshops(){
-        return $this->hasMany('Workshop');
-    }
 }

@@ -61,6 +61,9 @@ class UserHandler extends MainHandler{
         $data = $request->getParsedBody();
         if(empty($data)) throw new ArgumentException('There was an error retrieving the request content, it needs to be a valid JSON');
         
+        $user = User::where('username', $data['username'])->first();
+        if($user) throw new ArgumentException('There is already a user with this email');
+        
         $user = new User();
         $user = $this->setMandatory($user,$data,'type',BCValidator::SLUG);
         $user = $this->setMandatory($user,$data,'full_name',BCValidator::NAME);

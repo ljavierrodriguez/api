@@ -51,6 +51,9 @@ class BadgeHandler extends MainHandler{
             
         } 
         else{
+            $badge = Badge::where('slug', $data['slug'])->first();
+            if($badge) throw new ArgumentException('There is already a badge with slug: '.$data['slug']);
+            
             $badge = new Badge();
             $imageUrl = $this->uploadThumb($badge,$request);
             if(!$imageUrl) $imageUrl = PUBLIC_URL.'img/badge/rand/chevron-'.rand(1,21).'.png';

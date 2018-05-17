@@ -108,41 +108,6 @@ class Tables extends Migration
                 });
         }
         
-        if(!$this->schema->hasTable('atemplates')){
-            $this->schema->create('atemplates', function($table) { 
-                $table->engine = 'InnoDB';
-                $table->bigIncrements('id');
-                $table->string('project_slug', 200)->unique();
-                $table->integer('wp_id')->unique()->nullable();
-                $table->string('title', 200);
-                $table->string('excerpt', 200)->nullable();
-                $table->string('difficulty', 20)->nullable();
-                $table->string('duration', 200);//in hours
-                $table->string('technologies', 200);
-                $table->timestamps();
-            
-            });
-        }
-        
-        if(!$this->schema->hasTable('assignments')){
-            $this->schema->create('assignments', function($table) { 
-                $table->engine = 'InnoDB';
-                $table->bigIncrements('id');
-                $table->unsignedBigInteger('student_user_id');
-                $table->unsignedBigInteger('teacher_user_id');
-                $table->date('duedate');
-                $table->unsignedBigInteger('atemplate_id');
-                $table->string('status', 40);
-                $table->string('reject_reason', 500)->nullable();
-                $table->string('github_url', 255)->nullable();
-                $table->timestamps();
-            
-                $table->foreign('student_user_id')->references('user_id')->on('students')->onDelete('cascade');
-                $table->foreign('teacher_user_id')->references('user_id')->on('teachers')->onDelete('cascade');
-                $table->foreign('atemplate_id')->references('id')->on('atemplates')->onDelete('cascade');
-            });
-        }
-        
         if(!$this->schema->hasTable('cohort_teacher')){
             $this->schema->create('cohort_teacher', function($table) { 
                 $table->engine = 'InnoDB';
@@ -286,8 +251,6 @@ class Tables extends Migration
         if($this->schema->hasTable('cohort_teacher')) $app->db->table('cohort_teacher')->truncate();
         if($this->schema->hasTable('cohort_student')) $app->db->table('cohort_student')->truncate();
         if($this->schema->hasTable('locations')) $app->db->table('locations')->truncate();
-        if($this->schema->hasTable('assignmenttemplates')) $app->db->table('assignmenttemplates')->truncate();
-        if($this->schema->hasTable('assignments')) $app->db->table('assignments')->truncate();
         if($this->schema->hasTable('badges')) $app->db->table('badges')->truncate();
         if($this->schema->hasTable('badge_student')) $app->db->table('badge_student')->truncate();
         if($this->schema->hasTable('activities')) $app->db->table('activities')->truncate();
@@ -302,8 +265,6 @@ class Tables extends Migration
         $this->schema->dropIfExists('students');
         $this->schema->dropIfExists('cohorts');
         $this->schema->dropIfExists('teachers');
-        $this->schema->dropIfExists('atemplates');
-        $this->schema->dropIfExists('assignments');
         $this->schema->dropIfExists('cohort_teacher');
         $this->schema->dropIfExists('cohort_student');
         $this->schema->dropIfExists('locations');

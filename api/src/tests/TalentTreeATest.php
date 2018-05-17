@@ -4,6 +4,7 @@ namespace Tests;
 class TalentTreeATest extends BaseTestCase
 {
     protected $app;
+    private $data = [];
     
     //$this->assertSame(x, y);
     //$this->assertTrue(x);
@@ -12,7 +13,18 @@ class TalentTreeATest extends BaseTestCase
         
         parent::setUp();
         $this->app->addRoutes(['badge']);
-        
+        $data['foo'] = $this->_createSampleBadge();
+    }
+    
+    private function _createSampleBadge(){
+        $body = [
+              "slug" => "identator",
+              "name" => "Identatior for oscar",
+              "points_to_achieve" => 100,
+              "technologies" => "css, html",
+              "description" => "wululu"
+        ];
+        return $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/badge/'], $body)->getParsedBody();
     }
     
     /*public function testForAddBadge(){
