@@ -90,8 +90,24 @@ class BaseTestCase extends TestCase {
         $responseBody = $response->getBody();
         $responseObj = json_decode($responseBody);
         
-        //if($response->getStatusCode() != 200){ print_r($responseBody); die(); }
+        $this->_logTest($params, $response, $responseObj);
+        
         return new AssertResponse($this, $response, $responseObj);
+    }
+    
+    function _logTest($params, $response, $responseObj){
+        if(DEBUG){
+            $code = $response->getStatusCode();
+            if($code != 200 && $code != 400){ 
+                $logEntry = "\n \n [ \n".
+                "   [code]     => \033[33m".$responseObj->code."\033[0m \n".
+                "   [msg]      => \033[31m".$responseObj->msg."\033[0m \n".
+                "   [request]  => \033[36m".$params['REQUEST_METHOD'].": ".$params['REQUEST_URI']."\033[0m \n".
+                "]\n \n";
+                echo "\033[31m \n ****    FOUND SOME MISMATCHES:    **** \n \033[0m";
+                print_r($logEntry);
+            }
+        }
     }
 }
 

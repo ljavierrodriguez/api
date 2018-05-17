@@ -36,12 +36,4 @@ class CatalogTest extends BaseTestCase
         $this->assertTrue(in_array('not-started',$responseObj->data));
     } 
     
-    public function testForTemplateDificulties() {
-        
-        $responseObj = $this->mockAPICall(['REQUEST_METHOD' => 'GET','REQUEST_URI' => '/catalog/atemplate_difficulties/'])
-                        ->expectSuccess()
-                        ->getParsedBody();
-        $this->assertTrue(is_array($responseObj->data));
-        $this->assertTrue(in_array('begginer',$responseObj->data));
-    } 
 }
