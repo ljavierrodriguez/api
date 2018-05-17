@@ -27,8 +27,12 @@ class TalentTreeATest extends BaseTestCase
         return $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/badge/'], $body)->getParsedBody();
     }
     
+<<<<<<< HEAD
     public function testForAddBadge(){
         // echo $data['foo']->slug;
+=======
+    /*public function testForAddBadge(){
+>>>>>>> 67d0af2402bcdaa8f3189735ea9f367ef84da794
         $body = [
               "slug" => "identator",
               "name" => "Identatior for oscar",
@@ -40,7 +44,7 @@ class TalentTreeATest extends BaseTestCase
                         ->expectSuccess()
                         ->getParsedBody();
         return $response->data;
-    }
+    }*/
     
     /**
      * @depends testForAddBadge
