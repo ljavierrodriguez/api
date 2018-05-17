@@ -14,10 +14,12 @@ class Mailer{
     
     function __construct(){
 
-        $loader = new \Twig_Loader_Filesystem('src/emails');
-        $this->twig = new \Twig_Environment($loader);
-        require_once('src/emails/templates.php');
-        $this->templates = $emailTemplates;
+        if(!defined('RUNING_TEST') || !RUNING_TEST){
+            $loader = new \Twig_Loader_Filesystem('src/emails');
+            $this->twig = new \Twig_Environment($loader);
+            require_once('src/emails/templates.php');
+            $this->templates = $emailTemplates;
+        }
     }
     
     function getTemplate($templateSlug, $args=[]){
@@ -31,7 +33,7 @@ class Mailer{
     
     function sendAPI($templateSlug,$args=[]){
         
-        if(defined(RUNING_TEST) && RUNING_TEST) return true;
+        if(defined('RUNING_TEST') && RUNING_TEST) return true;
         
         if(!isset($args['email'])) throw new Exception('You have to specify the recipient email');
         
