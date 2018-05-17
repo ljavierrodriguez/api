@@ -48,7 +48,6 @@ $app = new \BreatheCodeAPI([
 ]);
 
 $app->addRoutes([
-    'assignment','atemplate','badge','catalog','cohort','location','profile',
-    'specialty','student','task','teacher','user','util','workshop','wtemplate',
-    'calendar']);
+    'badge','catalog','cohort','location','profile',
+    'specialty','student','task','teacher','user','util']);
 $app->run();

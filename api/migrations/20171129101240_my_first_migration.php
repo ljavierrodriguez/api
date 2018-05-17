@@ -86,41 +86,6 @@ class MyFirstMigration extends Migration
                 });
         }
         
-        if(!$this->schema->hasTable('atemplates')){
-            $this->schema->create('atemplates', function($table) { 
-                $table->engine = 'InnoDB';
-                $table->bigIncrements('id');
-                $table->string('project_slug', 200)->unique();
-                $table->integer('wp_id')->unique()->nullable();
-                $table->string('title', 200);
-                $table->string('excerpt', 200)->nullable();
-                $table->string('difficulty', 20)->nullable();
-                $table->string('duration', 200);//in hours
-                $table->string('technologies', 200);
-                $table->timestamps();
-            
-            });
-        }
-        
-        if(!$this->schema->hasTable('assignments')){
-            $this->schema->create('assignments', function($table) { 
-                $table->engine = 'InnoDB';
-                $table->bigIncrements('id');
-                $table->unsignedBigInteger('student_user_id');
-                $table->unsignedBigInteger('teacher_user_id');
-                $table->date('duedate');
-                $table->unsignedBigInteger('atemplate_id');
-                $table->string('status', 40);
-                $table->string('reject_reason', 500)->nullable();
-                $table->string('github_url', 255)->nullable();
-                $table->timestamps();
-            
-                $table->foreign('student_user_id')->references('user_id')->on('students')->onDelete('cascade');
-                $table->foreign('teacher_user_id')->references('user_id')->on('teachers')->onDelete('cascade');
-                $table->foreign('atemplate_id')->references('id')->on('atemplates')->onDelete('cascade');
-            });
-        }
-        
         if(!$this->schema->hasTable('cohort_teacher')){
             $this->schema->create('cohort_teacher', function($table) { 
                 $table->engine = 'InnoDB';
