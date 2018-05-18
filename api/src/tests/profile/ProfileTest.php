@@ -244,6 +244,15 @@ class ProfileTest extends BaseTestCase {
             ->expectSuccess()
             ->getParsedBody();
     }
+
+    /**
+     * @depends testForCreateProfile
+     */
+    function testDeletedProfile($profile){
+        $profile = $this->mockAPICall(['REQUEST_METHOD' => 'DELETE', 'REQUEST_URI' => '/profile/'.$profile->id])
+            ->expectFailure()
+            ->getParsedBody();
+    }
     
 }
 ?>
