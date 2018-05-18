@@ -108,13 +108,19 @@ class BaseTestCase extends TestCase {
         if(DEBUG){
             $code = $response->getStatusCode();
             if($code != 200 && $code != 400){
-                $logEntry = "\n \n [ \n".
-                "   [code]     => \033[33m".$responseObj->code."\033[0m \n".
-                "   [msg]      => \033[31m".$responseObj->msg."\033[0m \n".
-                "   [request]  => \033[36m".$params['REQUEST_METHOD'].": ".$params['REQUEST_URI']."\033[0m \n".
-                "]\n \n";
-                echo "\033[31m \n ****    FOUND SOME MISMATCHES:    **** \n \033[0m";
-                print_r($logEntry);
+                if(!empty($responseObj)){
+                    $logEntry = "\n \n [ \n".
+                    "   [code]     => \033[33m".$responseObj->code."\033[0m \n".
+                    "   [msg]      => \033[31m".$responseObj->msg."\033[0m \n".
+                    "]\n \n";
+                    echo "\033[31m \n ****    FOUND SOME MISMATCHES:    **** \n \033[0m";
+                    print_r($logEntry);
+                }
+                else {
+                    echo "\033[31m \n ****    FOUND SOME MISMATCHES:    **** \n \033[0m";
+                    echo "   [request]  => \033[36m".$params['REQUEST_METHOD'].": ".$params['REQUEST_URI']."\033[0m \n";
+                    echo "   [details]  => \033[33m No details or response was provided \033[0m \n \n";
+                }
             }
         }
     }

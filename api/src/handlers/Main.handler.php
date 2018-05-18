@@ -23,6 +23,12 @@ class MainHandler{
             $c['errorHandler'] = function ($c) {
                 return array($this, 'fail');
             };
+            $c['phpErrorHandler'] = function ($c) {
+                return array($this, 'fail');
+            };
+            $c['notFoundHandler'] = function ($c) {
+                return array($this, 'fail');
+            };
         }
     }
     
