@@ -13,7 +13,6 @@ class StudentTest extends BaseTestCase {
         $this->app->addRoutes(['location']);
         $this->app->addRoutes(['profile']);
         $this->app->addRoutes(['cohort']);
-        $this->app->addRoutes(['user']);
     }
 
     function testGetAllStudents(){
@@ -58,18 +57,16 @@ class StudentTest extends BaseTestCase {
             ->expectSuccess()
             ->getParsedBody();
     }
-    
-    function testCreateStudent(){
+
+    /*function testCreateStudent(){
         $body = [
             "cohort_slug" => "nuevo-cohort",
-            "email" => "resaa@4geeks.com",
-            "full_name" => "Rafael"
+            "email" => "resaa@4geeks.co",
+            "full_name" => "Rafael Esaa"
         ];
-        $students = $this->mockAPICall(['REQUEST_METHOD' => 'PUT', 'REQUEST_URI' => '/student/'], $body)
+        $student = $this->mockAPICall(['REQUEST_METHOD' => 'PUT', 'REQUEST_URI' => '/student/'], $body)
             ->expectSuccess()
             ->getParsedBody();
-
-        return $students->data;
-    }
+    }*/
 }
 ?>

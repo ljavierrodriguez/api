@@ -14,7 +14,7 @@ class TeacherTest extends BaseTestCase {
 
     function testCreateTeacher(){
         $body = [
-            "email" => "",
+            "email" => "teacher@4geeks.com",
             "full_name" => "Prof chapatin",
         ];
         $teacher = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/teacher/'], $body)
@@ -27,7 +27,7 @@ class TeacherTest extends BaseTestCase {
     /**
      * @depends testCreateTeacher
      */
-    /*function testCreateDoubleTeacher(){
+    function testCreateDoubleTeacher(){
         $body = [
             "email" => "teacher@4geeks.com",
             "full_name" => "Prof chapatin",
@@ -40,7 +40,7 @@ class TeacherTest extends BaseTestCase {
     /**
      * @depends testCreateTeacher
      */
-    /*function testCreateDoubleTeacherEmail(){
+    function testCreateDoubleTeacherEmail(){
         $body = [
             "email" => "teacher@4geeks.com",
             "full_name" => "Prof jirafales"
@@ -53,7 +53,7 @@ class TeacherTest extends BaseTestCase {
     /**
      * @depends testCreateTeacher
      */
-    /*function testCreateTeacherEmailEmpty(){
+    function testCreateTeacherEmailEmpty(){
         $body = [
             "email" => "",
             "full_name" => "Prof jirafales 2"
@@ -66,7 +66,7 @@ class TeacherTest extends BaseTestCase {
     /**
      * @depends testCreateTeacher
      */
-    /*function testCreateTeacherFullnameEmpty(){
+    function testCreateTeacherFullnameEmpty(){
         $body = [
             "email" => "teacher2@4geeks.com",
             "full_name" => ""
@@ -80,7 +80,7 @@ class TeacherTest extends BaseTestCase {
         $teacher = $this->mockAPICall(['REQUEST_METHOD' => 'GET', 'REQUEST_URI' => '/teachers/'])
             ->expectSuccess()
             ->getParsedBody();
-    }*/
+    }
 
     /**
      * @depends testCreateTeacher
