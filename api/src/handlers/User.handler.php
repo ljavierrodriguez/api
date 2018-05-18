@@ -138,7 +138,7 @@ class UserHandler extends MainHandler{
             $user->save();
             
             $token = new Passtoken();
-            $token->token = md5($this->randomPassword());
+            $token->token = md5(AuthHelper::randomToken());
             $token->user()->associate($user);
             $token->save();
             
@@ -148,7 +148,6 @@ class UserHandler extends MainHandler{
                 "email"=> $user->username, 
                 "url"=> ASSETS_URL.'/apps/remind/?id='.$user->id.'&t='.$token->token.'&invite=true&callback='.base64_encode($callback)
             ]);
-            
         }
         else throw new ArgumentException('User already exists with email: '.$data['email']);
         
