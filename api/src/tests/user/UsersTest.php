@@ -166,7 +166,7 @@ class UsersTest extends BaseTestCase {
             ->getParsedBody();
     }*/
 
-    function testCreateCredentialUser(){
+    /*function testCreateCredentialUser(){
         $body = [
             "email" => "resaa@4geekssss.com",
             "type" => "student",
@@ -175,6 +175,6 @@ class UsersTest extends BaseTestCase {
         $responseObj = $this->mockAPICall(['REQUEST_METHOD' => 'POST','REQUEST_URI' => '/credentials/user/'], $body)
             ->expectSuccess()
             ->getParsedBody();
-    }
+    }*/
 }
 ?>
