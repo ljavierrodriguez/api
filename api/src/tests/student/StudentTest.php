@@ -58,7 +58,7 @@ class StudentTest extends BaseTestCase {
             ->getParsedBody();
     }
 
-    /*function testCreateStudent(){
+    function testCreateStudent(){
         $body = [
             "cohort_slug" => "nuevo-cohort",
             "email" => "resaa@4geeks.co",
@@ -67,6 +67,6 @@ class StudentTest extends BaseTestCase {
         $student = $this->mockAPICall(['REQUEST_METHOD' => 'PUT', 'REQUEST_URI' => '/student/'], $body)
             ->expectSuccess()
             ->getParsedBody();
-    }*/
+    }
 }
 ?>
