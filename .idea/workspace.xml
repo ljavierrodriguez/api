@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a08ac380-d432-48e1-baa4-49edeb5d0117" name="Default" comment="CohortTest">
-      <change type="MOVED" beforePath="$PROJECT_DIR$/api/src/tests/CatalogTest.php" afterPath="$PROJECT_DIR$/api/src/tests/catalog/CatalogTest.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+    <list default="true" id="a08ac380-d432-48e1-baa4-49edeb5d0117" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/handlers/User.handler.php" afterPath="$PROJECT_DIR$/api/src/handlers/User.handler.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/tests/BaseTestCase.php" afterPath="$PROJECT_DIR$/api/src/tests/BaseTestCase.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/tests/README.md" afterPath="$PROJECT_DIR$/api/src/tests/README.md" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/tests/cohort/CohortTest.php" afterPath="$PROJECT_DIR$/api/src/tests/cohort/CohortTest.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/tests/student/StudentTest.php" afterPath="$PROJECT_DIR$/api/src/tests/student/StudentTest.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/tests/user/UsersTest.php" afterPath="$PROJECT_DIR$/api/src/tests/user/UsersTest.php" />
     </list>
     <ignored path="api.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -107,7 +108,7 @@
       <workItem from="1526406500363" duration="1325000" />
       <workItem from="1526588861724" duration="439000" />
       <workItem from="1526594188068" duration="3658000" />
-      <workItem from="1526932677911" duration="214000" />
+      <workItem from="1526932677911" duration="418000" />
     </task>
     <task id="LOCAL-00001" summary="Creacion de archivos test, mejora de migraciones y modificacion de readme (se agrego el link del doc de tests)">
       <created>1526061589412</created>
@@ -137,11 +138,18 @@
       <option name="project" value="LOCAL" />
       <updated>1526663289955</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="CohortTest">
+      <created>1526932920513</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1526932920513</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="7198000" />
+    <option name="totallyTimeSpent" value="7402000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1280" height="721" extended-state="6" />
@@ -200,7 +208,8 @@
     <MESSAGE value="Test y documentacion de issues" />
     <MESSAGE value="Lista todas las pruebas en ProfileTest. (Revisar Doc de pruebas)" />
     <MESSAGE value="Falta un metodo para terminar todas las pruebas. (Revisar Issues)" />
-    <option name="LAST_COMMIT_MESSAGE" value="Falta un metodo para terminar todas las pruebas. (Revisar Issues)" />
+    <MESSAGE value="CohortTest" />
+    <option name="LAST_COMMIT_MESSAGE" value="CohortTest" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />

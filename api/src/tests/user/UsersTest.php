@@ -157,16 +157,16 @@ class UsersTest extends BaseTestCase {
     /**
      * @depends testCreateUser
      */
-    /*function testUpdateCredentialUser($user){
-        $body = [
-            "password" => "123456"
-        ];
-        $responseObj = $this->mockAPICall(['REQUEST_METHOD' => 'POST','REQUEST_URI' => '/credentials/user/'.$user->id], $body)
-            ->expectSuccess()
-            ->getParsedBody();
-    }*/
+    // function testUpdateCredentialUser($user){
+    //     $body = [
+    //         "password" => "123456"
+    //     ];
+    //     $responseObj = $this->mockAPICall(['REQUEST_METHOD' => 'POST','REQUEST_URI' => '/credentials/user/'.$user->id], $body)
+    //         ->expectSuccess()
+    //         ->getParsedBody();
+    // }
 
-    /*function testCreateCredentialUser(){
+    function testCreateCredentialUser(){
         $body = [
             "email" => "resaa@4geekssss.com",
             "type" => "student",
@@ -175,6 +175,6 @@ class UsersTest extends BaseTestCase {
         $responseObj = $this->mockAPICall(['REQUEST_METHOD' => 'POST','REQUEST_URI' => '/credentials/user/'], $body)
             ->expectSuccess()
             ->getParsedBody();
-    }*/
+    }
 }
 ?>

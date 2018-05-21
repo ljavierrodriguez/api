@@ -90,3 +90,15 @@ $response = $this->mockAPICall(['REQUEST_METHOD' => 'GET', 'REQUEST_URI' => '/st
 //You can use any PHP unit assertion method like this:
 $this->assertTrue($response->foo == $var); 
 ```
+> IMPORTANT! The getParsedBody call must always be the lastone:
+
+```php
+//this is wrong
+$response = $this->mockAPICall(['REQUEST_METHOD' => 'GET', 'REQUEST_URI' => '/student/2'])
+                        ->getParsedBody()
+                        ->expectSuccess();
+//this is perfect
+$response = $this->mockAPICall(['REQUEST_METHOD' => 'GET', 'REQUEST_URI' => '/student/2'])
+                        ->expectSuccess()
+                        ->getParsedBody(); //always the last one
+```

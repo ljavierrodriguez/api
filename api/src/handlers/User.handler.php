@@ -274,7 +274,7 @@ class UserHandler extends MainHandler{
         $data = $request->getParsedBody();
         
         $user = User::find($userId);
-        if(!$user) throw new ArgumentException('Invalid student id: '.$userId);
+        if(!$user) throw new ArgumentException('Invalid user id: '.$userId);
 
         if(!$this->_validateSettings($data)) throw new ArgumentException('Invalid user settings');
         
