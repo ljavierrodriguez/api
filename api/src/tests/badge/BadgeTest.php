@@ -23,6 +23,13 @@ class BadgeTest extends BaseTestCase {
         ];
         $badge = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/badge/'], $body)
                 ->expectSuccess()
+                ->withPropertiesAndValues([
+                    "slug" => $body["slug"],
+                    "name" => $body["name"],
+                    "points_to_achieve" => $body["points_to_achieve"],
+                    "technologies" => $body["technologies"],
+                    "description" => $body["description"]
+                ])
                 ->getParsedBody();
         
         return $badge->data;

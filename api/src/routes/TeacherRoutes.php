@@ -18,6 +18,4 @@ class TeacherRoutes{
         $app->post('/teacher/{teacher_id}', array($teacherHandler, 'updateTeacherHandler'))->add($scopes(['super_admin']));
         $app->delete('/teacher/{teacher_id}', array($teacherHandler, 'deleteTeacherHandler'))->add($scopes(['super_admin']));
     }
-    
-
 }
