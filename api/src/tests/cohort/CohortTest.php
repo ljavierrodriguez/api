@@ -212,9 +212,18 @@ class CohortTest extends BaseTestCase {
         return $teacher->data;
     }
 
-    function testGetCohortTeacherIdIsNotEmpty(){
-        $cohort = $this->mockAPICall(['REQUEST_METHOD' => 'GET', 'REQUEST_URI' => '/cohorts/teacher/'.$teacher->id])
+    /**
+     * @depends testCreateTeacher
+     * @depends testCreateCohort
+     */
+    /*function testCreateTeacherCohort($teacher, $cohort){
+        $body = [
+            "teacher_id" => $teacher->id,
+            "is_instructor" => true,
+        ];
+        $cohort = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/teacher/cohort/'.$cohort->id], $body)
             ->expectSuccess()
             ->getParsedBody();
-    }
+    }*/
+
 }

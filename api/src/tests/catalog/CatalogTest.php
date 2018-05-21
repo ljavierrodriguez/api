@@ -25,7 +25,13 @@ class CatalogTest extends BaseTestCase
                         ->getParsedBody();
         $this->assertTrue(is_array($responseObj->data));
         $this->assertFalse(count($responseObj->data) == 0);
-    } 
+    }
+    
+    /*public function testGetAtemplatedifficulties() {
+        
+        $this->mockAPICall(['REQUEST_METHOD' => 'GET','REQUEST_URI' => '/catalog/atemplate_difficulties/'])
+                        ->expectSuccess();
+    }*/
     
     public function testForCohortStages() {
         
