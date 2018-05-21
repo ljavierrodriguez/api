@@ -147,16 +147,20 @@ class AssertResponse{
     }
     function withProperties($properties){
         $hasProperties = true;
-        foreach($properties as $prop) 
-            if(!property_exists($this->responseObj->data, $prop)) $hasProperties = false;
-        $this->test->assertTrue($hasProperties);
+        foreach($properties as $prop){
+            $this->test->assertObjectHasAttribute($prop, $this->responseObj->data);
+        }
         return new AssertResponse($this->test, $this->response, $this->responseObj);
     }
     function withPropertiesAndValues($properties){
         $hasProperties = true;
-        foreach($properties as $key => $value) 
-            if(!property_exists($this->responseObj->data, $key))
-                $this->test->assertTrue($this->responseObj->data[$key] == $value);
+        foreach($properties as $key => $value){
+            $this->test->assertObjectHasAttribute($key, $this->responseObj->data);
+            if(property_exists($this->responseObj->data, $key)){
+                $data = (array) $this->responseObj->data;
+                $this->test->assertSame($data[$key], $value);
+            }
+        }
                 
         return new AssertResponse($this->test, $this->response, $this->responseObj);
     }

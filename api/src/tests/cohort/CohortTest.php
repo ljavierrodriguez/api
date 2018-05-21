@@ -187,7 +187,7 @@ class CohortTest extends BaseTestCase {
             ->getParsedBody();
     }
 
-    /*function testCreateTeacher(){
+    function testCreateTeacher(){
         $body = [
             "email" => "teacherCohort@4geeks.com",
             "full_name" => "Prof Cohort",
@@ -198,23 +198,23 @@ class CohortTest extends BaseTestCase {
                 "email" => $body["email"],
                 "full_name" => $body["full_name"]])
             ->getParsedBody();
-    }*/
+    }
 
-    function testCreateTeacher(){
-        $body = [
-            "email" => "teacherCohort@4geeks.com",
-            "full_name" => "Prof Cohort",
-        ];
-        $teacher = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/teacher/'], $body)
-            ->expectSuccess()
-            ->getParsedBody();
+    // function testCreateTeacher(){
+    //     $body = [
+    //         "email" => "teacherCohort@4geeks.com",
+    //         "full_name" => "Prof Cohort",
+    //     ];
+    //     $teacher = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/teacher/'], $body)
+    //         ->expectSuccess()
+    //         ->getParsedBody();
         
-        return $teacher->data;
-    }
+    //     return $teacher->data;
+    // }
 
-    function testGetCohortTeacherIdIsNotEmpty(){
-        $cohort = $this->mockAPICall(['REQUEST_METHOD' => 'GET', 'REQUEST_URI' => '/cohorts/teacher/'.$teacher->id])
-            ->expectSuccess()
-            ->getParsedBody();
-    }
+    // function testGetCohortTeacherIdIsNotEmpty(){
+    //     $cohort = $this->mockAPICall(['REQUEST_METHOD' => 'GET', 'REQUEST_URI' => '/cohorts/teacher/'.$teacher->id])
+    //         ->expectSuccess()
+    //         ->getParsedBody();
+    // }
 }
