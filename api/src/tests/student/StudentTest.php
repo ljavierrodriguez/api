@@ -59,19 +59,5 @@ class StudentTest extends BaseTestCase {
         
         return $cohort->data;
     }
-
-    /**
-     * @depends testCreateCohort
-     */
-    /*function testCreateStudent($cohort){
-        $body = [
-            "cohort_slug" => $cohort->slug,
-            "email" => "resaa@4geeks.co",
-            "full_name" => "Rafael Esaa"
-        ];
-        $student = $this->mockAPICall(['REQUEST_METHOD' => 'PUT', 'REQUEST_URI' => '/student/'], $body)
-            ->expectSuccess()
-            ->getParsedBody();
-    }*/
 }
 ?>

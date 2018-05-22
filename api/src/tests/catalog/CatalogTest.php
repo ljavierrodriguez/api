@@ -14,7 +14,7 @@ class CatalogTest extends BaseTestCase
     
     public function testForCountry() {
         $this->mockAPICall(['REQUEST_METHOD' => 'GET','REQUEST_URI' => '/catalog/countries/'])
-            ->withPropertiesAndValues(['chile' => ['santiago']])
+            ->withProperties(['chile'])
             ->expectSuccess();
     } 
     

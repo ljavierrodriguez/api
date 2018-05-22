@@ -111,7 +111,19 @@ class UsersTest extends BaseTestCase {
      */
     function testUpdateUserTypeEmpty($user){
         $body = [
-            "type" => "teacher"
+            "type" => ""
+        ];
+        $responseObj = $this->mockAPICall(['REQUEST_METHOD' => 'POST','REQUEST_URI' => '/user/'.$user->id], $body)
+            ->expectSuccess()
+            ->getParsedBody();
+    }
+
+    /**
+     * @depends testCreateUser
+     */
+    function testUpdatedUserUsername($user){
+        $body = [
+            "username" => ""
         ];
         $responseObj = $this->mockAPICall(['REQUEST_METHOD' => 'POST','REQUEST_URI' => '/user/'.$user->id], $body)
             ->expectSuccess()
@@ -142,38 +154,6 @@ class UsersTest extends BaseTestCase {
     function testGetSettingUserIDIsChrSpecial($user){
         $responseObj = $this->mockAPICall(['REQUEST_METHOD' => 'GET','REQUEST_URI' => '/settings/user/'.$user->full_name])
             ->expectFailure()
-            ->getParsedBody();
-    }
-
-    /**
-     * @depends testCreateUser
-     */
-    /*function testGetSettingUserID($user){
-        $responseObj = $this->mockAPICall(['REQUEST_METHOD' => 'POST','REQUEST_URI' => '/settings/user/'.$user->id])
-            ->expectSuccess()
-            ->getParsedBody();
-    }*/
-
-    /**
-     * @depends testCreateUser
-     */
-    // function testUpdateCredentialUser($user){
-    //     $body = [
-    //         "password" => "123456"
-    //     ];
-    //     $responseObj = $this->mockAPICall(['REQUEST_METHOD' => 'POST','REQUEST_URI' => '/credentials/user/'.$user->id], $body)
-    //         ->expectSuccess()
-    //         ->getParsedBody();
-    // }
-
-    function testCreateCredentialUser(){
-        $body = [
-            "email" => "resaa@4geekssss.com",
-            "type" => "student",
-            "full_name" => "Rafael esaaa"
-        ];
-        $responseObj = $this->mockAPICall(['REQUEST_METHOD' => 'POST','REQUEST_URI' => '/credentials/user/'], $body)
-            ->expectSuccess()
             ->getParsedBody();
     }
 }
