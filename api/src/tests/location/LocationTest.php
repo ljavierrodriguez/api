@@ -32,6 +32,15 @@ class LocationTest extends BaseTestCase
         return $location->data;
     }
 
+    /**
+     * @depends testCreateLocation
+     */
+    public function testGetLocations($location){
+        $location = $this->mockAPICall(['REQUEST_METHOD' => 'GET','REQUEST_URI' => '/location/'.$location->id])
+            ->expectSuccess()
+            ->getParsedBody();
+    }
+
     public function testCreateLocationSlugCharacterSpecials() {
         $body = [
             "name" => "Caracas",
@@ -202,6 +211,12 @@ class LocationTest extends BaseTestCase
      */
     public function testDeleteLocation($location){
         $location = $this->mockAPICall(['REQUEST_METHOD' => 'DELETE','REQUEST_URI' => '/location/'.$location->id])
+            ->expectSuccess()
+            ->getParsedBody();
+    }
+
+    public function testGetAllLocations(){
+        $location = $this->mockAPICall(['REQUEST_METHOD' => 'GET','REQUEST_URI' => '/locations/'])
             ->expectSuccess()
             ->getParsedBody();
     }
