@@ -1,14 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a08ac380-d432-48e1-baa4-49edeb5d0117" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/api/src/tests/location/LocationTest.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/tests/catalog/CatalogTest.php" afterPath="$PROJECT_DIR$/api/src/tests/catalog/CatalogTest.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/tests/cohort/CohortTest.php" afterPath="$PROJECT_DIR$/api/src/tests/cohort/CohortTest.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/tests/student/StudentTest.php" afterPath="$PROJECT_DIR$/api/src/tests/student/StudentTest.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/api/src/tests/user/UsersTest.php" afterPath="$PROJECT_DIR$/api/src/tests/user/UsersTest.php" />
-    </list>
+    <list default="true" id="a08ac380-d432-48e1-baa4-49edeb5d0117" name="Default" comment="" />
     <ignored path="api.iws" />
     <ignored path=".idea/workspace.xml" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -110,7 +103,7 @@
       <workItem from="1526588861724" duration="439000" />
       <workItem from="1526594188068" duration="3658000" />
       <workItem from="1526932677911" duration="1073000" />
-      <workItem from="1527016160618" duration="317000" />
+      <workItem from="1527016160618" duration="1641000" />
     </task>
     <task id="LOCAL-00001" summary="Creacion de archivos test, mejora de migraciones y modificacion de readme (se agrego el link del doc de tests)">
       <created>1526061589412</created>
@@ -154,11 +147,25 @@
       <option name="project" value="LOCAL" />
       <updated>1526933122130</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Resolviendo y/o probando errores. Nuevo Test (Location)">
+      <created>1527016540751</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1527016540751</updated>
+    </task>
+    <task id="LOCAL-00008" summary="TestLocation">
+      <created>1527017327110</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1527017327110</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="8374000" />
+    <option name="totallyTimeSpent" value="9698000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1280" height="721" extended-state="6" />
@@ -219,7 +226,9 @@
     <MESSAGE value="Falta un metodo para terminar todas las pruebas. (Revisar Issues)" />
     <MESSAGE value="CohortTest" />
     <MESSAGE value="Merge branch 'tests' of https://github.com/breatheco-de/api into tests&#10;&#10;# Conflicts:&#10;#&#9;api/src/tests/cohort/CohortTest.php&#10;#&#9;api/src/tests/student/StudentTest.php&#10;" />
-    <option name="LAST_COMMIT_MESSAGE" value="Merge branch 'tests' of https://github.com/breatheco-de/api into tests&#10;&#10;# Conflicts:&#10;#&#9;api/src/tests/cohort/CohortTest.php&#10;#&#9;api/src/tests/student/StudentTest.php&#10;" />
+    <MESSAGE value="Resolviendo y/o probando errores. Nuevo Test (Location)" />
+    <MESSAGE value="TestLocation" />
+    <option name="LAST_COMMIT_MESSAGE" value="TestLocation" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />

@@ -22,7 +22,10 @@ class ProfileTest extends BaseTestCase {
         $body = [
             "slug"=> "web-developer",
             "name"=> "Web Developer",
-            "description"=> "Create websites using a CMS"
+            "description"=> "Create websites using a CMS",
+            "specialties"=>[
+                "Hola", "Mundo"
+            ]
         ];
         $profile = $this->mockAPICall(['REQUEST_METHOD' => 'PUT', 'REQUEST_URI' => '/profile/'], $body)
             ->expectSuccess()
