@@ -58,7 +58,7 @@ class ProfileHandler extends MainHandler{
         $profile = $this->setOptional($profile,$data,'name',BCValidator::NAME);
         $profile = $this->setOptional($profile,$data,'description',BCValidator::DESCRIPTION);
         
-        if(isset($data['specialties']))
+        if(!empty($data['specialties']))
         {
             if(count($data['specialties'])<2) throw new ArgumentException('A profile must have at least two specialties');
             $specialties = [];

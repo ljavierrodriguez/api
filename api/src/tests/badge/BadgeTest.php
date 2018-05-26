@@ -64,7 +64,7 @@ class BadgeTest extends BaseTestCase {
             ->getParsedBody();
     }
 
-    /*function testCreateDoubleSlug(){
+    function testCreateDoubleSlug(){
         $body = [
             "slug" => "identator",
             "name" => "Identatior for xxxxxxx",
@@ -72,12 +72,9 @@ class BadgeTest extends BaseTestCase {
             "technologies" => "css, html",
             "description" => "wululu"
         ];
-        $badge = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/badge/'], $body)
-                ->expectFailure()
-                ->getParsedBody();
-        
-        return $badge->data;
-    }*/
+        $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/badge/'], $body)
+                ->expectFailure();
+    }
 
     function testSlugCharacterSpecials(){
         $body = [

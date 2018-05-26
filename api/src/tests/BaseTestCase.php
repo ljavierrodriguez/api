@@ -87,7 +87,7 @@ class BaseTestCase extends TestCase {
         $this->app->getContainer()["environment"] = $env;
         $this->app->getContainer()["request"] =$req;
         $response = $this->app->run(true);
-        
+
         $responseBody = $response->getBody();
         $responseObj = json_decode($responseBody);
         
