@@ -37,7 +37,7 @@ class TeacherTest extends BaseTestCase {
     /**
      * @depends testCreateTeacher
      */
-    /*function testGetTeacherID($teacher){
+    function testGetTeacherID($teacher){
         $teacher = $this->mockAPICall(['REQUEST_METHOD' => 'GET', 'REQUEST_URI' => '/teacher/'.$teacher->id])
             ->expectSuccess()
             ->getParsedBody();
@@ -46,8 +46,8 @@ class TeacherTest extends BaseTestCase {
     /**
      * @depends testCreateTeacher
      */
-    /*function testGetTeacherIDIsChrSpecial($teacher){
-        $teacher = $this->mockAPICall(['REQUEST_METHOD' => 'GET', 'REQUEST_URI' => '/teacher/'.$teacher->full_name])
+    function testGetTeacherIDIsChrSpecial($teacher){
+        $teacher = $this->mockAPICall(['REQUEST_METHOD' => 'GET', 'REQUEST_URI' => '/teacher/'.$teacher->username])
             ->expectFailure()
             ->getParsedBody();
     }
@@ -207,19 +207,19 @@ class TeacherTest extends BaseTestCase {
     }
 
     /**
-     * @depends testCreateCohort
+     * @depends testCreateTeacher
      */
-    function testDeleteTeacher($cohort){
-        $teacher = $this->mockAPICall(['REQUEST_METHOD' => 'DELETE', 'REQUEST_URI' => '/teacher/'.$cohort->id])
+    function testDeleteTeacher($teacher){
+        $teacher = $this->mockAPICall(['REQUEST_METHOD' => 'DELETE', 'REQUEST_URI' => '/teacher/'.$teacher->id])
             ->expectSuccess()
             ->getParsedBody();
     }
 
     /**
-     * @depends testCreateCohort
+     * @depends testCreateTeacher
      */
-    function testDeletedTeacher($cohort){
-        $teacher = $this->mockAPICall(['REQUEST_METHOD' => 'DELETE', 'REQUEST_URI' => '/teacher/'.$cohort->id])
+    function testDeletedTeacher($teacher){
+        $teacher = $this->mockAPICall(['REQUEST_METHOD' => 'DELETE', 'REQUEST_URI' => '/teacher/'.$teacher->id])
             ->expectFailure()
             ->getParsedBody();
     }

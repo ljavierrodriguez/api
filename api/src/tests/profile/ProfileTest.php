@@ -5,7 +5,7 @@ use PHPUnit\Framework\TestCase;
 
 class ProfileTest extends BaseTestCase {
 
-    protected $app;
+    /*protected $app;
     public function setUp()
     {
         parent::setUp();
@@ -18,13 +18,13 @@ class ProfileTest extends BaseTestCase {
             ->expectSuccess();
     }
 
-    function testForCreateProfile(){
+    /*function testForCreateProfile(){
         $body = [
             "slug"=> "web-developer",
             "name"=> "Web Developer",
             "description"=> "Create websites using a CMS",
             "specialties"=>[
-                "Hola", "Mundo"
+                "web-developer"
             ]
         ];
         $profile = $this->mockAPICall(['REQUEST_METHOD' => 'PUT', 'REQUEST_URI' => '/profile/'], $body)
@@ -32,7 +32,7 @@ class ProfileTest extends BaseTestCase {
             ->getParsedBody();
 
         return $profile->data;
-    }
+    }*/
 
     /**
      * @depends testForCreateProfile
@@ -51,7 +51,7 @@ class ProfileTest extends BaseTestCase {
     /**
      * @depends testForCreateProfile
      */
-    function testUpdateProfileID($profile){
+    /*function testUpdateProfileID($profile){
         $body = [
             "slug"=> "web-developer",
             "name"=> "HOLAAAAAA",
@@ -65,7 +65,7 @@ class ProfileTest extends BaseTestCase {
     /**
      * @depends testForCreateProfile
      */
-    function testUpdateProfileIDIsChrSpecial($profile){
+    /*function testUpdateProfileIDIsChrSpecial($profile){
         $body = [
             "slug"=> "web-developer",
             "name"=> "Web Developer",
@@ -79,7 +79,7 @@ class ProfileTest extends BaseTestCase {
     /**
      * @depends testForCreateProfile
      */
-    function testUpdateProfileNameEmpty($profile){
+    /*function testUpdateProfileNameEmpty($profile){
         $body = [
             "slug"=> "web-developer",
             "name"=> "",
@@ -93,7 +93,7 @@ class ProfileTest extends BaseTestCase {
     /**
      * @depends testForCreateProfile
      */
-    function testUpdateProfileSlugEmpty($profile){
+    /*function testUpdateProfileSlugEmpty($profile){
         $body = [
             "slug"=> "",
             "name"=> "Web Developer",
@@ -107,7 +107,7 @@ class ProfileTest extends BaseTestCase {
     /**
      * @depends testForCreateProfile
      */
-    function testUpdateProfileDescriptionEmpty($profile){
+    /*function testUpdateProfileDescriptionEmpty($profile){
         $body = [
             "slug"=> "web-developer",
             "name"=> "Web Developer",
@@ -121,7 +121,7 @@ class ProfileTest extends BaseTestCase {
     /**
      * @depends testForCreateProfile
      */
-    function testUpdateProfileSlugChrEspecial($profile){
+    /*function testUpdateProfileSlugChrEspecial($profile){
         $body = [
             "slug"=> "web-developer!@#",
             "name"=> "Web Developer",
@@ -135,7 +135,7 @@ class ProfileTest extends BaseTestCase {
     /**
      * @depends testForCreateProfile
      */
-    function testUpdateProfileNameChrEspecial($profile){
+    /*function testUpdateProfileNameChrEspecial($profile){
         $body = [
             "slug"=> "web-developer",
             "name"=> "!@#",
@@ -149,7 +149,7 @@ class ProfileTest extends BaseTestCase {
     /**
      * @depends testForCreateProfile
      */
-    function testUpdateProfileDescriptionChrEspecial($profile){
+    /*function testUpdateProfileDescriptionChrEspecial($profile){
         $body = [
             "slug"=> "web-developer",
             "name"=> "Web Developer",
@@ -163,7 +163,7 @@ class ProfileTest extends BaseTestCase {
     /**
      * @depends testForCreateProfile
      */
-    function testGetProfileID($profile){
+    /*function testGetProfileID($profile){
         $profile = $this->mockAPICall(['REQUEST_METHOD' => 'GET', 'REQUEST_URI' => '/profile/'.$profile->id])
             ->expectSuccess()
             ->getParsedBody();
@@ -172,7 +172,7 @@ class ProfileTest extends BaseTestCase {
     /**
      * @depends testForCreateProfile
      */
-    function testGetProfileIDIsChrSpecial($profile){
+    /*function testGetProfileIDIsChrSpecial($profile){
         $profile = $this->mockAPICall(['REQUEST_METHOD' => 'GET', 'REQUEST_URI' => '/profile/'.$profile->description])
             ->expectFailure()
             ->getParsedBody();
@@ -214,7 +214,7 @@ class ProfileTest extends BaseTestCase {
     /**
      * @depends testCreateProfileEmptySlug
      */
-    function testCreateProfileEmptyDescription(){
+    /*function testCreateProfileEmptyDescription(){
         $body = [
             "slug"=> "web-developer",
             "name"=> "Web Developer",
@@ -228,7 +228,7 @@ class ProfileTest extends BaseTestCase {
     /**
      * @depends testCreateProfileEmptyDescription
      */
-    function testEmptyProfile(){
+    /*function testEmptyProfile(){
         $body = [
             "slug"=> "",
             "name"=> "",
@@ -242,7 +242,7 @@ class ProfileTest extends BaseTestCase {
     /**
      * @depends testForCreateProfile
      */
-    function testDeleteProfile($profile){
+    /*function testDeleteProfile($profile){
         $profile = $this->mockAPICall(['REQUEST_METHOD' => 'DELETE', 'REQUEST_URI' => '/profile/'.$profile->id])
             ->expectSuccess()
             ->getParsedBody();
@@ -251,11 +251,11 @@ class ProfileTest extends BaseTestCase {
     /**
      * @depends testForCreateProfile
      */
-    function testDeletedProfile($profile){
+    /*function testDeletedProfile($profile){
         $profile = $this->mockAPICall(['REQUEST_METHOD' => 'DELETE', 'REQUEST_URI' => '/profile/'.$profile->id])
             ->expectFailure()
             ->getParsedBody();
-    }
+    }*/
     
 }
 ?>

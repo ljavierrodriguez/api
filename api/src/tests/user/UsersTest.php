@@ -5,7 +5,7 @@ use PHPUnit\Framework\TestCase;
 
 class UsersTest extends BaseTestCase {
 
-    protected $app;
+    /*protected $app;
     public function setUp()
     {
         parent::setUp();
@@ -13,17 +13,12 @@ class UsersTest extends BaseTestCase {
 
     }
 
-    function testGetAllUsers(){
-        $users = $this->mockAPICall(['REQUEST_METHOD' => 'GET', 'REQUEST_URI' => '/users/'])
-            ->expectSuccess()
-            ->getParsedBody();
-    }
-
     function testCreateUser(){
         $body = [
             "full_name" => "Rafael Esaá",
             "type" => "student",
-            "username" => "resaa@4geeks.com"
+            "username" => "resaa@4geeks.com",
+            "password" => "1234567"
         ];
         $user = $this->mockAPICall(['REQUEST_METHOD' => 'PUT', 'REQUEST_URI' => '/user/'], $body)
                 ->expectSuccess()
@@ -32,7 +27,16 @@ class UsersTest extends BaseTestCase {
         return $user->data;
     }
 
-    function testCreateDoubleUser(){
+    /**
+     * @depends testCreateUser
+     */
+    /*function testGetAllUsers(){
+        $users = $this->mockAPICall(['REQUEST_METHOD' => 'GET', 'REQUEST_URI' => '/users/'])
+            ->expectSuccess()
+            ->getParsedBody();
+    }
+
+    /*function testCreateDoubleUser(){
         $body = [
             "type" => "student",
             "full_name" => "Rafael Esaa",
@@ -46,7 +50,7 @@ class UsersTest extends BaseTestCase {
     /**
      * @depends testCreateUser
      */
-    function testGetUserID($user){
+    /*function testGetUserID($user){
         $responseObj = $this->mockAPICall(['REQUEST_METHOD' => 'GET','REQUEST_URI' => '/user/'.$user->id])
             ->expectSuccess()
             ->getParsedBody();
@@ -55,7 +59,7 @@ class UsersTest extends BaseTestCase {
     /**
      * @depends testCreateUser
      */
-    function testGetUserIDEmail($user){
+    /*function testGetUserIDEmail($user){
         $responseObj = $this->mockAPICall(['REQUEST_METHOD' => 'GET','REQUEST_URI' => '/user/'.$user->username])
             ->expectSuccess()
             ->getParsedBody();
@@ -64,7 +68,7 @@ class UsersTest extends BaseTestCase {
     /**
      * @depends testCreateUser
      */
-    function testGetUserIDIsChrSpecial($user){
+    /*function testGetUserIDIsChrSpecial($user){
         $responseObj = $this->mockAPICall(['REQUEST_METHOD' => 'GET','REQUEST_URI' => '/user/'.$user->full_name])
             ->expectFailure()
             ->getParsedBody();
@@ -73,7 +77,7 @@ class UsersTest extends BaseTestCase {
     /**
      * @depends testCreateUser
      */
-    function testUpdateUserID($user){
+    /*function testUpdateUserID($user){
         $body = [
             "full_name" => "Antonio"
         ];
@@ -85,7 +89,7 @@ class UsersTest extends BaseTestCase {
     /**
      * @depends testCreateUser
      */
-    function testUpdateUserIDIsChrSpecial($user){
+    /*function testUpdateUserIDIsChrSpecial($user){
         $body = [
             "full_name" => "Antonio"
         ];
@@ -97,7 +101,7 @@ class UsersTest extends BaseTestCase {
     /**
      * @depends testCreateUser
      */
-    function testUpdateUserFullnameEmpty($user){
+    /*function testUpdateUserFullnameEmpty($user){
         $body = [
             "full_name" => ""
         ];
@@ -109,7 +113,7 @@ class UsersTest extends BaseTestCase {
     /**
      * @depends testCreateUser
      */
-    function testUpdateUserTypeEmpty($user){
+    /*function testUpdateUserTypeEmpty($user){
         $body = [
             "type" => ""
         ];
@@ -121,7 +125,7 @@ class UsersTest extends BaseTestCase {
     /**
      * @depends testCreateUser
      */
-    function testUpdatedUserUsername($user){
+    /*function testUpdatedUserUsername($user){
         $body = [
             "username" => ""
         ];
@@ -133,7 +137,7 @@ class UsersTest extends BaseTestCase {
     /**
      * @depends testCreateUser
      */
-    function testDeleteUser($user){
+    /*function testDeleteUser($user){
         $responseObj = $this->mockAPICall(['REQUEST_METHOD' => 'DELETE','REQUEST_URI' => '/user/'.$user->id])
             ->expectSuccess()
             ->getParsedBody();
@@ -142,7 +146,7 @@ class UsersTest extends BaseTestCase {
     /**
      * @depends testCreateUser
      */
-    function testDeletedUser($user){
+    /*function testDeletedUser($user){
         $responseObj = $this->mockAPICall(['REQUEST_METHOD' => 'DELETE','REQUEST_URI' => '/user/'.$user->id])
             ->expectFailure()
             ->getParsedBody();
@@ -151,10 +155,24 @@ class UsersTest extends BaseTestCase {
     /**
      * @depends testCreateUser
      */
-    function testGetSettingUserIDIsChrSpecial($user){
+    /*function testGetSettingUserIDIsChrSpecial($user){
         $responseObj = $this->mockAPICall(['REQUEST_METHOD' => 'GET','REQUEST_URI' => '/settings/user/'.$user->full_name])
             ->expectFailure()
             ->getParsedBody();
-    }
+    }*/
+
+    /**
+     * @depends testCreateUser
+     */
+    /*function testUpdatePassword($user){
+        $body=[
+            "password" => "123456",
+            "repeat" => "123456",
+            "token" => "fa70fb538fec6e67f651b027635da84015e16857"
+        ];
+        $this->mockAPICall(['REQUEST_METHOD' => 'POST','REQUEST_URI' => '/user/'.$user->id.'/password'], $body)
+            ->expectSuccess()
+            ->withPropertiesAndValues($body);
+    }*/
 }
 ?>

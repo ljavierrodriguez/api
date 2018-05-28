@@ -5,7 +5,7 @@ use PHPUnit\Framework\TestCase;
 
 class SpecialtyTest extends BaseTestCase {
 
-    protected $app;
+    /*protected $app;
     public function setUp()
     {
         parent::setUp();
@@ -26,6 +26,6 @@ class SpecialtyTest extends BaseTestCase {
             ->getParsedBody();
 
         return $profile->data;
-    }
+    }*/
 }
 ?>
