@@ -3,7 +3,7 @@ namespace Tests;
 
 class LocationTest extends BaseTestCase
 {
-    /*protected $app;
+    protected $app;
     
     public function setUp(){
         
@@ -35,7 +35,7 @@ class LocationTest extends BaseTestCase
     /**
      * @depends testCreateLocation
      */
-    /*public function testGetLocations($location){
+    public function testGetLocations($location){
         $location = $this->mockAPICall(['REQUEST_METHOD' => 'GET','REQUEST_URI' => '/location/'.$location->id])
             ->expectSuccess()
             ->getParsedBody();
@@ -104,7 +104,7 @@ class LocationTest extends BaseTestCase
     /**
      * @depends testCreateLocation
      */
-    /*public function testUpdateLocation($location){
+    public function testUpdateLocation($location){
         $body = [
             "name" => "update",
             "slug" => "update",
@@ -125,7 +125,7 @@ class LocationTest extends BaseTestCase
     /**
      * @depends testCreateLocation
      */
-    /*public function testUpdateLocationSlugCharacterSpecials($location){
+    public function testUpdateLocationSlugCharacterSpecials($location){
         $body = [
             "name" => "update",
             "slug" => "update!@#",
@@ -146,7 +146,7 @@ class LocationTest extends BaseTestCase
     /**
      * @depends testCreateLocation
      */
-    /*public function testUpdateLocationEmptySlug($location){
+    public function testUpdateLocationEmptySlug($location){
         $body = [
             "name" => "update",
             "slug" => "",
@@ -167,7 +167,7 @@ class LocationTest extends BaseTestCase
     /**
      * @depends testCreateLocation
      */
-    /*public function testUpdateLocationEmptyName($location){
+    public function testUpdateLocationEmptyName($location){
         $body = [
             "name" => "",
             "slug" => "update",
@@ -188,7 +188,7 @@ class LocationTest extends BaseTestCase
     /**
      * @depends testCreateLocation
      */
-    /*public function testUpdateLocationEmptyAddress($location){
+    public function testUpdateLocationEmptyAddress($location){
         $body = [
             "name" => "update",
             "slug" => "update",
@@ -204,7 +204,7 @@ class LocationTest extends BaseTestCase
     /**
      * @depends testCreateLocation
      */
-    /*public function testDeleteLocation($location){
+    public function testDeleteLocation($location){
         $location = $this->mockAPICall(['REQUEST_METHOD' => 'DELETE','REQUEST_URI' => '/location/'.$location->id])
             ->expectSuccess()
             ->getParsedBody();
@@ -214,5 +214,5 @@ class LocationTest extends BaseTestCase
         $location = $this->mockAPICall(['REQUEST_METHOD' => 'GET','REQUEST_URI' => '/locations/'])
             ->expectSuccess()
             ->getParsedBody();
-    }*/
+    }
 }

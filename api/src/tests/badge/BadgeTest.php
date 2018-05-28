@@ -35,6 +35,28 @@ class BadgeTest extends BaseTestCase {
         return $badge->data;
     }
 
+    function testForCreateBadge2(){
+        $body = [
+            "slug" => "identator2",
+            "name" => "Identatior for xxxxxxx",
+            "points_to_achieve" => 100,
+            "technologies" => "css, html",
+            "description" => "wululu"
+        ];
+        $badge = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/badge/'], $body)
+                ->expectSuccess()
+                ->withPropertiesAndValues([
+                    "slug" => $body["slug"],
+                    "name" => $body["name"],
+                    "points_to_achieve" => $body["points_to_achieve"],
+                    "technologies" => $body["technologies"],
+                    "description" => $body["description"]
+                ])
+                ->getParsedBody();
+        
+        return $badge->data;
+    }
+
     function testGetIsNotEmptyStudent(){
         $this->mockAPICall(['REQUEST_METHOD' => 'GET', 'REQUEST_URI' => '/badges/student/1'])
                 ->expectSuccess();

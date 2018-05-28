@@ -3,7 +3,7 @@ namespace Tests;
 
 class CatalogTest extends BaseTestCase
 {
-    /*protected $app;
+    protected $app;
     
     public function setUp(){
         
@@ -34,6 +34,6 @@ class CatalogTest extends BaseTestCase
                         ->getParsedBody();
         $this->assertTrue(is_array($responseObj->data));
         $this->assertTrue(in_array('not-started',$responseObj->data));
-    }*/
+    }
     
 }

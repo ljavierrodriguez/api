@@ -5,7 +5,7 @@ use PHPUnit\Framework\TestCase;
 
 class SpecialtyTest extends BaseTestCase {
 
-    /*protected $app;
+    protected $app;
     public function setUp()
     {
         parent::setUp();
@@ -15,17 +15,23 @@ class SpecialtyTest extends BaseTestCase {
 
     }
 
-    function testForCreateProfile(){
+    function testForCreateSpecialty(){
         $body = [
-            "slug"=> "web-developer",
-            "name"=> "Web Developer",
-            "description"=> "Create websites using a CMS"
+            "profile_slug" => "web-developer",
+            "name" => "RTF Master",
+            "slug" => "rtf-master",
+            "image_url" => "",
+            "description" => "Loren ipsum orbat thinkin ir latbongen sidoment",
+            "badges" => ["identator","identator2"],
+            "points_to_achieve" => 40,
+            "description" => "Create websites using a CMS"
         ];
-        $profile = $this->mockAPICall(['REQUEST_METHOD' => 'PUT', 'REQUEST_URI' => '/profile/'], $body)
+        $profile = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/specialty/'], $body)
             ->expectSuccess()
+            ->withPropertiesAndValues($body)
             ->getParsedBody();
 
         return $profile->data;
-    }*/
+    }
 }
 ?>
