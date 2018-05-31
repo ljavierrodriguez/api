@@ -203,6 +203,25 @@ class CohortHandler extends MainHandler{
         return $this->success($response,"There are ".count($cohort->students())." students in the cohort.");
     }
     
+    public function deleteStudentFromCohortHandler(Request $request, Response $response) {
+        $cohortId = $request->getAttribute('cohort_id');
+        
+        $studentsArray = $request->getParsedBody();
+        if(empty($studentsArray)) throw new ArgumentException('There was an error retrieving the request content, it needs to be a valid JSON');
+       
+        $cohort = null;
+        if(is_numeric($cohortId)) $cohort = Cohort::find($cohortId);
+        else $cohort = Cohort::where('slug', $cohortId)->first();
+        if(!$cohort) throw new ArgumentException('Invalid cohort slug or id: '.$cohortId);
+        
+        $auxStudents = [];
+        foreach($studentsArray as $stu) $auxStudents[] = $stu['student_id'];
+        if($auxStudents>0) $cohort->students()->detach($auxStudents);
+        else throw new ArgumentException('Error retreving Students form the body request');
+        
+        return $this->success($response,"There are now ".count($cohort->students())." students in the cohort.");
+    }
+    
     public function addTeacherToCohortHandler(Request $request, Response $response) {
         $cohortId = $request->getAttribute('cohort_id');
         

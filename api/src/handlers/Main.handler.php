@@ -43,10 +43,13 @@ class MainHandler{
         return $response->withJson($successArray);
     }
     
-    public function fail($request, $response, $args) {
-        $failCode = $args->getCode();
+    public function fail($request, $response, $args=null) {
+        
+        if($args) $failCode = $args->getCode();
         if(!$failCode || !in_array($failCode,[500,400,404,401,403,501,504])) $failCode = 500;
-        $errorArray = array( "code"=> $failCode, "msg"=>  $args->getMessage() );
+
+        $message = ($args) ? $args->getMessage():'Uknown error';
+        $errorArray = array( "code"=> $failCode, "msg"=>  $message );
         
         return $response->withJson($errorArray,$failCode);
     }

@@ -161,7 +161,7 @@ class BreatheCodeAPI
         // NOTE: make sure this route is defined last
         $this->app->map(['GET', 'POST', 'PUT', 'DELETE'], '/{routes:.+}', function($req, $res) {
             $handler = $this->notFoundHandler; // handle using the default Slim page not found handler
-            return $handler($req, $res);
+            return $handler($req, $res, new Exception('Endpoint not found', 404));
         });
         
         return $this->app->run();
