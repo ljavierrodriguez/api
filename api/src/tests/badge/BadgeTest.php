@@ -10,6 +10,7 @@ class BadgeTest extends BaseTestCase {
     {
         parent::setUp();
         $this->app->addRoutes(['badge']);
+        $this->app->addRoutes(['specialty']);
 
     }
 
@@ -23,13 +24,7 @@ class BadgeTest extends BaseTestCase {
         ];
         $badge = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/badge/'], $body)
                 ->expectSuccess()
-                ->withPropertiesAndValues([
-                    "slug" => $body["slug"],
-                    "name" => $body["name"],
-                    "points_to_achieve" => $body["points_to_achieve"],
-                    "technologies" => $body["technologies"],
-                    "description" => $body["description"]
-                ])
+                ->withPropertiesAndValues($body)
                 ->getParsedBody();
         
         return $badge->data;
@@ -37,7 +32,7 @@ class BadgeTest extends BaseTestCase {
 
     function testForCreateBadge2(){
         $body = [
-            "slug" => "identator2",
+            "slug" => "identatorr",
             "name" => "Identatior for xxxxxxx",
             "points_to_achieve" => 100,
             "technologies" => "css, html",
@@ -45,16 +40,46 @@ class BadgeTest extends BaseTestCase {
         ];
         $badge = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/badge/'], $body)
                 ->expectSuccess()
-                ->withPropertiesAndValues([
-                    "slug" => $body["slug"],
-                    "name" => $body["name"],
-                    "points_to_achieve" => $body["points_to_achieve"],
-                    "technologies" => $body["technologies"],
-                    "description" => $body["description"]
-                ])
+                ->withPropertiesAndValues($body)
                 ->getParsedBody();
         
         return $badge->data;
+    }
+
+    // ------- Specialty -------
+
+    function testForCreateSpecialty(){
+        $body = [
+            "name" => "RTF Master",
+            "slug" => "rtf-master",
+            "image_url" => "",
+            "description" => "Loren ipsum orbat thinkin ir latbongen sidoment",
+            "badges" => ["identator","identatorr"],
+            "points_to_achieve" => 40,
+            "description" => "Create websites using a CMS"
+        ];
+        $profile = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/specialty/'], $body)
+            ->expectSuccess()
+            ->getParsedBody();
+
+        return $profile->data;
+    }
+
+    function testCreateSpecialtyDescriptionEmpty(){
+        $body = [
+            "name" => "RTFF",
+            "slug" => "rtf-masterr",
+            "image_url" => "",
+            "description" => "",
+            "badges" => ["identator","identatorr"],
+            "points_to_achieve" => 40,
+            "description" => "Create websites using a CMS"
+        ];
+        $profile = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/specialty/'], $body)
+            ->expectSuccess()
+            ->getParsedBody();
+
+        return $profile->data;
     }
 
     function testGetIsNotEmptyStudent(){
@@ -65,7 +90,7 @@ class BadgeTest extends BaseTestCase {
     /**
      * @depends testForCreateBadge
      */
-    /*function testGetSendParametersNumbersBadge($badge){
+    function testGetSendParametersNumbersBadge($badge){
         $responseObj = $this->mockAPICall(['REQUEST_METHOD' => 'GET','REQUEST_URI' => '/badge/'.$badge->id])
             ->expectSuccess()
             ->getParsedBody();
@@ -74,18 +99,15 @@ class BadgeTest extends BaseTestCase {
     /**
      * @depends testForCreateBadge
      */
-    /*function testGetForNameBadge($badge){
+    function testGetForNameBadge($badge){
         $responseObj = $this->mockAPICall(['REQUEST_METHOD' => 'GET','REQUEST_URI' => '/badge/'.$badge->id])
-            ->expectSuccess()
-            ->withPropertiesAndValues([
-                "name" => $badge->name
-            ]);
+            ->expectSuccess();
     }
 
     /**
      * @depends testForCreateBadge
      */
-    /*function testGetSendParametersCharacterSpecialBadge($badge){
+    function testGetSendParametersCharacterSpecialBadge($badge){
         $responseObj = $this->mockAPICall(['REQUEST_METHOD' => 'GET','REQUEST_URI' => '/badge/'.$badge->description])
             ->expectFailure()
             ->getParsedBody();
@@ -210,7 +232,7 @@ class BadgeTest extends BaseTestCase {
     /**
      * @depends testForCreateBadge
      */
-    /*function testUpdateSendParametersNumbers($badge){
+    function testUpdateSendParametersNumbers($badge){
         $body = [
             "slug" => "identator-update",
             "name" => "Identatior for xxxxxxx",
@@ -225,7 +247,7 @@ class BadgeTest extends BaseTestCase {
     /**
      * @depends testForCreateBadge
      */
-    /*function testUpdateSendParametersCharacterSpecial($badge){
+    function testUpdateSendParametersCharacterSpecial($badge){
         $body = [
             "slug" => "identator-update",
             "name" => "Identatior for xxxxxxx",
@@ -240,7 +262,7 @@ class BadgeTest extends BaseTestCase {
     /**
      * @depends testForCreateBadge
      */
-    /*function testUpdateBadgeForName($badge){
+    function testUpdateBadgeForName($badge){
         $body = [
             "slug" => "identator-update2",
             "name" => "Identatior for Rafael",
@@ -250,15 +272,25 @@ class BadgeTest extends BaseTestCase {
         ];
         $responseObj = $this->mockAPICall(['REQUEST_METHOD' => 'POST','REQUEST_URI' => '/badge/'.$badge->id], $body)
             ->expectSuccess()
-            ->withPropertiesAndValues([
-                "name" => $body["name"]
-            ]);
+            ->withPropertiesAndValues($body);
     }
 
     /**
      * @depends testForCreateBadge
      */
-    /*function testDeleteBadge($badge){
+    /*function testBadgeToSpecialty($badge){
+        $body = [
+            "badges" => [1, 2]
+        ];
+        $responseObj = $this->mockAPICall(['REQUEST_METHOD' => 'POST','REQUEST_URI' => '/badge/specialty/'.$specialty->id], $body)
+            ->expectSuccess()
+            ->withPropertiesAndValues($body);
+    }
+
+    /**
+     * @depends testForCreateBadge
+     */
+    function testDeleteBadge($badge){
         $responseObj = $this->mockAPICall(['REQUEST_METHOD' => 'delete','REQUEST_URI' => '/badge/'.$badge->id])
             ->expectSuccess()
             ->getParsedBody();
@@ -269,9 +301,9 @@ class BadgeTest extends BaseTestCase {
     /**
      * @depends testForCreateBadge
      */
-    /*function testDeletedBadge($badge){
+    function testDeletedBadge($badge){
         $responseObj = $this->mockAPICall(['REQUEST_METHOD' => 'delete','REQUEST_URI' => '/badge/'.$badge->id])
             ->expectFailure()
             ->getParsedBody();
-    }*/
+    }
 }

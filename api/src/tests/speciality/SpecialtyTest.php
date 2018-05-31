@@ -10,28 +10,26 @@ class SpecialtyTest extends BaseTestCase {
     {
         parent::setUp();
         $this->app->addRoutes(['specialty']);
-        $this->app->addRoutes(['profile']);
-        $this->app->addRoutes(['badge']);
 
     }
+    
+    // ---- Creacion de Specialty en Badges -----
+    // ---- Get specialty from profile en Profiles -----
 
-    function testForCreateSpecialty(){
-        $body = [
-            "profile_slug" => "web-developer",
-            "name" => "RTF Master",
-            "slug" => "rtf-master",
-            "image_url" => "",
-            "description" => "Loren ipsum orbat thinkin ir latbongen sidoment",
-            "badges" => ["identator","identator2"],
-            "points_to_achieve" => 40,
-            "description" => "Create websites using a CMS"
-        ];
-        $profile = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/specialty/'], $body)
-            ->expectSuccess()
-            ->withPropertiesAndValues($body)
-            ->getParsedBody();
+    function testGetAllSpecialtyIsNotEmpty(){
+        $this->mockAPICall(['REQUEST_METHOD' => 'GET', 'REQUEST_URI' => '/specialties/'])
+            ->expectSuccess();
+    }
 
-        return $profile->data;
+    function testGetSpecialtyIsNotEmpty(){
+        $specialty = $this->mockAPICall(['REQUEST_METHOD' => 'GET', 'REQUEST_URI' => '/specialty/1'])
+            ->expectSuccess();
+            $this->assertNotEmpty($specialty);
+    }
+
+    function testGetSpecialtyIDIsChrSpecial(){
+        $specialty = $this->mockAPICall(['REQUEST_METHOD' => 'GET', 'REQUEST_URI' => '/specialty/!@#'])
+            ->expectFailure();
     }
 }
 ?>

@@ -40,8 +40,8 @@ class SpecialtyHandler extends MainHandler{
         $data = $request->getParsedBody();
         if(empty($data)) throw new ArgumentException('There was an error retrieving the request content, it needs to be a valid JSON');
         
-        $profile = Profile::where('slug', $data['profile_slug'])->first();
-        if(!$profile) throw new ArgumentException('Invalid profile slug');
+        /*$profile = Profile::where('slug', $data['profile_slug'])->first();
+        if(!$profile) throw new ArgumentException('Invalid profile slug');*/
         
         if(count($data['badges'])<2) throw new ArgumentException('A specialty must be created with at least two badges');
         
@@ -59,7 +59,7 @@ class SpecialtyHandler extends MainHandler{
         $specialty = $this->setMandatory($specialty,$data,'description',BCValidator::DESCRIPTION);
         $specialty->save();
         
-        try{
+        /*try{
             $specialty->profiles()->attach($profile);
             $specialty->badges()->attach($badges);
         }
@@ -67,7 +67,7 @@ class SpecialtyHandler extends MainHandler{
         {
             $specialty->delete();
             throw new ArgumentException($e->getMessage());
-        }
+        }*/
         
         return $this->success($response,$specialty);
     }

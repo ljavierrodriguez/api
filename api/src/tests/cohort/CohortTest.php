@@ -60,10 +60,25 @@ class CohortTest extends BaseTestCase {
         ];
         $cohort = $this->mockAPICall(['REQUEST_METHOD' => 'PUT', 'REQUEST_URI' => '/cohort/'], $body)
             ->expectSuccess()
+            ->withPropertiesAndValues($body)
             ->getParsedBody();
 
         return $cohort->data;
     }
+
+    /*function testCreateDoubleCohort(){
+        $body = [
+            "location_slug" => "nuevalocation-cohort",
+            "profile_slug" => "nuevoprofile-cohort",
+            "name" => "Nuevo Cohort",
+            "slug" => "nuevocohort-cohort",
+            "language" => "es",
+            "slack_url" => "http://www.asidj.com",
+            "kickoff_date" => "2017-04-10"
+        ];
+        $this->mockAPICall(['REQUEST_METHOD' => 'PUT', 'REQUEST_URI' => '/cohort/'], $body)
+            ->expectFailure();
+    }*/
 
     function testCreateTeacher(){
         $body = [
@@ -73,7 +88,7 @@ class CohortTest extends BaseTestCase {
         $teacher = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/teacher/'], $body)
             ->expectSuccess()
             ->getParsedBody();
-        
+
         return $teacher->data;
     }
 
@@ -117,27 +132,22 @@ class CohortTest extends BaseTestCase {
      * @depends testCreateCohort
      * @depends testCreateStudent
      */
-    function testCreateStudentCohort($cohort, $student){
+    /*function testCreateStudentCohort($cohort, $student){
         $body = [
-            "student_id" => $student->id
+            "student_id" => 1
         ];
-        $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/student/cohort/'.$cohort->id])
-            ->expectSuccess()
-            ->withPropertiesAndValues($body);
-    }
+        $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/student/cohort/'.$cohort->id], $body)
+            ->expectSuccess();
+    }*/
 
-    /*function testCreateDoubleCohort(){
-        $body = [
-            "location_slug" => "nuevalocation-cohort",
-            "profile_slug" => "nuevoprofile-cohort",
-            "name" => "Nuevo Cohort",
-            "slug" => "nuevocohort-cohort",
-            "language" => "es",
-            "slack_url" => "http://www.asidj.com",
-            "kickoff_date" => "2017-04-10"
-        ];
-        $this->mockAPICall(['REQUEST_METHOD' => 'PUT', 'REQUEST_URI' => '/cohort/'], $body)
-            ->expectFailure();
+    /**
+     * @depends testCreateCohort
+     */
+    /*function testGetStudentCohortID($cohort){
+        $students = $this->mockAPICall(['REQUEST_METHOD' => 'GET', 'REQUEST_URI' => '/students/cohort/'.$cohort->id])
+            ->expectSuccess()
+            ->getParsedBody();
+            $this->assertNotEmpty($students);
     }*/
 
     function testCreateCohortLanguageChrSpecial(){
@@ -250,24 +260,6 @@ class CohortTest extends BaseTestCase {
     }
 
     /**
-     * @depends testCreateCohort
-     */
-    /*function testDeleteCohort($cohort){
-        $cohort = $this->mockAPICall(['REQUEST_METHOD' => 'DELETE', 'REQUEST_URI' => '/cohort/'.$cohort->id])
-            ->expectSuccess()
-            ->getParsedBody();
-    }
-
-    /**
-     * @depends testCreateCohort
-     */
-    /*function testDeletedCohort($cohort){
-        $cohort = $this->mockAPICall(['REQUEST_METHOD' => 'DELETE', 'REQUEST_URI' => '/cohort/'.$cohort->id])
-            ->expectFailure()
-            ->getParsedBody();
-    }
-
-    /**
      * @depends testCreateLocation
      */
     function testGetCohortLocationID($location){
@@ -289,11 +281,32 @@ class CohortTest extends BaseTestCase {
 
     /**
      * @depends testCreateCohort
+     * @depends testCreateTeacher
      */
-    function testGetStudentCohortID($cohort){
-        $students = $this->mockAPICall(['REQUEST_METHOD' => 'GET', 'REQUEST_URI' => '/students/cohort/'.$cohort->id])
+    /*function testCreateTeacherCohort($cohort, $teacher){
+        $body = [
+            "teacher_id" => 1,
+            "is_instructor" => true
+        ];
+        $cohort = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/teacher/cohort/'.$cohort->id], $body)
+            ->expectSuccess()
+            ->getParsedBody();
+    }*/
+
+    /**
+     * @depends testCreateCohort
+     */
+    /*function testDeleteCohort($cohort){
+        $this->mockAPICall(['REQUEST_METHOD' => 'DELETE', 'REQUEST_URI' => '/cohort/'.$cohort->id])
+            ->expectSuccess();
+    }
+
+    /**
+     * @depends testCreateCohort
+     */
+    /*function testDeletedCohort($cohort){
+        $cohort = $this->mockAPICall(['REQUEST_METHOD' => 'DELETE', 'REQUEST_URI' => '/cohort/'.$cohort->id])
             ->expectFailure()
             ->getParsedBody();
-            $this->assertNotEmpty($students);
-    }
+    }*/
 }

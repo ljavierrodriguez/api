@@ -14,6 +14,7 @@ class StudentTest extends BaseTestCase {
         $this->app->addRoutes(['profile']);
         $this->app->addRoutes(['cohort']);
         $this->app->addRoutes(['badge']);
+        $this->app->addRoutes(['specialty']);
     }
 
     function testCreateLocation(){
@@ -381,7 +382,7 @@ class StudentTest extends BaseTestCase {
 
     function testForCreateBadge(){
         $body = [
-            "slug" => "identatorr",
+            "slug" => "slug-badges",
             "name" => "Identatior for xxxxxxx",
             "points_to_achieve" => 100,
             "technologies" => "css, html",
@@ -611,6 +612,25 @@ class StudentTest extends BaseTestCase {
 
 
 
+    // ----- Specialty for student
+
+    /**
+     * @depends testCreateStudent
+     */
+    function testGetSpecialtyStudent($student){
+        $profile = $this->mockAPICall(['REQUEST_METHOD' => 'GET', 'REQUEST_URI' => '/specialties/student/'.$student->id])
+            ->expectSuccess()
+            ->getParsedBody();
+    }
+
+    /**
+     * @depends testCreateStudent
+     */
+    function testGetSpecialtyStudentChrSpecial($student){
+        $profile = $this->mockAPICall(['REQUEST_METHOD' => 'GET', 'REQUEST_URI' => '/specialties/student/'.$student->email])
+            ->expectFailure()
+            ->getParsedBody();
+    }
 
 
 
