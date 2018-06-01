@@ -10,6 +10,7 @@ class ProfileTest extends BaseTestCase {
     {
         parent::setUp();
         $this->app->addRoutes(['profile']);
+        $this->app->addRoutes(['specialty']);
 
     }
 
@@ -24,7 +25,7 @@ class ProfileTest extends BaseTestCase {
             "name"=> "Web Developer",
             "description"=> "Create websites using a CMS",
             "specialties"=>[
-                "Hola", "Mundo"
+                "rtf-master"
             ]
         ];
         $profile = $this->mockAPICall(['REQUEST_METHOD' => 'PUT', 'REQUEST_URI' => '/profile/'], $body)
@@ -34,19 +35,117 @@ class ProfileTest extends BaseTestCase {
         return $profile->data;
     }
 
-    /**
-     * @depends testForCreateProfile
-     */
-    /*function testForCreateDoubleProfile(){
+    // -------- Update Specialty --------
+    function testUpdateSpecialty(){
         $body = [
-            "slug"=> "web-developer",
-            "name"=> "Web Developer",
-            "description"=> "Create websites using a CMS"
+            "name" => "update specialty",
+            "profile_slug" => "web-developer",
+            "slug" => "rtf-master"
         ];
-        $profile = $this->mockAPICall(['REQUEST_METHOD' => 'PUT', 'REQUEST_URI' => '/profile/'], $body)
+        $specialty = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/specialty/1'], $body)
+            ->expectSuccess();
+    }
+
+    function testUpdateSpecialtyNameEmpty(){
+        $body = [
+            "name" => "",
+            "profile_slug" => "web-developer",
+            "slug" => "rtf-master"
+        ];
+        $specialty = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/specialty/1'], $body)
+            ->expectFailure();
+    }
+
+    function testUpdateSpecialtySlugEmpty(){
+        $body = [
+            "name" => "update specialty",
+            "profile_slug" => "web-developer",
+            "slug" => ""
+        ];
+        $specialty = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/specialty/1'], $body)
+            ->expectFailure();
+    }
+
+    // -------- Get Specialty from Profile ---------
+
+    function testGetSpecialtyProfile(){
+        $specialty = $this->mockAPICall(['REQUEST_METHOD' => 'GET', 'REQUEST_URI' => '/specialties/profile/2'])
+            ->expectSuccess()
+            ->getParsedBody();
+        $this->assertNotEmpty($specialty);
+    }
+
+    function testGetSpecialtyIDIsChrSpecial(){
+        $specialty = $this->mockAPICall(['REQUEST_METHOD' => 'GET', 'REQUEST_URI' => '/specialties/profile/!@#'])
             ->expectFailure()
             ->getParsedBody();
-    }*/
+    }
+
+    // -------- Post Specialty from Profile ---------
+
+    function testUpdateSpecialtyProfile(){
+        $body = [
+            "profile_slug" => "web-developer",
+            "slug" => "specialty",
+            "name" => "specialty name"
+        ];
+        $profile = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/specialty/1'], $body)
+            ->expectSuccess()
+            ->getParsedBody();
+    }
+
+    // ------ Specialty for profile
+
+    function testUpdateSpecialtyProfiles(){
+        $body = [
+            "specialties" => ["1", "2"]
+        ];
+        $profile = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/specialty/profile/2'], $body)
+            ->expectSuccess()
+            ->getParsedBody();
+    }
+
+    function testUpdateSpecialtyProfilesEmpty(){
+        $body = [
+            "specialties" => []
+        ];
+        $profile = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/specialty/profile/2'], $body)
+            ->expectFailure()
+            ->getParsedBody();
+    }
+
+    function testDeleteSpecialtyProfile(){
+        $body = [
+            "specialties" => ["1", "2"]
+        ];
+        $profile = $this->mockAPICall(['REQUEST_METHOD' => 'DELETE', 'REQUEST_URI' => '/specialty/profile/2'], $body)
+            ->expectSuccess()
+            ->getParsedBody();
+    }
+
+    /**
+     * @depends testDeleteSpecialtyProfile
+     */
+    function testDeletedSpecialtyProfile(){
+        $body = [
+            "specialties" => ["1", "2"]
+        ];
+        $profile = $this->mockAPICall(['REQUEST_METHOD' => 'DELETE', 'REQUEST_URI' => '/specialty/profile/2'], $body)
+            ->expectSuccess()
+            ->getParsedBody();
+    }
+
+    function testDeleteSpecialty(){
+        $profile = $this->mockAPICall(['REQUEST_METHOD' => 'DELETE', 'REQUEST_URI' => '/specialty/2'])
+            ->expectSuccess()
+            ->getParsedBody();
+    }
+
+    function testDeletedSpecialty(){
+        $profile = $this->mockAPICall(['REQUEST_METHOD' => 'DELETE', 'REQUEST_URI' => '/specialty/2'])
+            ->expectFailure()
+            ->getParsedBody();
+    }
 
     /**
      * @depends testForCreateProfile

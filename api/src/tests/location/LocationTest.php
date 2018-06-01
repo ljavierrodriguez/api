@@ -21,12 +21,7 @@ class LocationTest extends BaseTestCase
         ];
         $location = $this->mockAPICall(['REQUEST_METHOD' => 'PUT','REQUEST_URI' => '/location/'], $body)
             ->expectSuccess()
-            ->withPropertiesAndValues([
-                "name" => $body["name"],
-                "slug" => $body["slug"],
-                "address" => $body["address"],
-                "country" => $body["country"]
-            ])
+            ->withPropertiesAndValues($body)
             ->getParsedBody();
 
         return $location->data;
@@ -36,9 +31,8 @@ class LocationTest extends BaseTestCase
      * @depends testCreateLocation
      */
     public function testGetLocations($location){
-        $location = $this->mockAPICall(['REQUEST_METHOD' => 'GET','REQUEST_URI' => '/location/'.$location->id])
-            ->expectSuccess()
-            ->getParsedBody();
+        $this->mockAPICall(['REQUEST_METHOD' => 'GET','REQUEST_URI' => '/location/'.$location->id])
+            ->expectSuccess();
     }
 
     public function testCreateLocationSlugCharacterSpecials() {
@@ -48,9 +42,8 @@ class LocationTest extends BaseTestCase
             "address" => "Caracas",
             "country" => "venezuela"
         ];
-        $location = $this->mockAPICall(['REQUEST_METHOD' => 'PUT','REQUEST_URI' => '/location/'], $body)
-            ->expectFailure()
-            ->getParsedBody();
+        $this->mockAPICall(['REQUEST_METHOD' => 'PUT','REQUEST_URI' => '/location/'], $body)
+            ->expectFailure();
     }
 
     public function testCreateLocationEmptyName() {
@@ -60,9 +53,8 @@ class LocationTest extends BaseTestCase
             "address" => "Caracas",
             "country" => "venezuela"
         ];
-        $location = $this->mockAPICall(['REQUEST_METHOD' => 'PUT','REQUEST_URI' => '/location/'], $body)
-            ->expectFailure()
-            ->getParsedBody();
+        $this->mockAPICall(['REQUEST_METHOD' => 'PUT','REQUEST_URI' => '/location/'], $body)
+            ->expectFailure();
     }
 
     public function testCreateLocationEmptyAddress() {
@@ -72,9 +64,9 @@ class LocationTest extends BaseTestCase
             "address" => "",
             "country" => "venezuela"
         ];
-        $location = $this->mockAPICall(['REQUEST_METHOD' => 'PUT','REQUEST_URI' => '/location/'], $body)
+        $this->mockAPICall(['REQUEST_METHOD' => 'PUT','REQUEST_URI' => '/location/'], $body)
             ->expectSuccess()
-            ->getParsedBody();
+            ->withPropertiesAndValues($body);
     }
 
     public function testCreateLocationEmptySlug() {
@@ -84,9 +76,8 @@ class LocationTest extends BaseTestCase
             "address" => "Caracas",
             "country" => "venezuela"
         ];
-        $location = $this->mockAPICall(['REQUEST_METHOD' => 'PUT','REQUEST_URI' => '/location/'], $body)
-            ->expectFailure()
-            ->getParsedBody();
+        $this->mockAPICall(['REQUEST_METHOD' => 'PUT','REQUEST_URI' => '/location/'], $body)
+            ->expectFailure();
     }
 
     public function testEmptyLocation() {
@@ -96,9 +87,8 @@ class LocationTest extends BaseTestCase
             "address" => "",
             "country" => ""
         ];
-        $location = $this->mockAPICall(['REQUEST_METHOD' => 'PUT','REQUEST_URI' => '/location/'], $body)
-            ->expectFailure()
-            ->getParsedBody();
+        $this->mockAPICall(['REQUEST_METHOD' => 'PUT','REQUEST_URI' => '/location/'], $body)
+            ->expectFailure();
     }
 
     /**
@@ -113,12 +103,7 @@ class LocationTest extends BaseTestCase
         ];
         $location = $this->mockAPICall(['REQUEST_METHOD' => 'POST','REQUEST_URI' => '/location/'.$location->id], $body)
             ->expectSuccess()
-            ->withPropertiesAndValues([
-                "name" => $body["name"],
-                "slug" => $body["slug"],
-                "address" => $body["address"],
-                "country" => $body["country"]
-            ])
+            ->withPropertiesAndValues($body)
             ->getParsedBody();
     }
 
@@ -132,15 +117,9 @@ class LocationTest extends BaseTestCase
             "address" => "Caracas2",
             "country" => "venezuela"
         ];
-        $location = $this->mockAPICall(['REQUEST_METHOD' => 'POST','REQUEST_URI' => '/location/'.$location->id], $body)
+        $this->mockAPICall(['REQUEST_METHOD' => 'POST','REQUEST_URI' => '/location/'.$location->id], $body)
             ->expectSuccess()
-            ->withPropertiesAndValues([
-                "name" => $body["name"],
-                "slug" => $body["slug"],
-                "address" => $body["address"],
-                "country" => $body["country"]
-            ])
-            ->getParsedBody();
+            ->withPropertiesAndValues($body);
     }
 
     /**
@@ -155,12 +134,7 @@ class LocationTest extends BaseTestCase
         ];
         $location = $this->mockAPICall(['REQUEST_METHOD' => 'POST','REQUEST_URI' => '/location/'.$location->id], $body)
             ->expectSuccess()
-            ->withPropertiesAndValues([
-                "name" => $body["name"],
-                "slug" => $body["slug"],
-                "address" => $body["address"],
-                "country" => $body["country"]
-            ])
+            ->withPropertiesAndValues($body)
             ->getParsedBody();
     }
 
@@ -197,12 +171,7 @@ class LocationTest extends BaseTestCase
         ];
         $location = $this->mockAPICall(['REQUEST_METHOD' => 'POST','REQUEST_URI' => '/location/'.$location->id], $body)
             ->expectSuccess()
-            ->withPropertiesAndValues([
-                "name" => $body["name"],
-                "slug" => $body["slug"],
-                "address" => $body["address"],
-                "country" => $body["country"]
-            ])
+            ->withPropertiesAndValues($body)
             ->getParsedBody();
     }
 

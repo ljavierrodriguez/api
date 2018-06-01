@@ -17,29 +17,32 @@ class ProfileHandler extends MainHandler{
         //if(count($data['specialties'])<2) throw new ArgumentException('A profile must be created with at least two specialties');
         
         $profile = new Profile();
-        /*$specialties = [];
+        $specialties = [];
+
+        if(!empty($data['specialties'])) 
         foreach($data['specialties'] as $bslug)
         {
-            //$specialty = Specialty::where('slug', $bslug)->first();
-            //if($specialty) $specialties[] = $specialty->id;
-            //else throw new ArgumentException('Invalid specialty slug: '.$bslug);
+            $specialty = Specialty::where('slug', $bslug)->first();
+            if($specialty) $specialties[] = $specialty->id;
+            else throw new ArgumentException('Invalid specialty slug: '.$bslug);
 
             $specialties[] = $bslug;
-        }*/
+        }
         $profile = $this->setMandatory($profile,$data,'slug',BCValidator::SLUG);
         $profile = $this->setMandatory($profile,$data,'name',BCValidator::NAME);
         $profile = $this->setMandatory($profile,$data,'description',BCValidator::DESCRIPTION);
         $profile->save();
         
-        /*try{
-            $profile->specialties()->attach($specialties);
+        if(!empty($data['specialties'])){
+            try{
+                $profile->specialties()->attach($specialties);
+            }
+            catch(ArgumentException $e)
+            {
+                $profile->delete();
+                throw new ArgumentException($e->getMessage());
+            }
         }
-        catch(ArgumentException $e)
-        {
-            $profile->delete();
-            throw new ArgumentException($e->getMessage());
-        }*/
-        
         return $this->success($response,$profile);
     }
     

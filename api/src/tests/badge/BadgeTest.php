@@ -10,6 +10,7 @@ class BadgeTest extends BaseTestCase {
     {
         parent::setUp();
         $this->app->addRoutes(['badge']);
+        $this->app->addRoutes(['specialty']);
 
     }
 
@@ -23,16 +24,67 @@ class BadgeTest extends BaseTestCase {
         ];
         $badge = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/badge/'], $body)
                 ->expectSuccess()
-                ->withPropertiesAndValues([
-                    "slug" => $body["slug"],
-                    "name" => $body["name"],
-                    "points_to_achieve" => $body["points_to_achieve"],
-                    "technologies" => $body["technologies"],
-                    "description" => $body["description"]
-                ])
+                ->withPropertiesAndValues($body)
                 ->getParsedBody();
         
         return $badge->data;
+    }
+
+    function testForCreateBadge2(){
+        $body = [
+            "slug" => "identatorr",
+            "name" => "Identatior for xxxxxxx",
+            "points_to_achieve" => 100,
+            "technologies" => "css, html",
+            "description" => "wululu"
+        ];
+        $badge = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/badge/'], $body)
+                ->expectSuccess()
+                ->withPropertiesAndValues($body)
+                ->getParsedBody();
+        
+        return $badge->data;
+    }
+
+    // ------- Specialty -------
+
+    function testForCreateSpecialty(){
+        $body = [
+            "name" => "RTF Master",
+            "slug" => "rtf-master",
+            "image_url" => "",
+            "description" => "Loren ipsum orbat thinkin ir latbongen sidoment",
+            "badges" => ["identator","identatorr"],
+            "points_to_achieve" => 40,
+            "description" => "Create websites using a CMS"
+        ];
+        $profile = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/specialty/'], $body)
+            ->expectSuccess()
+            ->getParsedBody();
+
+        return $profile->data;
+    }
+
+    function testCreateSpecialtyDescriptionEmpty(){
+        $body = [
+            "name" => "RTFF",
+            "slug" => "rtf-masterr",
+            "image_url" => "",
+            "description" => "",
+            "badges" => ["identator","identatorr"],
+            "points_to_achieve" => 40,
+            "description" => "Create websites using a CMS"
+        ];
+        $profile = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/specialty/'], $body)
+            ->expectSuccess()
+            ->getParsedBody();
+
+        return $profile->data;
+    }
+
+    function testGetIsNotEmptyStudent(){
+        $this->mockAPICall(['REQUEST_METHOD' => 'GET', 'REQUEST_URI' => '/badges/student/1'])
+                ->expectSuccess();
     }
 
     /**
@@ -49,10 +101,7 @@ class BadgeTest extends BaseTestCase {
      */
     function testGetForNameBadge($badge){
         $responseObj = $this->mockAPICall(['REQUEST_METHOD' => 'GET','REQUEST_URI' => '/badge/'.$badge->id])
-            ->expectSuccess()
-            ->withPropertiesAndValues([
-                "name" => $badge->name
-            ]);
+            ->expectSuccess();
     }
 
     /**
@@ -72,7 +121,7 @@ class BadgeTest extends BaseTestCase {
             "technologies" => "css, html",
             "description" => "wululu"
         ];
-        $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/badge/'], $body)
+        $badge = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/badge/'], $body)
                 ->expectFailure();
     }
 
@@ -223,9 +272,19 @@ class BadgeTest extends BaseTestCase {
         ];
         $responseObj = $this->mockAPICall(['REQUEST_METHOD' => 'POST','REQUEST_URI' => '/badge/'.$badge->id], $body)
             ->expectSuccess()
-            ->withPropertiesAndValues([
-                "name" => $body["name"]
-            ]);
+            ->withPropertiesAndValues($body);
+    }
+
+    /**
+     * @depends testForCreateBadge
+     */
+    /*function testBadgeToSpecialty($badge){
+        $body = [
+            "badges" => [1, 2]
+        ];
+        $responseObj = $this->mockAPICall(['REQUEST_METHOD' => 'POST','REQUEST_URI' => '/badge/specialty/'.$specialty->id], $body)
+            ->expectSuccess()
+            ->withPropertiesAndValues($body);
     }
 
     /**

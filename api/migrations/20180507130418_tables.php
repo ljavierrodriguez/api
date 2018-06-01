@@ -183,7 +183,7 @@ class Tables extends Migration
                 $table->bigIncrements('id');
                 $table->string('slug', 200)->unique();
                 $table->string('name', 255);
-                $table->string('icon', 255);
+                $table->string('icon', 255)->nullable();
                 $table->text('description');
                 $table->integer('points_to_achieve');
                 $table->timestamps();

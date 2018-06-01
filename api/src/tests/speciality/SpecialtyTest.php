@@ -10,22 +10,26 @@ class SpecialtyTest extends BaseTestCase {
     {
         parent::setUp();
         $this->app->addRoutes(['specialty']);
-        $this->app->addRoutes(['profile']);
-        $this->app->addRoutes(['badge']);
 
     }
+    
+    // ---- Creacion de Specialty en Badges -----
+    // ---- Get specialty from profile en Profiles -----
 
-    function testForCreateProfile(){
-        $body = [
-            "slug"=> "web-developer",
-            "name"=> "Web Developer",
-            "description"=> "Create websites using a CMS"
-        ];
-        $profile = $this->mockAPICall(['REQUEST_METHOD' => 'PUT', 'REQUEST_URI' => '/profile/'], $body)
-            ->expectSuccess()
-            ->getParsedBody();
+    function testGetAllSpecialtyIsNotEmpty(){
+        $this->mockAPICall(['REQUEST_METHOD' => 'GET', 'REQUEST_URI' => '/specialties/'])
+            ->expectSuccess();
+    }
 
-        return $profile->data;
+    function testGetSpecialtyIsNotEmpty(){
+        $specialty = $this->mockAPICall(['REQUEST_METHOD' => 'GET', 'REQUEST_URI' => '/specialty/1'])
+            ->expectSuccess();
+            $this->assertNotEmpty($specialty);
+    }
+
+    function testGetSpecialtyIDIsChrSpecial(){
+        $specialty = $this->mockAPICall(['REQUEST_METHOD' => 'GET', 'REQUEST_URI' => '/specialty/!@#'])
+            ->expectFailure();
     }
 }
 ?>
