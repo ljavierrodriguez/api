@@ -193,4 +193,3 @@ class UsersTest extends BaseTestCase {
             ->expectFailure();
     }
 }
-?>

@@ -224,4 +224,3 @@ class TeacherTest extends BaseTestCase {
             ->getParsedBody();
     }
 }
-?>

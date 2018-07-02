@@ -8,9 +8,10 @@ require 'config.php';
 require '../vendor/autoload.php';
 
 $origins = [
-    'https://assets.breatheco.de/',
+    'https://assets.breatheco.de',
     'https://student.breatheco.de',
     'https://admin.breatheco.de',
+    'https://assets-alesanchezr.c9users.io',
     'https://bc-js-clients-alesanchezr.c9users.io',
     'https://bc-admin-alesanchezr.c9users.io',
     'https://coding-editor-alesanchezr.c9users.io'

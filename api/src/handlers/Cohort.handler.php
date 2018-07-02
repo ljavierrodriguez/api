@@ -166,7 +166,8 @@ class CohortHandler extends MainHandler{
         if(!$cohort) throw new ArgumentException('Invalid cohort id');
         
         $students = $cohort->students()->get();
-        if(count($students)>0) throw new ArgumentException('Remove all students from the cohort first.');
+        $totalStudents = count($students);
+        if($totalStudents>0) throw new ArgumentException('Remove all the '.$totalStudents.' students from the cohort first.');
         
         $cohort->delete();
         
@@ -194,7 +195,6 @@ class CohortHandler extends MainHandler{
         if(is_numeric($cohortId)) $cohort = Cohort::find($cohortId);
         else $cohort = Cohort::where('slug', $cohortId)->first();
         if(!$cohort) throw new ArgumentException('Invalid cohort slug or id: '.$cohortId);
-        
         $auxStudents = [];
         foreach($studentsArray as $stu) $auxStudents[] = $stu['student_id'];
         if($auxStudents>0) $cohort->students()->attach($auxStudents);

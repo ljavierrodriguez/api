@@ -146,4 +146,3 @@ class TaskTest extends BaseTestCase {
             ->expectFailure();
     }
 }
-?>

@@ -240,8 +240,12 @@ class StudentHandler extends MainHandler{
         $daysOld = floor(($now - strtotime($attributes['created_at'])) / DELETE_MAX_DAYS);
         if($daysOld>5) throw new ArgumentException('The student is to old to delete');
         
-        $student->activities()->delete();
-        $student->badges()->delete();
+        $studentActivities = $student->activities()->get();
+        foreach($studentActivities as $act) $act->delete();
+        
+        $studentBadges = $student->badges()->get();
+        $student->badges()->detach($studentBadges);
+        
         $student->delete();
         
         return $this->success($response,"ok");

@@ -9,11 +9,7 @@ class CohortTest extends BaseTestCase {
     public function setUp()
     {
         parent::setUp();
-        $this->app->addRoutes(['cohort']);
-        $this->app->addRoutes(['location']);
-        $this->app->addRoutes(['profile']);
-        $this->app->addRoutes(['teacher']);
-        $this->app->addRoutes(['student']);
+        $this->app->addRoutes(['cohort', 'location', 'profile', 'teacher', 'student']);
     }
 
     function testCreateLocation(){
@@ -296,17 +292,12 @@ class CohortTest extends BaseTestCase {
     /**
      * @depends testCreateCohort
      */
-    /*function testDeleteCohort($cohort){
+    function testDeleteCohort($cohort){
+        
         $this->mockAPICall(['REQUEST_METHOD' => 'DELETE', 'REQUEST_URI' => '/cohort/'.$cohort->id])
-            ->expectSuccess();
+            ->expectFailure();
+
+        //$this->mockAPICall(['REQUEST_METHOD' => 'DELETE', 'REQUEST_URI' => '/cohort/'.$cohortToDelete->id])->expectFailure();
     }
 
-    /**
-     * @depends testCreateCohort
-     */
-    /*function testDeletedCohort($cohort){
-        $cohort = $this->mockAPICall(['REQUEST_METHOD' => 'DELETE', 'REQUEST_URI' => '/cohort/'.$cohort->id])
-            ->expectFailure()
-            ->getParsedBody();
-    }*/
 }

@@ -156,7 +156,6 @@ class BreatheCodeAPI
      * @return \Slim\App
      */
     public function run(){
-        
         // Catch-all route to serve a 404 Not Found page if none of the routes match
         // NOTE: make sure this route is defined last
         $this->app->map(['GET', 'POST', 'PUT', 'DELETE'], '/{routes:.+}', function($req, $res) {

@@ -9,12 +9,7 @@ class StudentTest extends BaseTestCase {
     public function setUp()
     {
         parent::setUp();
-        $this->app->addRoutes(['student']);
-        $this->app->addRoutes(['location']);
-        $this->app->addRoutes(['profile']);
-        $this->app->addRoutes(['cohort']);
-        $this->app->addRoutes(['badge']);
-        $this->app->addRoutes(['specialty']);
+        $this->app->addRoutes(['student','location','profile','cohort','badge','specialty']);
     }
 
     function testCreateLocation(){
@@ -637,17 +632,14 @@ class StudentTest extends BaseTestCase {
     /**
      * @depends testCreateStudent
      */
-    /*function testDeleteStudent($student){
+    function testDeleteStudent($student){
+        $id = $student->id;
+        
         $this->mockAPICall(['REQUEST_METHOD' => 'DELETE', 'REQUEST_URI' => '/student/'.$student->id])
             ->expectSuccess();
+        //expect failure because student does not exists anymore
+        $this->mockAPICall(['REQUEST_METHOD' => 'GET', 'REQUEST_URI' => '/student/'.$id])
+            ->expectFailure();
     }
 
-    /**
-     * @depends testCreateStudent
-     */
-    /*function testDeletedStudent($student){
-        $this->mockAPICall(['REQUEST_METHOD' => 'DELETE', 'REQUEST_URI' => '/student/'.$student->id])
-            ->expectFailure();
-    }*/
 }
-?>
