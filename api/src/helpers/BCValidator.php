@@ -118,4 +118,7 @@ class BCValidator{
 class ArgumentException extends Exception{
     protected $code = 400;   
 }
+class NotFoundException extends Exception{
+    protected $code = 404;   
+}
 ?>

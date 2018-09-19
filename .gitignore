@@ -10,3 +10,5 @@ public/img/*
 
 #ignoring tests database
 tests.sqlite
+
+.sass-cache/

@@ -6,6 +6,7 @@ use Helpers\Mailer;
 use Helpers\AuthHelper;
 use Helpers\BCValidator;
 use Helpers\ArgumentException;
+use Helpers\NotFoundException;
 
 class UserHandler extends MainHandler{
     
@@ -51,7 +52,11 @@ class UserHandler extends MainHandler{
         
         if(is_numeric($breathecodeId)) $user = User::find($breathecodeId);
         else $user = User::where('username', $breathecodeId)->first();
-        if(!$user) throw new ArgumentException('Invalid user email or id: '.$breathecodeId);
+        
+        // validate email format
+        if(!is_integer($breathecodeId)) BCValidator::validate(BCValidator::EMAIL, $breathecodeId, 'email');
+
+        if(!$user) throw new NotFoundException('User not found: '.$breathecodeId);
         
         return $this->success($response,$user);
     }
