@@ -50,11 +50,16 @@ class UserHandler extends MainHandler{
     public function getUserHandler(Request $request, Response $response) {
         $breathecodeId = $request->getAttribute('user_id');
         
+        $user = null;
         if(is_numeric($breathecodeId)) $user = User::find($breathecodeId);
-        else $user = User::where('username', $breathecodeId)->first();
+        else{
+            
+            // validate email format
+            if(!is_numeric($breathecodeId)) BCValidator::validate(BCValidator::EMAIL, $breathecodeId, 'email');
+            
+            $user = User::where('username', $breathecodeId)->first();
+        } 
         
-        // validate email format
-        if(!is_integer($breathecodeId)) BCValidator::validate(BCValidator::EMAIL, $breathecodeId, 'email');
 
         if(!$user) throw new NotFoundException('User not found: '.$breathecodeId);
         
