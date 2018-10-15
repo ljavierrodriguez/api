@@ -87,8 +87,12 @@ class BreatheCodeAPI
         $this->app->storage = $storage;
         
         $server = new OAuth2\Server($storage,array(
-            'access_lifetime' => (43200 * 52) //one year (52 weeks)
+            'access_lifetime' => (3600*24) //one day
         ));
+        $request = OAuth2\Request::createFromGlobals();
+        if (isset($request->request['grant_type']) && $request->request['grant_type'] == "client_credentials"){
+            $server->setConfig('access_lifetime', 3600 * 24 * 365); //one year
+        }
         
         //Enable Authorization Code credentials to allow request from authorization code.
         $server->addGrantType(new GrantType\AuthorizationCode($storage));
