@@ -31,7 +31,7 @@ class StudentHandler extends MainHandler{
         if(!$student) throw new ArgumentException('Invalid student id: '.$studentId);
 
         if(!empty($data['status'])){
-            if(!in_array($data['status'], ['currently_active', 'under_review', 'blocked', 'studies_finished', 'student_dropped']))
+            if(!in_array($data['status'], Student::$possibleStatus))
                 throw new ArgumentException('Invalid student status: '.$data['status']);
                 
             $updated = true;
@@ -39,7 +39,7 @@ class StudentHandler extends MainHandler{
         }
         
         if(!empty($data['financial_status'])){
-            if(!in_array($data['financial_status'], ['fully_paid', 'up_to_date', 'late', 'uknown']))
+            if(!in_array($data['financial_status'], Student::$possibleFinancialStatus))
                 throw new ArgumentException('Invalid student finantial status: '.$data['financial_status']);
             
             $updated = true;
