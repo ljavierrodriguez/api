@@ -17,6 +17,7 @@ class StudentRoutes{
         $app->get('/student/{student_id}', array($this->studentHandler, 'getStudentHandler'))->add($scopes(['read_basic_info']));
         
         $app->put('/student/', array($this->studentHandler, 'createStudentHandler'))->add($scopes(['crud_student']));
+        $app->post('/student/me', array($this->studentHandler, 'updateStudentMeHandler'));
         $app->post('/student/{student_id}', array($this->studentHandler, 'updateStudentHandler'))->add($scopes(['crud_student']));
         $app->delete('/student/{student_id}', array($this->studentHandler, 'deleteStudentHandler'))->add($scopes(['crud_student']));
         

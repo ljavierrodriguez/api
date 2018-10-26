@@ -170,6 +170,32 @@ class StudentHandler extends MainHandler{
         $user->save();
         $student = $this->setOptional($student,$data,'internal_profile_url');
         $student = $this->setOptional($student,$data,'total_points');
+        $student = $this->setOptional($student,$data,'show_tutorial');
+        $student = $this->setOptional($student,$data,'github');
+        $student = $this->setOptional($student,$data,'phone');
+        $student->save();
+        
+        return $this->success($response,$student);
+    }
+    
+    public function updateStudentMeHandler(Request $request, Response $response) {
+        
+        $c = $this->app->getContainer();
+        $data = $request->getParsedBody();
+        
+        $student = $c["token_data"]["user"]->student;
+        if(!$c["token_data"]["user"]->student) throw new ArgumentException('Invalid student');
+
+        if(isset($data['email'])) throw new ArgumentException('Students emails cannot be updated through this service');
+        
+        $user = $c["token_data"]["user"];
+        $user = $this->setOptional($user,$data,'full_name');
+        $user = $this->setOptional($user,$data,'avatar_url');
+        $user = $this->setOptional($user,$data,'description');
+        $user->save();
+        $student = $this->setOptional($student,$data,'internal_profile_url');
+        $student = $this->setOptional($student,$data,'total_points');
+        $student = $this->setOptional($student,$data,'show_tutorial');
         $student = $this->setOptional($student,$data,'github');
         $student = $this->setOptional($student,$data,'phone');
         $student->save();

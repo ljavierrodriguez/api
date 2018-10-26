@@ -117,6 +117,28 @@ class BreatheCodeAPI
             return $response;
         };
         
+        //middleware to add user_id to route parameters
+        $app = $this->app;
+        $getUserIdMiddleware = function ($request, $response, $next) use ($server, $app){
+        	// Validate the user credentials
+        	$authRequest = OAuth2\Request::createFromGlobals();
+        	$data = $server->getAccessTokenData($authRequest);
+
+            if(empty($data['access_token'])) return $next($request, $response);
+
+        	$user = User::where('username', $data['user_id'])->first();
+        	if (!$user) return $response->withStatus(303);
+        	else $data["user"] = $user;
+        
+        	//Put user_id into the route parameters
+        	$c = $app->getContainer();
+        	$c["token_data"] = $data;
+        
+        	//Credentials are valid, continue so the authorization code can be sent to the clients callback_uri
+        	return $next($request, $response);
+        };
+        $this->app->add($getUserIdMiddleware);
+        
         //The HTML views for the OAuth Autentication process
         $renderer = new Views\PhpRenderer( __DIR__ . '/vendor/chadicus/slim-oauth2-routes/templates');
         $this->app->map(['GET', 'POST'], Routes\Authorize::ROUTE, new Routes\Authorize($server, $renderer))->setName('authorize');
@@ -169,4 +191,5 @@ class BreatheCodeAPI
         
         return $this->app->run();
     }
+
 }
