@@ -121,7 +121,7 @@ class BreatheCodeAPI
         $app = $this->app;
         $getUserIdMiddleware = function ($request, $response, $next) use ($server, $app){
         	// Validate the user credentials
-        	$authRequest = OAuth2\Request::createFromGlobals();
+        	$authRequest = \OAuth2\Request::createFromGlobals();
         	$data = $server->getAccessTokenData($authRequest);
 
             if(empty($data['access_token'])) return $next($request, $response);

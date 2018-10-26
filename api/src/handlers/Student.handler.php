@@ -183,6 +183,7 @@ class StudentHandler extends MainHandler{
         $c = $this->app->getContainer();
         $data = $request->getParsedBody();
         
+        print_r($c["token_data"]["user"]->id); die();
         $student = $c["token_data"]["user"]->student;
         if(!$c["token_data"]["user"]->student) throw new ArgumentException('Invalid student');
 
