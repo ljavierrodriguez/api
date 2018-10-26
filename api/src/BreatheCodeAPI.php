@@ -127,8 +127,9 @@ class BreatheCodeAPI
             if(empty($data['access_token'])) return $next($request, $response);
 
         	$user = User::where('username', $data['user_id'])->first();
-        	if (!$user) return $response->withStatus(303);
-        	else $data["user"] = $user;
+        	if (!$user) return $next($request, $response);
+        	
+        	$data["user"] = $user;
         
         	//Put user_id into the route parameters
         	$c = $app->getContainer();
