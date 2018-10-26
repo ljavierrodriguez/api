@@ -181,11 +181,10 @@ class StudentHandler extends MainHandler{
     public function updateStudentMeHandler(Request $request, Response $response) {
         
         $c = $this->app->getContainer();
-        $data = $request->getParsedBody();
+        if(!$c["token_data"]["user"]) throw new ArgumentException('Unable to recognize user with that token');
         
-        print_r($c["token_data"]["user"]->id); die();
+        $data = $request->getParsedBody();
         $student = $c["token_data"]["user"]->student;
-        if(!$c["token_data"]["user"]->student) throw new ArgumentException('Invalid student');
 
         if(isset($data['email'])) throw new ArgumentException('Students emails cannot be updated through this service');
         
