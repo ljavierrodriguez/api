@@ -33,6 +33,8 @@ class CohortTest extends BaseTestCase {
         $body = [
             "slug" => "nuevoprofile-cohort",
             "name" => "Desarrollador",
+            "duration_in_hours"=> 360,
+            "week_hours"=> 9,
             "description" => "Web Developer".
             "specialties"
         ];

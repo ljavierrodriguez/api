@@ -23,6 +23,8 @@ class ProfileTest extends BaseTestCase {
         $body = [
             "slug"=> "web-developer",
             "name"=> "Web Developer",
+            "duration_in_hours"=> 360,
+            "week_hours"=> 9,
             "description"=> "Create websites using a CMS",
             "specialties"=>[
                 "rtf-master"

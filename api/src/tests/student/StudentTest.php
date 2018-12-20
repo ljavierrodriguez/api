@@ -29,6 +29,8 @@ class StudentTest extends BaseTestCase {
         $body = [
             "slug" => "nuevo-profile",
             "name" => "Desarrollador",
+            "duration_in_hours"=> 360,
+            "week_hours"=> 9,
             "description" => "Web Developer"
         ];
         $profile = $this->mockAPICall(['REQUEST_METHOD' => 'PUT', 'REQUEST_URI' => '/profile/'], $body)
