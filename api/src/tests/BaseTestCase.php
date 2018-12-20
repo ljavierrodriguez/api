@@ -59,6 +59,7 @@ class BaseTestCase extends TestCase {
             'settings' => [
                 'displayErrorDetails' => true,
                 'determineRouteBeforeAppMiddleware' => false,
+                'addContentLengthHeader' => false,
                 'db' => [
                     'driver'   => UT_DB_DRIVER,
                     'database' => UT_DB_NAME,
@@ -90,9 +91,10 @@ class BaseTestCase extends TestCase {
         $responseBody = $response->getBody();
         $responseObj = json_decode($responseBody);
         
-        $this->_logTest($params, $response, $responseObj);
+        $assertion =  new AssertResponse($this, $response, $responseObj);
+        $this->_logTest($params, $response, $responseObj, $assertion);
 
-        return new AssertResponse($this, $response, $responseObj);
+        return $assertion;
     }
 
     function log($msg){
@@ -103,10 +105,11 @@ class BaseTestCase extends TestCase {
         }
     }
 
-    function _logTest($params, $response, $responseObj){
+    function _logTest($params, $response, $responseObj, $assertion=null){
         if(DEBUG){
             $code = $response->getStatusCode();
-            if($code != 200 && $code != 400){
+            $expected = (!$assertion) ? '' : $assertion->getExpectedRespCode();
+            if($code != 200 && $code != 400 && $code != 404){
                 if(!empty($responseObj)){
                     $logEntry = "\n \n [ \n".
                     "   [code]     => \033[33m".$responseObj->code."\033[0m \n".
@@ -128,20 +131,24 @@ class BaseTestCase extends TestCase {
 class AssertResponse{
     private $test;
     private $response;
+    private $expectedRespCode = null;
     private $responseObj;
     function __construct($test, $response, $responseObj){
         $this->test = $test;
         $this->response = $response;
         $this->responseObj = $responseObj;
     }
+    function getExpectedRespCode(){ return $this->expectedRespCode; }
     function expectSuccess($code=200){
         $this->test->assertSame($this->response->getStatusCode(), 200);
         $this->test->assertSame($this->responseObj->code, 200);
+        $this->expectedRespCode = $code;
         return new AssertResponse($this->test, $this->response, $this->responseObj);
     }
     function expectFailure($code=400){
         $this->test->assertSame($this->response->getStatusCode(), $code);
         $this->test->assertSame($this->responseObj->code, $code);
+        $this->expectedRespCode = $code;
         return new AssertResponse($this->test, $this->response, $this->responseObj);
     }
     function withProperties($properties){

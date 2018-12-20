@@ -36,6 +36,8 @@ class StudentHandler extends MainHandler{
                 
             $updated = true;
             $student->status = $data['status'];
+            if($data['status'] === 'student_dropped') $student = $this->setMandatory($student,$data,'dropout_date',BCValidator::DATETIME);
+            else $student->dropout_date = null;
         }
         
         if(!empty($data['financial_status'])){
@@ -171,6 +173,9 @@ class StudentHandler extends MainHandler{
         $student = $this->setOptional($student,$data,'internal_profile_url');
         $student = $this->setOptional($student,$data,'total_points');
         $student = $this->setOptional($student,$data,'show_tutorial');
+        $student = $this->setOptional($student,$data,'github');
+        $student = $this->setOptional($student,$data,'seeking_job');
+        $student = $this->setOptional($student,$data,'found_job');
         $student = $this->setOptional($student,$data,'github');
         $student = $this->setOptional($student,$data,'phone');
         $student->save();

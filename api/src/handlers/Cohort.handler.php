@@ -177,8 +177,10 @@ class CohortHandler extends MainHandler{
     public function getCohortStudentsHandler(Request $request, Response $response) {
         $cohortId = $request->getAttribute('cohort_id');
         
-        $cohort = Cohort::find($cohortId);
-        if(!$cohort) throw new ArgumentException('Invalid cohort id:'.$cohortId);
+        $cohort = null;
+        if(is_numeric($cohortId)) $cohort = Cohort::find($cohortId);
+        else $cohort = Cohort::where('slug', $cohortId)->first();
+        if(!$cohort) throw new ArgumentException('Invalid cohort id or slug:'.$cohortId);
         
         $students = $cohort->students()->get();
         

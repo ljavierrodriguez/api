@@ -311,6 +311,30 @@ class StudentTest extends BaseTestCase {
     /**
      * @depends testCreateStudent
      */
+    function updateStudentStatusWrong($student){
+        $body = [
+            "status" => "asdasd",
+        ];
+        $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/student/status/'.$student->id], $body)
+            ->expectFailure()
+            ->withPropertiesAndValues($body);
+    }
+
+    /**
+     * @depends testCreateStudent
+     */
+    function updateStudentStatusToDroppedWithoutDropoutDate($student){
+        $body = [
+            "status" => "student_dropped"
+        ];
+        $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/student/status/'.$student->id], $body)
+            ->expectFailure()
+            ->withPropertiesAndValues($body);
+    }
+
+    /**
+     * @depends testCreateStudent
+     */
     function testUpdateStudentIDChrSpecial($student){
         $body = [
             "status" => "currently_active",
@@ -639,7 +663,7 @@ class StudentTest extends BaseTestCase {
             ->expectSuccess();
         //expect failure because student does not exists anymore
         $this->mockAPICall(['REQUEST_METHOD' => 'GET', 'REQUEST_URI' => '/student/'.$id])
-            ->expectFailure();
+            ->expectFailure(404);
     }
 
 }

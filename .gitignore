@@ -12,3 +12,4 @@ public/img/*
 tests.sqlite
 
 .sass-cache/
+alters.sql

@@ -7,7 +7,7 @@ class Student extends \Illuminate\Database\Eloquent\Model
     protected $hidden = ['user_id','user','updated_at','pivot'];
     protected $appends = ['cohorts', 'url','badges','id','email','wp_id','full_name','avatar_url','bio'];
     
-    public static $possibleStatus = ['currently_active', 'under_review', 'blocked', 'studies_finished', 'student_dropped'];
+    public static $possibleStatus = ['under_review', 'currently_active', 'blocked', 'postponed', 'studies_finished', 'student_dropped'];
     public static $possibleFinancialStatus = ['fully_paid', 'up_to_date', 'late', 'uknown'];
     
     public function getAvatarURLAttribute(){

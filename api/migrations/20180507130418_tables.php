@@ -71,9 +71,12 @@ class Tables extends Migration
                 $table->string('full_name', 200);
                 $table->integer('total_points')->nullable()->default(0);
                 $table->boolean('show_tutorial')->default(true);
+                $table->boolean('seeking_job')->default(false);
+                $table->boolean('found_job')->default(false);
+                $table->date('dropout_date')->nullable()->default(null);
                 $table->timestamps();
                 $table->enum('financial_status', ['fully_paid', 'up_to_date', 'late', 'uknown'])->default('uknown');
-                $table->enum('status', ['currently_active', 'under_review', 'blocked', 'studies_finished', 'student_dropped'])->default('currently_active');
+                $table->enum('status', ['currently_active', 'under_review', 'blocked', 'postponed', 'studies_finished', 'student_dropped'])->default('currently_active');
                 $table->primary('user_id');
                 $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             });
@@ -86,6 +89,7 @@ class Tables extends Migration
                 $table->string('slug', 200)->unique();
                 $table->string('name', 200);
                 $table->date('kickoff_date')->nullable();
+                $table->date('ending_date')->nullable();
                 $table->unsignedBigInteger('location_id');
                 $table->unsignedBigInteger('profile_id');
                 $table->string('stage', 50);//['not-started', 'on-prework', 'on-course','on-final-project','finished']
@@ -223,6 +227,8 @@ class Tables extends Migration
                 $table->bigIncrements('id');
                 $table->string('slug', 200)->unique();
                 $table->string('name', 255);
+                $table->integer('duration_in_hours')->nullable()->default(0);
+                $table->integer('week_hours')->nullable();
                 $table->text('description');
                 $table->timestamps();
         
