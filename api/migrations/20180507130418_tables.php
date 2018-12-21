@@ -73,6 +73,7 @@ class Tables extends Migration
                 $table->boolean('show_tutorial')->default(true);
                 $table->boolean('seeking_job')->default(false);
                 $table->boolean('found_job')->default(false);
+                $table->enum('language', ['en', 'es'])->default('en');
                 $table->date('dropout_date')->nullable()->default(null);
                 $table->timestamps();
                 $table->enum('financial_status', ['fully_paid', 'up_to_date', 'late', 'uknown'])->default('uknown');

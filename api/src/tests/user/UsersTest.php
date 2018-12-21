@@ -109,10 +109,11 @@ class UsersTest extends BaseTestCase {
      */
     function testUpdateUserTypeEmpty($user){
         $body = [
-            "type" => ""
+            "type" => "career-support"
         ];
         $this->mockAPICall(['REQUEST_METHOD' => 'POST','REQUEST_URI' => '/user/'.$user->id], $body)
-            ->expectSuccess();
+            ->expectSuccess()
+            ->withPropertiesAndValues($body);
     }
 
     /**

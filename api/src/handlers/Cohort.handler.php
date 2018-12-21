@@ -154,8 +154,17 @@ class CohortHandler extends MainHandler{
         $cohort = $this->setOptional($cohort,$data,'slug',BCValidator::SLUG);
         $cohort = $this->setOptional($cohort,$data,'language',BCValidator::SLUG);
         $cohort = $this->setOptional($cohort,$data,'slack_url',BCValidator::URL);
-        $cohort = $this->setOptional($cohort,$data,'kickoff_date',BCValidator::DATETIME);
-        $cohort = $this->setOptional($cohort,$data,'ending_date',BCValidator::DATETIME);
+        
+        if(isset($data['stage']) && $data['stage'] !== 'not-started' && empty($cohort->kickoff_date))
+            $cohort = $this->setMandatory($cohort,$data,'kickoff_date',BCValidator::DATETIME);
+        else 
+            $cohort = $this->setOptional($cohort,$data,'kickoff_date',BCValidator::DATETIME);
+        
+        if(isset($data['stage']) && $data['stage'] !== 'not-started' && empty($cohort->kickoff_date))
+            $cohort = $this->setMandatory($cohort,$data,'ending_date',BCValidator::DATETIME);
+        else 
+            $cohort = $this->setOptional($cohort,$data,'ending_date',BCValidator::DATETIME);
+        
         $cohort->save();
         
         return $this->success($response,$cohort);

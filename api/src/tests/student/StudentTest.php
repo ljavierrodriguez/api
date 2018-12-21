@@ -67,6 +67,7 @@ class StudentTest extends BaseTestCase {
             "full_name" => "Rafael Esaa",
             "avatar_url"=> "https://holamundo.com",
             "bio" => "webdeveloper",
+            "language" => "en",
             "total_points" => "20"
         ];
 

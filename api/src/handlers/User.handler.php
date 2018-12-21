@@ -191,7 +191,11 @@ class UserHandler extends MainHandler{
         $user = User::find($userId);
         if(!$user) throw new ArgumentException('Invalid user id: '.$userId);
         
+        if(!empty($data['type']) && !in_array($data['type'], User::$possibleTypes))
+            throw new ArgumentException('Invalid student type');
+        
         $user = $this->setOptional($user,$data,'full_name',BCValidator::NAME);
+        $user = $this->setOptional($user,$data,'type',BCValidator::SLUG);
         $user->save();
 
         return $this->success($response,$user);
