@@ -62,7 +62,7 @@ class Tables extends Migration
                 $table->timestamps();
                 
                 $table->index('wp_id');
-                $table->foreign('parent_location')->references('id')->on('locations')->onDelete('cascade');
+                $table->foreign('parent_location_id')->references('id')->on('locations')->onDelete('cascade');
             });
         }
         
