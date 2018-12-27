@@ -17,27 +17,53 @@ class CatalogHandler extends MainHandler{
         "colombia" => ["Bogota", "Medellin"],
         "guatemala" => ["Guatemala City"]
         ];
+    public static $technologies = ['CSS3','JS','PHP','GIT','C9','HTML5','REACT','WORDPRESS','AJAX','DJANGO','MYSQL','MONGODB'];
     
-    public function getAllTechnologies(Request $request, Response $response) {
-        $technologies = ['CSS3','JS','PHP','GIT','C9','HTML5','REACT','WORDPRESS','AJAX','DJANGO','MYSQL','MONGODB'];
-        return $this->success($response,$technologies);
+    public function getCatalog(Request $request, Response $response) {
+        $catalog_slug = $request->getAttribute('catalog_slug');
+        $catalog = [];
+        switch($catalog_slug){
+            case "technologies":
+                $catalog = self::$technologies;
+            break;
+            case "countries":
+                $catalog = $this->getAllCountries();
+            break;
+            case "cohort_stages":
+                $catalog = Cohort::$possibleStages;
+            break;
+            case "student_status":
+                $catalog = Student::$possibleStatus;
+            break;
+            case "atemplate_difficulties":
+                $catalog = Atemplate::$possibleDifficulties;
+            break;
+            case "finantial_status":
+                $catalog = Student::$possibleFinancialStatus;
+            break;
+            case "user_types":
+                $catalog = User::$possibleTypes;
+            break;
+            default:
+                throw new ArgumentException('Invalid catalog slug: '.$catalog_slug, 400);
+            break;
+        }
+        return $this->success($response,$catalog);
     }  
-    public function getAllCohortStages(Request $request, Response $response) {
-        $cohort_stages = Cohort::$possibleStages;
-        return $this->success($response,$cohort_stages);
-    }  
-    public function getAllAtemplateDifficulties(Request $request, Response $response) {
-        $difficulties = Atemplate::$possibleDifficulties;
-        return $this->success($response,$difficulties);
-    }  
-    /*
-    public function getAllCountries(Request $request, Response $response) {
-        $aux = [];
-        foreach($this->countries as $key => $val) $aux[] = strtolower($key);
-        return $this->success($response,arsort($aux));
-    } */ 
     
-    public function getAllCountries(Request $request, Response $response) {
+    public function getAllCatalogs(Request $request, Response $response) {
+        $catalogs = [
+            "technologies" => self::$technologies,
+            //"countries" => $this->getAllCountries(),
+            "cohort_stages" => Cohort::$possibleStages,
+            "student_status" => Student::$possibleStatus,
+            "finantial_status" => Student::$possibleFinancialStatus,
+            "user_types" => User::$possibleTypes
+        ];
+        return $this->success($response,$catalogs);
+    }  
+
+    private function getAllCountries() {
         $aux = [];
         foreach(self::$countries as $key => $val){
             if(!isset($aux[strtolower($key)])) $aux[strtolower($key)] = [];
@@ -45,6 +71,6 @@ class CatalogHandler extends MainHandler{
         }
         
         ksort($aux);
-        return $this->success($response,$aux);
+        return $aux;
     }  
 }

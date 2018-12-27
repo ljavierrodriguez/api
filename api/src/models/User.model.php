@@ -3,7 +3,7 @@
 class User extends \Illuminate\Database\Eloquent\Model 
 {
     protected $appends = ['avatar_url'];
-    protected $hidden = ['settings'];
+    protected $hidden = ['settings', 'parent_location'];
 
     public static $possibleTypes = ['teacher','student','admission','career-support'];
     /**
@@ -27,9 +27,19 @@ class User extends \Illuminate\Database\Eloquent\Model
     public function setUserSettings($settings){
         $this->settings = serialize($settings);
     }
+
+    // public function getParent_LocationAttribute(){
+    //     return $this->parent_location->id;
+    // }
+
+    public function parent_location(){
+        return $this->belongsTo('Location');
+    }
+    
     public function getUserSettings(){
         return unserialize($this->settings);
     }
+    
     public function student(){
         return $this->hasOne('Student');
     }

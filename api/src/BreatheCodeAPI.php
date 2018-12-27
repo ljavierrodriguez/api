@@ -170,10 +170,12 @@ class BreatheCodeAPI
     }
     
     public function addRoutes($globalRoutes){
+        
         foreach($globalRoutes as $route){
             $className = "Routes\\".ucfirst($route)."Routes";
             $r = new $className($this->app, $this->scopes);
-        } 
+        }
+        
     }
     
 

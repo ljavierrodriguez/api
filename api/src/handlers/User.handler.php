@@ -193,6 +193,11 @@ class UserHandler extends MainHandler{
         
         if(!empty($data['type']) && !in_array($data['type'], User::$possibleTypes))
             throw new ArgumentException('Invalid student type');
+
+        if(!empty($data['parent_location'])){
+            $location = Cohort::find($data['parent_location']);
+            if($location) $user->parent_location()->associate($location);
+        }
         
         $user = $this->setOptional($user,$data,'full_name',BCValidator::NAME);
         $user = $this->setOptional($user,$data,'type',BCValidator::SLUG);

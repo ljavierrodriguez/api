@@ -58,9 +58,11 @@ class Tables extends Migration
                 $table->string('full_name', 200);
                 $table->string('type', 20);
                 $table->string('username', 200)->unique();
+                $table->unsignedBigInteger('parent_location_id')->nullable()->default(null);
                 $table->timestamps();
                 
                 $table->index('wp_id');
+                $table->foreign('parent_location')->references('id')->on('locations')->onDelete('cascade');
             });
         }
         
