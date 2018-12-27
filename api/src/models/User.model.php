@@ -2,7 +2,6 @@
 
 class User extends \Illuminate\Database\Eloquent\Model 
 {
-    protected $appends = ['avatar_url'];
     protected $hidden = ['settings', 'parent_location'];
 
     public static $possibleTypes = ['teacher','student','admission','career-support'];
@@ -17,13 +16,10 @@ class User extends \Illuminate\Database\Eloquent\Model
      * @return String containing either just a URL or a complete image tag
      * @source https://gravatar.com/site/implement/images/php/
      */
-    public function getAvatarUrlAttribute(){
-        
-        $url = 'https://www.gravatar.com/avatar/';
-        $url .= md5( strtolower( trim( $this->email ) ) );
-        
-        return $url;
-    }
+    // public function getAvatarUrlAttribute(){
+    //     $url = !empty($this->avatar_url) ? $this->avatar_url : 'https://www.gravatar.com/avatar/'.md5( strtolower( trim( $this->email ) ) );
+    //     return $url;
+    // }
     public function setUserSettings($settings){
         $this->settings = serialize($settings);
     }

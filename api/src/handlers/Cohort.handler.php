@@ -167,10 +167,9 @@ class CohortHandler extends MainHandler{
         
         $cohort->save();
         
-        // @TODO: Create unit test for changing the cohort state
         if(isset($data['stage'])){
             if($data['stage'] === 'finished'){
-                $students = $cohort->students();
+                $students = $cohort->students()->get();
                 foreach($students as $student){
                     if($student->status == 'currently_active'){
                         $student->status = 'studies_finished';
@@ -179,7 +178,6 @@ class CohortHandler extends MainHandler{
                 }
             }
         } 
-        
         
         return $this->success($response,$cohort);
     }
@@ -200,6 +198,7 @@ class CohortHandler extends MainHandler{
     }
     
     public function getCohortStudentsHandler(Request $request, Response $response) {
+        
         $cohortId = $request->getAttribute('cohort_id');
         
         $cohort = null;

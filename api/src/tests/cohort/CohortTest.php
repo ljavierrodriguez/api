@@ -119,9 +119,27 @@ class CohortTest extends BaseTestCase {
             "total_points" => "20"
         ];
 
-        $student = $this->mockAPICall(['REQUEST_METHOD' => 'PUT', 'REQUEST_URI' => '/student/'], $body)
-            ->expectSuccess()
-            ->getParsedBody();
+        $test = $this->mockAPICall(['REQUEST_METHOD' => 'PUT', 'REQUEST_URI' => '/student/'], $body)
+            ->expectSuccess();
+        unset($body["cohort_slug"]);
+        $test->withPropertiesAndValues($body);
+        $student = $test->getParsedBody();
+
+        return $student->data;
+    }
+
+    /**
+     * @depends testCreateStudent
+     */
+    function testUpdateStudentStatus($student){
+        $body = [
+            "status" => "currently_active",
+        ];
+
+        $test = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/student/'.$student->id], $body)
+            ->expectSuccess();
+        $test->withPropertiesAndValues($body);
+        $student = $test->getParsedBody();
 
         return $student->data;
     }
@@ -130,12 +148,12 @@ class CohortTest extends BaseTestCase {
      * @depends testCreateCohort
      * @depends testCreateStudent
      */
-    function testCreateStudentCohort($cohort, $student){
-        $body = [
-            "student_id" => 1
-        ];
-        $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/student/cohort/'.$cohort->id], $body)
-            ->expectSuccess();
+    function testCreateStudentCohortSuccess($cohort, $student){
+        $body = [[
+            "student_id" => $student->id
+        ]];
+        $test = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/student/cohort/'.$cohort->id], $body);
+        $test->expectSuccess();
     }
 
     /**
@@ -223,14 +241,24 @@ class CohortTest extends BaseTestCase {
     
     /**
      * @depends testCreateCohort
+     * @depends testUpdateStudentStatus
      */
     function testUpdateCohortStage($cohort){
         $body = [
             "stage" => "finished",
         ];
-        $cohort = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/cohort/'.$cohort->id], $body)
-            ->expectFailure()
+        
+        $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/cohort/'.$cohort->id], $body)
+            ->expectSuccess()
             ->getParsedBody();
+        $students = $this->mockAPICall(['REQUEST_METHOD' => 'GET', 'REQUEST_URI' => '/students/cohort/'.$cohort->id])
+            ->expectSuccess()
+            ->getParsedBody()->data;
+            
+        foreach($students as $student){
+            $this->assertSame($student->status, "studies_finished");
+        }
+        
     }
 
     /**
