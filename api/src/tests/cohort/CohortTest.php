@@ -130,13 +130,13 @@ class CohortTest extends BaseTestCase {
      * @depends testCreateCohort
      * @depends testCreateStudent
      */
-    /*function testCreateStudentCohort($cohort, $student){
+    function testCreateStudentCohort($cohort, $student){
         $body = [
             "student_id" => 1
         ];
         $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/student/cohort/'.$cohort->id], $body)
             ->expectSuccess();
-    }*/
+    }
 
     /**
      * @depends testCreateCohort
@@ -218,6 +218,18 @@ class CohortTest extends BaseTestCase {
         ];
         $cohort = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/cohort/'.$cohort->id], $body)
             ->expectSuccess()
+            ->getParsedBody();
+    }
+    
+    /**
+     * @depends testCreateCohort
+     */
+    function testUpdateCohortStage($cohort){
+        $body = [
+            "stage" => "finished",
+        ];
+        $cohort = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/cohort/'.$cohort->id], $body)
+            ->expectFailure()
             ->getParsedBody();
     }
 

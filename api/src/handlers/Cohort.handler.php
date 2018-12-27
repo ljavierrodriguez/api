@@ -155,17 +155,31 @@ class CohortHandler extends MainHandler{
         $cohort = $this->setOptional($cohort,$data,'language',BCValidator::SLUG);
         $cohort = $this->setOptional($cohort,$data,'slack_url',BCValidator::URL);
         
-        if(isset($data['stage']) && $data['stage'] !== 'not-started' && empty($cohort->kickoff_date))
-            $cohort = $this->setMandatory($cohort,$data,'kickoff_date',BCValidator::DATETIME);
-        else 
-            $cohort = $this->setOptional($cohort,$data,'kickoff_date',BCValidator::DATETIME);
-        
-        if(isset($data['stage']) && $data['stage'] !== 'not-started' && empty($cohort->kickoff_date))
-            $cohort = $this->setMandatory($cohort,$data,'ending_date',BCValidator::DATETIME);
-        else 
-            $cohort = $this->setOptional($cohort,$data,'ending_date',BCValidator::DATETIME);
+        if(isset($data['stage'])){
+            if($data['stage'] !== 'not-started' && empty($cohort->kickoff_date))
+                $cohort = $this->setMandatory($cohort,$data,'kickoff_date',BCValidator::DATETIME);
+            else $cohort = $this->setOptional($cohort,$data,'kickoff_date',BCValidator::DATETIME);
+            
+            if($data['stage'] !== 'not-started' && empty($cohort->kickoff_date))
+                $cohort = $this->setMandatory($cohort,$data,'ending_date',BCValidator::DATETIME);
+            else $cohort = $this->setOptional($cohort,$data,'ending_date',BCValidator::DATETIME);
+        } 
         
         $cohort->save();
+        
+        // @TODO: Create unit test for changing the cohort state
+        if(isset($data['stage'])){
+            if($data['stage'] === 'finished'){
+                $students = $cohort->students();
+                foreach($students as $student){
+                    if($student->status == 'currently_active'){
+                        $student->status = 'studies_finished';
+                        $student->save();
+                    } 
+                }
+            }
+        } 
+        
         
         return $this->success($response,$cohort);
     }
