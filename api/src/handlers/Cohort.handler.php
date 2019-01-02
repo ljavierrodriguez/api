@@ -20,6 +20,8 @@ class CohortHandler extends MainHandler{
                 
                 if(!empty($data["language"])) if($value->language != $data["language"]) return false;
                 if(!empty($data["location"])) if($value->location_slug != $data["location"]) return false;
+                if(!empty($data["stage"])) if(!in_array($value->stage, explode(",",$data["stage"]))) return false;
+                if(!empty($data["stage_not"])) if(in_array($value->stage, explode(",",$data["stage_not"]))) return false;
                 
                 return true;
             });
