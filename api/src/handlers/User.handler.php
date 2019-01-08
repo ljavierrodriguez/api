@@ -208,10 +208,10 @@ class UserHandler extends MainHandler{
     
     public function emailRemind(Request $request, Response $response) {
         $userEmail = $request->getAttribute('user_email');
-        if(empty($userEmail)) throw new ArgumentException('There was an error retrieving the user_email');
-        
+        if(empty($userEmail)) throw new ArgumentException('There was an error retrieving the user_email', 400);
         else $user = User::where('username', $userEmail)->first();
-        if(!$user) throw new ArgumentException('Invalid user email: '.$userEmail);
+        if(!$user) throw new ArgumentException('Invalid user email: '.$userEmail, 400);
+        //debug($userEmail);
         
         $token = new Passtoken();
         $token->token = md5(AuthHelper::randomToken());
@@ -225,7 +225,7 @@ class UserHandler extends MainHandler{
             "url"=> ASSETS_URL.'/apps/remind/?id='.$user->id.'&t='.$token->token.'&callback='.base64_encode($callback)
         ]);
         
-        if(!$result) throw new ArgumentException('Unable to send email');
+        if(!$result) throw new ArgumentException('Unable to send email', 400);
         return $this->success($response,'ok');
     }    
     
