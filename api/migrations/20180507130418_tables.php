@@ -52,7 +52,7 @@ class Tables extends Migration
                 $table->engine = 'InnoDB';
                 $table->bigIncrements('id');
                 $table->integer('wp_id')->unique()->nullable();
-                $table->string('avatar_url', 255)->nullable();
+                $table->string('avatar_url', 255)->nullable()->default(null);
                 $table->string('bio', 255)->nullable();
                 $table->text('settings')->nullable();
                 $table->string('full_name', 200);
