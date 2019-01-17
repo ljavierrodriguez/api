@@ -77,6 +77,8 @@ class UserHandler extends MainHandler{
         $user = new User();
         $user = $this->setMandatory($user,$data,'type',BCValidator::SLUG);
         $user = $this->setMandatory($user,$data,'full_name',BCValidator::NAME);
+        $user = $this->setOptional($user,$data,'first_name',BCValidator::NAME);
+        $user = $this->setOptional($user,$data,'last_name',BCValidator::NAME);
         $user = $this->setMandatory($user,$data,'username',BCValidator::EMAIL);
         //$user = $this->setMandatory($user,$data,'phone',BCValidator::PHONE);
         $user->save();
@@ -143,6 +145,8 @@ class UserHandler extends MainHandler{
             $user = new User();
             $user = $this->setOptional($user,$data,'wp_id');
             $user = $this->setOptional($user,$data,'full_name');
+            $user = $this->setOptional($user,$data,'first_name');
+            $user = $this->setOptional($user,$data,'last_name');
             $user = $this->setMandatory($user,$data,'type',BCValidator::SLUG);
             $user->username = $data['email'];
             $user->save();
@@ -200,6 +204,8 @@ class UserHandler extends MainHandler{
         }
         
         $user = $this->setOptional($user,$data,'full_name',BCValidator::NAME);
+        $user = $this->setOptional($user,$data,'first_name',BCValidator::NAME);
+        $user = $this->setOptional($user,$data,'last_name',BCValidator::NAME);
         $user = $this->setOptional($user,$data,'type',BCValidator::SLUG);
         $user->save();
 

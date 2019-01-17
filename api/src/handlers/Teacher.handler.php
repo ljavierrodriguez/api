@@ -34,6 +34,8 @@ class TeacherHandler extends MainHandler{
             $user->type = 'teacher';
             $user->full_name = $data['full_name'];
             $user = $this->setOptional($user,$data,'wp_id');
+            $user = $this->setOptional($user,$data,'first_name');
+            $user = $this->setOptional($user,$data,'last_name');
             $user->save();
             $created = true;
         }
@@ -43,6 +45,8 @@ class TeacherHandler extends MainHandler{
             if(!$created)
             {
                 $user = $this->setOptional($user,$data,'full_name');
+                $user = $this->setOptional($user,$data,'first_name');
+                $user = $this->setOptional($user,$data,'last_name');
                 $user = $this->setOptional($user,$data,'avatar_url');
                 $user = $this->setOptional($user,$data,'bio');
                 $user->save();
