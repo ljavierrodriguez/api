@@ -110,6 +110,8 @@ class StudentHandler extends MainHandler{
             $user->username = $data['email'];
             $user->type = 'student';
             $user = $this->setMandatory($user,$data,'full_name',BCValidator::NAME);
+            $user = $this->setOptional($user,$data,'first_name');
+            $user = $this->setOptional($user,$data,'last_name');
             $user = $this->setOptional($user,$data,'wp_id');
             $user = $this->setOptional($user,$data,'avatar_url');
             $user = $this->setOptional($user,$data,'bio');
@@ -119,6 +121,8 @@ class StudentHandler extends MainHandler{
         if($user)
         {
             $user = $this->setMandatory($user,$data,'full_name',BCValidator::NAME);
+            $user = $this->setOptional($user,$data,'first_name');
+            $user = $this->setOptional($user,$data,'last_name');
             $user = $this->setOptional($user,$data,'avatar_url');
             $user = $this->setOptional($user,$data,'bio');
             $user->save();
@@ -169,6 +173,8 @@ class StudentHandler extends MainHandler{
         
         $user = $student->user;
         $user = $this->setOptional($user,$data,'full_name');
+        $user = $this->setOptional($user,$data,'first_name');
+        $user = $this->setOptional($user,$data,'last_name');
         $user = $this->setOptional($user,$data,'avatar_url');
         $user = $this->setOptional($user,$data,'description');
         $user->save();
@@ -197,6 +203,8 @@ class StudentHandler extends MainHandler{
         
         $user = $c["token_data"]["user"];
         $user = $this->setOptional($user,$data,'full_name');
+        $user = $this->setOptional($user,$data,'first_name');
+        $user = $this->setOptional($user,$data,'last_name');
         $user = $this->setOptional($user,$data,'avatar_url');
         $user = $this->setOptional($user,$data,'description');
         $user->save();

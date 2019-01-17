@@ -56,6 +56,8 @@ class Tables extends Migration
                 $table->string('bio', 255)->nullable();
                 $table->text('settings')->nullable();
                 $table->string('full_name', 200);
+                $table->string('first_name', 200)->nullable()->default(null);
+                $table->string('last_name', 200)->nullable()->default(null);
                 $table->string('type', 20);
                 $table->string('username', 200)->unique();
                 $table->unsignedBigInteger('parent_location_id')->nullable()->default(null);
