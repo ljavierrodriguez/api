@@ -44,7 +44,7 @@ class Mailer{
             'region' => 'us-west-2',
             'credentials' => [
                 'key'    => S3_KEY,
-                'secret' => S3_SECRETE,
+                'secret' => S3_SECRET,
             ]
         ));
         
