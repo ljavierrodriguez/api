@@ -8,7 +8,6 @@ require 'config.php';
 require '../vendor/autoload.php';
 
 $origins = [
-    'all',
     'https://assets.breatheco.de',
     'https://student.breatheco.de',
     'https://admin.breatheco.de',
@@ -19,8 +18,8 @@ $origins = [
 ];
 if(isset($_SERVER['HTTP_ORIGIN'])){
     foreach($origins as $o){
-        if($_SERVER['HTTP_ORIGIN'] == $o || $o == 'all'){
-            header("Access-Control-Allow-Origin: *");
+        if($_SERVER['HTTP_ORIGIN'] == $o){
+            header("Access-Control-Allow-Origin: {$_SERVER['HTTP_ORIGIN']}");
             break;
         } 
     }
