@@ -34,7 +34,7 @@ define('ADMIN_URL','https://bc-admin-alesanchezr.c9users.io');
 define('STUDENT_URL','https://coding-editor-alesanchezr.c9users.io');
 
 define('S3_KEY','');
-define('S3_SECRETE','');
+define('S3_SECRET','');
 
 define('VALID_IMG_EXTENSIONS',['jpg','png','jpeg']);
 

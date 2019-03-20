@@ -44,6 +44,10 @@ class Teacher extends \Illuminate\Database\Eloquent\Model
         return $this->cohorts()->get()->pluck('slug');
     }
     
+    public function getFullCohortsAttribute(){
+        return $this->cohorts()->get();
+    }
+    
     public function user(){
         return $this->belongsTo('User');
     }

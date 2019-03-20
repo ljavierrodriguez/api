@@ -25,12 +25,12 @@ class UserHandler extends MainHandler{
                 if($bcUser->type == 'student')
                 {
                     $bcUser->student->type = 'student';
-                    return $this->success($response,$bcUser->student->makeHidden('cohorts')->append('full_cohorts'));
+                    return $this->success($response, $bcUser->student->makeHidden('cohorts')->append('full_cohorts'));
                 }
                 else if($bcUser->type == 'teacher'){
                     
                     $bcUser->teacher->type = 'teacher';
-                    return $this->success($response,$bcUser->teacher);
+                    return $this->success($response, $bcUser->teacher->makeHidden('cohorts')->append('full_cohorts'));
                 }
 
                 return $this->success($response,$bcUser);
