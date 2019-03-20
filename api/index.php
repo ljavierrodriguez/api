@@ -20,7 +20,6 @@ if(isset($_SERVER['HTTP_ORIGIN'])){
     foreach($origins as $o){
         if($_SERVER['HTTP_ORIGIN'] == $o){
             header("Access-Control-Allow-Origin: {$_SERVER['HTTP_ORIGIN']}");
-            break;
         } 
     }
     header('Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token , Authorization');
