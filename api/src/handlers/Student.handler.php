@@ -29,7 +29,7 @@ class StudentHandler extends MainHandler{
                                  ->join('cohorts', 'cohorts.id', '=', 'cohort_student.cohort_id')
                                  ->where('cohorts.location_id', $data["location_id"]);
         $students = (array) collect($students->distinct()->get())->unique('user_id')->toArray();
-        return $response->withJson(Student::hydrate($students)->all());
+        return $this->success($response, Student::hydrate($students)->all());
     }
     
     public function getStudentHandler(Request $request, Response $response) {
