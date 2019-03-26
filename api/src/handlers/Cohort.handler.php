@@ -300,6 +300,6 @@ class CohortHandler extends MainHandler{
         if($auxTeachers>0) $cohort->teachers()->detach($auxTeachers);
         else throw new ArgumentException('Error deleting teachers');
         
-        return $this->success($response,"There are ".count($cohort->teachers()->get())." teachers in the cohort.");
+        return $this->success($response,"There are ".$cohort->students()->count()." teachers in the cohort.");
     }
 }
