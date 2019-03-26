@@ -21,6 +21,7 @@ class Cohort extends \Illuminate\Database\Eloquent\Model
         if($location = $this->location()->first()) return $location->slug;
         else return null;
     }
+    
     public function getProfileSlugAttribute(){
         if($profile = $this->profile()->first()) return $profile->slug;
         return null;

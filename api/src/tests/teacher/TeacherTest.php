@@ -215,12 +215,12 @@ class TeacherTest extends BaseTestCase {
             ->getParsedBody();
     }
 
-    /**
-     * @depends testCreateTeacher
-     */
-    function testDeletedTeacher($teacher){
-        $teacher = $this->mockAPICall(['REQUEST_METHOD' => 'DELETE', 'REQUEST_URI' => '/teacher/'.$teacher->id])
-            ->expectFailure()
-            ->getParsedBody();
-    }
+    // /**
+    //  * @depends testCreateTeacher
+    //  */
+    // function testDeletedTeacher($teacher){
+    //     $teacher = $this->mockAPICall(['REQUEST_METHOD' => 'DELETE', 'REQUEST_URI' => '/teacher/'.$teacher->id])
+    //         ->expectFailure()
+    //         ->getParsedBody();
+    // }
 }

@@ -12,6 +12,26 @@ class StudentHandler extends MainHandler{
     
     protected $slug = 'Student';
     
+    public function getAllStudentsHandler(Request $request, Response $response) {
+
+        $students = $this->app->db->table('students');
+        
+        $data = $request->getParams();
+        if(!empty($data["status"])) $students = $students->where('status', $data["status"]);
+        if(!empty($data["financial_status"])) $students = $students->where('financial_status', $data["financial_status"]);
+        if(isset($data["seeking_job"])) $students = $students->where('seeking_job', $data["seeking_job"]);
+        if(isset($data["found_job"])) $students = $students->where('found_job', $data["found_job"]);
+        if(!empty($data["language"])) $students = $students->where('language', $data["language"]);
+        if(!empty($data["gender"])) $students = $students->where('gender', $data["gender"]);
+        
+        if(!empty($data["location_id"])) 
+            $students = $students->join('cohort_student', 'students.user_id', '=', 'cohort_student.student_user_id')
+                                 ->join('cohorts', 'cohorts.id', '=', 'cohort_student.cohort_id')
+                                 ->where('cohorts.location_id', $data["location_id"]);
+        $students = (array) collect($students->distinct()->get())->unique('user_id')->toArray();
+        return $response->withJson(Student::hydrate($students)->all());
+    }
+    
     public function getStudentHandler(Request $request, Response $response) {
         $breathecodeId = $request->getAttribute('student_id');
         if(is_numeric($breathecodeId)) $user = User::find($breathecodeId);
