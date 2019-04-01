@@ -87,6 +87,9 @@ class UsersTest extends BaseTestCase {
             ->withPropertiesAndValues($body);
     }
 
+    /**
+     * @depends testCreateUser
+     */
     function testUpdateUserParentLocation($user){
         $body = [
             "parent_location_id" => 1
