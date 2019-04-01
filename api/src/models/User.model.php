@@ -4,7 +4,7 @@ class User extends \Illuminate\Database\Eloquent\Model
 {
     protected $hidden = ['settings', 'parent_location'];
 
-    public static $possibleTypes = ['teacher','student','admission','career-support'];
+    public static $possibleTypes = ['teacher','student','admission','career-support','location-admin'];
     /**
      * Get either a Gravatar URL or complete image tag for a specified email address.
      *
