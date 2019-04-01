@@ -23,8 +23,8 @@ class CohortRoutes{
         $app->post('/cohort/{cohort_id}', array($cohortHandler, 'updateCohortHandler'))->add($scopes(['crud_cohort']));
         $app->delete('/cohort/{cohort_id}', array($cohortHandler, 'deleteCohortHandler'))->add($scopes(['crud_cohort']));
         
-        $app->post('/teacher/cohort/{cohort_id}', array($cohortHandler, 'addTeacherToCohortHandler'))->add($scopes(['super_admin']));
-        $app->delete('/teacher/cohort/{cohort_id}', array($cohortHandler, 'deleteTeacherFromCohortHandler'))->add($scopes(['super_admin']));
+        $app->post('/teacher/cohort/{cohort_id}', array($cohortHandler, 'addTeacherToCohortHandler'))->add($scopes(['crud_cohort']));
+        $app->delete('/teacher/cohort/{cohort_id}', array($cohortHandler, 'deleteTeacherFromCohortHandler'))->add($scopes(['crud_cohort']));
         
         $app->post('/cohort/sync/', array($cohortHandler, 'syncCohortHandler'))->add($scopes(['sync_data']));
     }

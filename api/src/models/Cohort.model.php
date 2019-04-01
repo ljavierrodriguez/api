@@ -17,6 +17,11 @@ class Cohort extends \Illuminate\Database\Eloquent\Model
         return $this->teachers()->get()->pluck('id');
     }
     
+    
+    public function getFullTeachersAttribute(){
+        return $this->teachers()->get();
+    }
+    
     public function getLocationSlugAttribute(){
         if($location = $this->location()->first()) return $location->slug;
         else return null;

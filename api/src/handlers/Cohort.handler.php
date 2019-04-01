@@ -43,7 +43,7 @@ class CohortHandler extends MainHandler{
         else $cohort = Cohort::where('slug', $cohortId)->first();
         if(!$cohort) throw new ArgumentException('Invalid cohort slug or id: '.$cohortId);
         
-        return $this->success($response,$cohort);
+        return $this->success($response,$cohort->makeHidden('teachers')->append('full_teachers'));
     }
     
     public function getAllCohortsFromLocationHandler(Request $request, Response $response) {
@@ -280,7 +280,8 @@ class CohortHandler extends MainHandler{
         else throw new ArgumentException('Error retreving Teachers form the body request');
         
         foreach($currentTeachers as $ct) $cohort->teachers()->updateExistingPivot($ct->id, ['is_instructor'=>false]);
-        $cohort->teachers()->updateExistingPivot($mainInstructors[0], ['is_instructor'=>true]);
+        
+        if(isset($mainInstructors[0])) $cohort->teachers()->updateExistingPivot($mainInstructors[0], ['is_instructor'=>true]);
         
         return $this->success($response,$currentTeachers);
     }
