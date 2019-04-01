@@ -232,7 +232,7 @@ class CohortHandler extends MainHandler{
         if($auxStudents>0) $cohort->students()->attach($auxStudents);
         else throw new ArgumentException('Error retreving Students form the body request');
         
-        return $this->success($response,"There are ".count($cohort->students())." students in the cohort.");
+        return $this->success($response,"There are ".$cohort->students()->count()." students in the cohort.");
     }
     
     public function deleteStudentFromCohortHandler(Request $request, Response $response) {
