@@ -95,6 +95,7 @@ class Tables extends Migration
                 $table->string('name', 200);
                 $table->date('kickoff_date')->nullable();
                 $table->date('ending_date')->nullable();
+                $table->integer('current_day')->default(0);
                 $table->unsignedBigInteger('location_id');
                 $table->unsignedBigInteger('profile_id');
                 $table->string('stage', 50);//['not-started', 'on-prework', 'on-course','on-final-project','finished']

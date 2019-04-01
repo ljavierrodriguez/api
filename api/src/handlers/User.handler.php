@@ -225,7 +225,7 @@ class UserHandler extends MainHandler{
         $token->save();
         
         $mailer = new Mailer();
-        $callback = ($user->type == 'student') ? STUDENT_URL : ADMIN_URL;
+        $callback = ($user->type == 'student') ? STUDENT_URL : ($user->type == 'teacher') ? TEACHER_URL : ADMIN_URL;
         $result = $mailer->sendAPI("password_reminder", [
             "email"=> $user->username, 
             "url"=> ASSETS_URL.'/apps/remind/?id='.$user->id.'&t='.$token->token.'&callback='.base64_encode($callback)
