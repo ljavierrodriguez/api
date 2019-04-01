@@ -16,7 +16,6 @@ class LocationTest extends BaseTestCase
         $body = [
             "name" => "Caracas",
             "slug" => "slug-caracas",
-            "parent_location_id" => 2,
             "address" => "Caracas",
             "country" => "venezuela"
         ];
@@ -99,7 +98,6 @@ class LocationTest extends BaseTestCase
         $body = [
             "name" => "update",
             "slug" => "update",
-            "parent_location_id" => 2,
             "address" => "Caracas2",
             "country" => "venezuela"
         ];
