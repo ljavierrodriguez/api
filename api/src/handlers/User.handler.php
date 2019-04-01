@@ -146,10 +146,15 @@ class UserHandler extends MainHandler{
             $user = $this->setOptional($user,$data,'wp_id');
             $user = $this->setOptional($user,$data,'full_name');
             $user = $this->setOptional($user,$data,'first_name');
-            $user = $this->setOptional($user,$data,'parent_location_id');
             $user = $this->setOptional($user,$data,'last_name');
             $user = $this->setMandatory($user,$data,'type',BCValidator::SLUG);
             $user->username = $data['email'];
+            $user->save();
+            
+            if(!empty($data['parent_location_id'])){
+                $location = Cohort::find($data['parent_location_id']);
+                if($location) $user->parent_location()->associate($location);
+            }
             $user->save();
             
             $token = new Passtoken();

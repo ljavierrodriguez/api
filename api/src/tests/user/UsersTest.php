@@ -19,7 +19,6 @@ class UsersTest extends BaseTestCase {
             "full_name" => "Rafael Esaá",
             "first_name" => "Rafael",
             "last_name" => "Esaá",
-            "parent_location_id" => 1,
             "username" => "resaa@4geeks.com"
         ];
         $user = $this->mockAPICall(['REQUEST_METHOD' => 'PUT', 'REQUEST_URI' => '/user/'], $body)
@@ -86,6 +85,14 @@ class UsersTest extends BaseTestCase {
         $this->mockAPICall(['REQUEST_METHOD' => 'POST','REQUEST_URI' => '/user/'.$user->id], $body)
             ->expectSuccess()
             ->withPropertiesAndValues($body);
+    }
+
+    function testUpdateUserParentLocation($user){
+        $body = [
+            "parent_location_id" => 1
+        ];
+        $this->mockAPICall(['REQUEST_METHOD' => 'POST','REQUEST_URI' => '/user/'.$user->full_name], $body)
+            ->expectSuccess();
     }
 
     /**
