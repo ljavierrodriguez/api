@@ -146,6 +146,7 @@ class UserHandler extends MainHandler{
             $user = $this->setOptional($user,$data,'wp_id');
             $user = $this->setOptional($user,$data,'full_name');
             $user = $this->setOptional($user,$data,'first_name');
+            $user = $this->setOptional($user,$data,'parent_location_id');
             $user = $this->setOptional($user,$data,'last_name');
             $user = $this->setMandatory($user,$data,'type',BCValidator::SLUG);
             $user->username = $data['email'];
@@ -198,8 +199,8 @@ class UserHandler extends MainHandler{
         if(!empty($data['type']) && !in_array($data['type'], User::$possibleTypes))
             throw new ArgumentException('Invalid student type');
 
-        if(!empty($data['parent_location'])){
-            $location = Cohort::find($data['parent_location']);
+        if(!empty($data['parent_location_id'])){
+            $location = Cohort::find($data['parent_location_id']);
             if($location) $user->parent_location()->associate($location);
         }
         
