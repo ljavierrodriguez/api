@@ -60,16 +60,8 @@ class UsersTest extends BaseTestCase {
      * @depends testCreateUser
      */
     function testGetUserIDEmail($user){
-        $this->mockAPICall(['REQUEST_METHOD' => 'GET','REQUEST_URI' => '/user/'.$user->username])
+        $this->mockAPICall(['REQUEST_METHOD' => 'GET','REQUEST_URI' => '/user/'.$user->id])
             ->expectSuccess();
-    }
-
-    /**
-     * @depends testCreateUser
-     */
-    function testGetUserIDIsChrSpecial($user){
-        $this->mockAPICall(['REQUEST_METHOD' => 'GET','REQUEST_URI' => '/user/'.$user->full_name])
-            ->expectFailure();
     }
 
     /**
@@ -94,19 +86,8 @@ class UsersTest extends BaseTestCase {
         $body = [
             "parent_location_id" => 1
         ];
-        $this->mockAPICall(['REQUEST_METHOD' => 'POST','REQUEST_URI' => '/user/'.$user->full_name], $body)
+        $this->mockAPICall(['REQUEST_METHOD' => 'POST','REQUEST_URI' => '/user/'.$user->id], $body)
             ->expectSuccess();
-    }
-
-    /**
-     * @depends testCreateUser
-     */
-    function testUpdateUserIDIsChrSpecial($user){
-        $body = [
-            "full_name" => "Antonio"
-        ];
-        $this->mockAPICall(['REQUEST_METHOD' => 'POST','REQUEST_URI' => '/user/'.$user->full_name], $body)
-            ->expectFailure();
     }
 
     /**
@@ -146,14 +127,6 @@ class UsersTest extends BaseTestCase {
     /**
      * @depends testCreateUser
      */
-    function testGetSettingUserIDIsChrSpecial($user){
-        $this->mockAPICall(['REQUEST_METHOD' => 'GET','REQUEST_URI' => '/settings/user/'.$user->full_name])
-            ->expectFailure();
-    }
-
-    /**
-     * @depends testCreateUser
-     */
     function testGetSettingUserID($user){
         $this->mockAPICall(['REQUEST_METHOD' => 'GET','REQUEST_URI' => '/settings/user/'.$user->id])
             ->expectSuccess();
@@ -179,18 +152,6 @@ class UsersTest extends BaseTestCase {
         ];
         $credential = $this->mockAPICall(['REQUEST_METHOD' => 'POST','REQUEST_URI' => '/credentials/user/'.$user->id], $body)
             ->expectSuccess()
-            ->getParsedBody();
-    }
-
-    /**
-     * @depends testCreateUser
-     */
-    function testUpdateCredentialUserChrSpecial($user){
-        $body = [
-            "password" => "123456"
-        ];
-        $credential = $this->mockAPICall(['REQUEST_METHOD' => 'POST','REQUEST_URI' => '/credentials/user/'.$user->username], $body)
-            ->expectFailure()
             ->getParsedBody();
     }
 
