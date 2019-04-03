@@ -264,6 +264,7 @@ class CohortHandler extends MainHandler{
         $mainInstructors = [];
         foreach($teachersArray as $t) if(isset($t['is_instructor']) && $t['is_instructor']=='true') $mainInstructors[] = $t['teacher_id'];
         if(count($mainInstructors)>1) throw new ArgumentException('There can only be one main instructor');
+        
        
         $cohort = Cohort::find($cohortId);
         if(!$cohort) throw new ArgumentException('Invalid cohort id: '.$cohortId);
@@ -276,14 +277,17 @@ class CohortHandler extends MainHandler{
             if(!$currentTeachers->contains($tea['teacher_id'])) $auxTeachers[] = $tea['teacher_id'];
         }
 
-        if($auxTeachers>0) $cohort->teachers()->attach($auxTeachers);
+        //add the new teachers only
+        if($auxTeachers>0) $cohort->teachers()->attach($auxTeachers); 
         else throw new ArgumentException('Error retreving Teachers form the body request');
         
-        foreach($currentTeachers as $ct) $cohort->teachers()->updateExistingPivot($ct->id, ['is_instructor'=>false]);
+        foreach($currentTeachers as $ct){
+            $cohort->teachers()->updateExistingPivot($ct->id, ['is_instructor'=>false]);
+        } 
         
         if(isset($mainInstructors[0])) $cohort->teachers()->updateExistingPivot($mainInstructors[0], ['is_instructor'=>true]);
         
-        return $this->success($response,$currentTeachers);
+        return $this->success($response,$cohort->teachers()->get());
     }
     
     public function deleteTeacherFromCohortHandler(Request $request, Response $response) {
@@ -305,6 +309,6 @@ class CohortHandler extends MainHandler{
         if($auxTeachers>0) $cohort->teachers()->detach($auxTeachers);
         else throw new ArgumentException('Error deleting teachers');
         
-        return $this->success($response,"There are ".$cohort->students()->count()." teachers in the cohort.");
+        return $this->success($response,"There are ".$cohort->teachers()->count()." teachers in the cohort.");
     }
 }
