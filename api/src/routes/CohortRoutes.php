@@ -21,6 +21,7 @@ class CohortRoutes{
         
         $app->put('/cohort/', array($cohortHandler, 'createCohortHandler'))->add($scopes(['crud_cohort']));
         $app->post('/cohort/{cohort_id}', array($cohortHandler, 'updateCohortHandler'))->add($scopes(['crud_cohort']));
+        $app->post('/cohort/{cohort_id}/current_day', array($cohortHandler, 'updateCohortDayHandler'))->add($scopes(['crud_cohort','update_cohort_current_day']));
         $app->delete('/cohort/{cohort_id}', array($cohortHandler, 'deleteCohortHandler'))->add($scopes(['crud_cohort']));
         
         $app->post('/teacher/cohort/{cohort_id}', array($cohortHandler, 'addTeacherToCohortHandler'))->add($scopes(['crud_cohort']));

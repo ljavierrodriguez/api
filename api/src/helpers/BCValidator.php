@@ -11,6 +11,7 @@ class BCValidator{
     const NAME = 'name';
     const EMAIL = 'email';
     const URL = 'url';
+    const INT = 'integer';
     const SLUG = 'slug';
     const DATETIME = 'datetime';
     const POINTS = 'points';
@@ -90,6 +91,15 @@ class BCValidator{
                 
             break;
             case self::POINTS:
+                
+                $validator = new Rules\AllOf(
+                    new Rules\IntVal(),
+                    new Rules\Length(0, 255)
+                );
+                if(!$validator->validate($value)) throw new Exception('Parameter '.$name.' has an invalid value: '.$value, 400);
+                
+            break;
+            case self::INT:
                 
                 $validator = new Rules\AllOf(
                     new Rules\IntVal(),

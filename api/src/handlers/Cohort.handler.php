@@ -158,6 +158,7 @@ class CohortHandler extends MainHandler{
         $cohort = $this->setOptional($cohort,$data,'name',BCValidator::NAME);
         $cohort = $this->setOptional($cohort,$data,'stage',BCValidator::SLUG);
         $cohort = $this->setOptional($cohort,$data,'slug',BCValidator::SLUG);
+        $cohort = $this->setOptional($cohort,$data,'current_day',BCValidator::INT);
         $cohort = $this->setOptional($cohort,$data,'language',BCValidator::SLUG);
         $cohort = $this->setOptional($cohort,$data,'slack_url',BCValidator::URL);
         
@@ -184,6 +185,20 @@ class CohortHandler extends MainHandler{
                 }
             }
         } 
+        
+        return $this->success($response,$cohort);
+    }
+    
+    public function updateCohortDayHandler(Request $request, Response $response) {
+        $cohortId = $request->getAttribute('cohort_id');
+        $data = $request->getParsedBody();
+        if(!$data) throw new ArgumentException('There was an error parsing the request information (JSON)');
+        
+        $cohort = Cohort::find($cohortId);
+        if(!$cohort) throw new ArgumentException('Invalid cohort id: '.$cohortId);
+        
+        $cohort = $this->setMandatory($cohort,$data,'current_day',BCValidator::INT);
+        $cohort->save();
         
         return $this->success($response,$cohort);
     }
