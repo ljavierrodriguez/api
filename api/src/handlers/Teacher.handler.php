@@ -51,7 +51,6 @@ class TeacherHandler extends MainHandler{
                 $user = $this->setOptional($user,$data,'bio');
                 $user->save();
             }
-            
             $teacher = $user->teacher()->get()->first();
             if(!$teacher)
             {

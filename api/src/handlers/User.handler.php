@@ -83,55 +83,11 @@ class UserHandler extends MainHandler{
         //$user = $this->setMandatory($user,$data,'phone',BCValidator::PHONE);
         $user->save();
         
+        //create/update the teacher or student representation
+        $this->generateStudentOrTeacher($user);
+        
         return $this->success($response,$user);
     }
-    
-    public function syncUserHandler(Request $request, Response $response) {
-        $data = $request->getParsedBody();
-        if(empty($data)) throw new ArgumentException('There was an error retrieving the request content, it needs to be a valid JSON');
-
-        if(!isset($data['email'])) throw new ArgumentException('You have to specify the user email');
-        if(!in_array($data['type'],['teacher','student'])) throw new ArgumentException('The user type has to be a "teacher" or "student", "'.$data['type'].'" given');
-    
-        $cohortIds = [];
-        if(!isset($data['cohorts']) && $data['type']=='student') throw new ArgumentException('You have to specify the user cohorts');
-        
-        if(isset($data['cohorts'])) foreach($data['cohorts'] as $cohortSlug){
-            $auxCohort = Cohort::where('slug', $cohortSlug)->first();
-            if(!$auxCohort) throw new ArgumentException('The cohort '.$cohortSlug.' is invalid.');
-            $cohortIds[] = $auxCohort->id;
-        }
-        
-    
-        $user = User::where('username', $data['email'])->first();
-        if(!$user) $user = new User;
-        
-        $user->wp_id = $data['wp_id'];
-        $user->type = $data['type'];
-        $user->username = $data['email'];
-        $user = $this->setOptional($user,$data,'full_name');
-        $user->save();
-        
-        $studentOrTeacher = $this->generateStudentOrTeacher($user);
-        
-        $oldCohorts = $studentOrTeacher->cohorts()->get()->pluck('id');
-        if(count($cohortIds)>0){
-            $studentOrTeacher->cohorts()->detach($oldCohorts);
-            $studentOrTeacher->cohorts()->attach($cohortIds);
-        }
-        
-        if(isset($data['password']))
-        {
-            $storage = $this->app->storage;
-            $oauthUser = $storage->setUserWithoutHash($data['email'], $data['password'], null, null);
-            if(empty($oauthUser)){
-                $user->delete();
-                throw new ArgumentException('Unable to create UserCredentials');
-            }
-        }
-
-        return $this->success($response,$user);
-    }    
     
     public function createCredentialsHandler(Request $request, Response $response) {
         $data = $request->getParsedBody();
@@ -201,8 +157,12 @@ class UserHandler extends MainHandler{
         $user = User::find($userId);
         if(!$user) throw new ArgumentException('Invalid user id: '.$userId);
         
-        if(!empty($data['type']) && !in_array($data['type'], User::$possibleTypes))
-            throw new ArgumentException('Invalid student type');
+        $typeIsChanging = false;
+        if(!empty($data['type']) and $data['type'] != $user->type){
+            $typeIsChanging = true;
+            if(!in_array($data['type'], User::$possibleTypes))
+                throw new ArgumentException('Invalid student type');
+        }
 
         if(!empty($data['parent_location_id'])){
             $location = Cohort::find($data['parent_location_id']);
@@ -214,6 +174,9 @@ class UserHandler extends MainHandler{
         $user = $this->setOptional($user,$data,'last_name',BCValidator::NAME);
         $user = $this->setOptional($user,$data,'type',BCValidator::SLUG);
         $user->save();
+        
+        //create/update the teacher or student representation
+        if($typeIsChanging) $this->generateStudentOrTeacher($user);
 
         return $this->success($response,$user);
     }    
@@ -355,6 +318,8 @@ class UserHandler extends MainHandler{
                     $teacher = new Teacher();
                     $user->teacher()->save($teacher);
                 }
+                $user->student()->delete();
+                
                 return $teacher;
             break;
             case "student":
@@ -364,6 +329,8 @@ class UserHandler extends MainHandler{
                     $student = new Student();
                     $user->student()->save($student);
                 }
+                $user->teacher()->delete();
+                
                 return $student;
             break;
         }

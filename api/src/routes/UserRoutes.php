@@ -13,7 +13,7 @@ class UserRoutes{
         $app->get('/me', array($userHandler, 'getMe'))->add($scopes([]));
         $app->get('/users/', array($userHandler, 'getAllUsersHandler'))->add($scopes(['read_basic_info']));
         $app->get('/user/', array($userHandler, 'getAllUsersHandler'))->add($scopes(['read_basic_info']));
-        $app->put('/user/', array($userHandler, 'createUserHandler'))->add($scopes(['read_basic_info']));
+        $app->put('/user/', array($userHandler, 'createUserHandler'))->add($scopes(['super_admin']));
         $app->post('/user/sync', array($userHandler, 'syncUserHandler'))->add($scopes(['sync_data']));
         $app->get('/user/{user_id}', array($userHandler, 'getUserHandler'))->add($scopes(['read_basic_info']));
         $app->post('/user/{user_id}', array($userHandler, 'updateUserHandler'))->add($scopes(['read_basic_info']));

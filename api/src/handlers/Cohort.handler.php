@@ -69,7 +69,7 @@ class CohortHandler extends MainHandler{
         if(empty($data)) throw new ArgumentException('There was an error retrieving the request content, it needs to be a valid JSON');
         
         $location = Location::where('slug', $data['location_slug'])->first();
-        if(!$location) throw new ArgumentException('Invalid location_slug slug');
+        if(!$location) throw new ArgumentException('Invalid '.$data['location_slug'].' slug');
         
         $profile = Profile::where('slug', $data['profile_slug'])->first();
         if(!$profile) throw new ArgumentException('Invalid profile slug: '.$data['profile_slug']);

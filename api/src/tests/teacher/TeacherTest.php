@@ -2,6 +2,9 @@
 namespace Tests;
 
 use PHPUnit\Framework\TestCase;
+use Location;
+use Profile;
+use Teacher;
 
 class TeacherTest extends BaseTestCase {
 
@@ -11,16 +14,21 @@ class TeacherTest extends BaseTestCase {
         parent::setUp();
         $this->app->addRoutes(['teacher']);
         $this->app->addRoutes(['cohort']);
+        $this->app->addRoutes(['user']);
     }
 
     function testCreateTeacher(){
         $body = [
-            "email" => "teacher@4geeks.com",
+            "username" => "teacher@4geeks.com",
+            "type" => "teacher",
             "full_name" => "Prof chapatin",
         ];
-        $teacher = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/teacher/'], $body)
+        $teacher = $this->mockAPICall(['REQUEST_METHOD' => 'PUT', 'REQUEST_URI' => '/user/'], $body)
             ->expectSuccess()
             ->getParsedBody();
+            
+        // $found = Teacher::find($teacher->data->id);
+        // $this->assertNotEmpty($found);
 
         return $teacher->data;
     }
@@ -57,23 +65,11 @@ class TeacherTest extends BaseTestCase {
      */
     function testCreateDoubleTeacher(){
         $body = [
-            "email" => "teacher@4geeks.com",
+            "username" => "teacher@4geeks.com",
+            "type" => "teacher",
             "full_name" => "Prof chapatin",
         ];
-        $teacher = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/teacher/'], $body)
-            ->expectFailure()
-            ->getParsedBody();
-    }
-
-    /**
-     * @depends testCreateTeacher
-     */
-    function testCreateDoubleTeacherEmail(){
-        $body = [
-            "email" => "teacher@4geeks.com",
-            "full_name" => "Prof jirafales"
-        ];
-        $teacher = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/teacher/'], $body)
+        $teacher = $this->mockAPICall(['REQUEST_METHOD' => 'PUT', 'REQUEST_URI' => '/user/'], $body)
             ->expectFailure()
             ->getParsedBody();
     }
@@ -83,11 +79,12 @@ class TeacherTest extends BaseTestCase {
      */
     function testCreateTeacherEmailEmpty(){
         $body = [
-            "email" => "",
+            "username" => "",
+            "teacher" => "teacher",
             "full_name" => "Prof jirafales 2"
         ];
-        $teacher = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/teacher/'], $body)
-            ->expectSuccess()
+        $teacher = $this->mockAPICall(['REQUEST_METHOD' => 'PUT', 'REQUEST_URI' => '/user/'], $body)
+            ->expectFailure()
             ->getParsedBody();
     }
 
@@ -96,11 +93,12 @@ class TeacherTest extends BaseTestCase {
      */
     function testCreateTeacherFullnameEmpty(){
         $body = [
-            "email" => "teacher2@4geeks.com",
-            "full_name" => ""
+            "username" => "teacher2@4geeks.com",
+            "full_name" => "",
+            "type" => "teacher"
         ];
-        $teacher = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/teacher/'], $body)
-            ->expectSuccess()
+        $teacher = $this->mockAPICall(['REQUEST_METHOD' => 'PUT', 'REQUEST_URI' => '/user/'], $body)
+            ->expectFailure()
             ->getParsedBody();
     }
 
@@ -114,7 +112,7 @@ class TeacherTest extends BaseTestCase {
             "bio" => "Bio del Prof chapatin"
         ];
 
-        $teacher = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/teacher/'.$teacher->id], $body)
+        $teacher = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/user/'.$teacher->id], $body)
             ->expectSuccess()
             ->getParsedBody();
     }
@@ -129,8 +127,8 @@ class TeacherTest extends BaseTestCase {
             "bio" => "Bio del Prof chapatin"
         ];
 
-        $teacher = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/teacher/'.$teacher->id], $body)
-            ->expectSuccess()
+        $teacher = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/user/'.$teacher->id], $body)
+            ->expectFailure()
             ->getParsedBody();
     }
 
@@ -144,7 +142,7 @@ class TeacherTest extends BaseTestCase {
             "bio" => "Bio del Prof chapatin"
         ];
 
-        $teacher = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/teacher/'.$teacher->id], $body)
+        $teacher = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/user/'.$teacher->id], $body)
             ->expectSuccess()
             ->getParsedBody();
     }
@@ -159,33 +157,30 @@ class TeacherTest extends BaseTestCase {
             "bio" => ""
         ];
 
-        $teacher = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/teacher/'.$teacher->id], $body)
+        $teacher = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/user/'.$teacher->id], $body)
             ->expectSuccess()
             ->getParsedBody();
     }
 
-    /**
-     * @depends testCreateTeacher
-     */
-    function testUpdateTeacherWpidString($teacher){
-        $body = [
-            "full_name" => "Prof chapatin",
-            "avatar_url" => "https://holamundo.com",
-            "bio" => "Bio del profesor chapatin",
-            "wp_id" => "wpstring"
-        ];
-
-        $teacher = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/teacher/'.$teacher->id], $body)
-            ->expectSuccess()
-            ->getParsedBody();
-    }
 
     function testCreateCohort(){
+        $l = new Location();
+        $l->slug = 'the-super-location';
+        $l->name = 'The Super location';
+        $l->country = 'United States';
+        $l->address = '363 Aragon';
+        $l->save();
+        $l = new Profile();
+        $l->slug = 'nuevo-profile';
+        $l->name = 'Full Stack FT';
+        $l->description = 'Full Stack Full-Time';
+        $l->save();
+        
         $body = [
-            "location_slug" => "nueva-location",
+            "location_slug" => "the-super-location",
             "profile_slug" => "nuevo-profile",
-            "name" => "Nuevo Cohort",
-            "slug" => "nuevoo-cohort",
+            "name" => "Nuevo Cohort 2",
+            "slug" => "nuevoo-cohor2t",
             "language" => "es",
             "slack_url" => "http://www.asidj.com",
             "kickoff_date" => "2017-04-10"
@@ -206,21 +201,32 @@ class TeacherTest extends BaseTestCase {
             ->getParsedBody();
     }
 
+
+    
+    /**
+     * @depends testCreateTeacher
+     * @depends testCreateCohort
+     */
+    function testAddTeacherToCohort($teacher, $cohort){
+        $body = [
+            [ "is_instructor" => "true", "teacher_id" => $teacher->id ]
+        ];
+        $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/teacher/cohort/'.$cohort->id], $body)
+            ->expectSuccess()
+            ->getParsedBody();
+
+        $data = $this->mockAPICall(['REQUEST_METHOD' => 'GET', 'REQUEST_URI' => '/teacher/'.$teacher->id])->expectSuccess()->getParsedBody();
+        $this->assertTrue(in_array($cohort->slug, $data->data->cohorts));
+            
+    }
+
     /**
      * @depends testCreateTeacher
      */
     function testDeleteTeacher($teacher){
-        $teacher = $this->mockAPICall(['REQUEST_METHOD' => 'DELETE', 'REQUEST_URI' => '/teacher/'.$teacher->id])
+        $this->mockAPICall(['REQUEST_METHOD' => 'DELETE', 'REQUEST_URI' => '/user/'.$teacher->id])
             ->expectSuccess()
             ->getParsedBody();
     }
 
-    // /**
-    //  * @depends testCreateTeacher
-    //  */
-    // function testDeletedTeacher($teacher){
-    //     $teacher = $this->mockAPICall(['REQUEST_METHOD' => 'DELETE', 'REQUEST_URI' => '/teacher/'.$teacher->id])
-    //         ->expectFailure()
-    //         ->getParsedBody();
-    // }
 }

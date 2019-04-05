@@ -314,7 +314,7 @@ class CohortTest extends BaseTestCase {
         $cohort = $this->mockAPICall(['REQUEST_METHOD' => 'GET', 'REQUEST_URI' => '/cohorts/teacher/'.$teacher->id])
             ->expectSuccess()
             ->getParsedBody();
-            $this->assertNotEmpty($cohort);
+        $this->assertNotEmpty($cohort);
     }
 
     /**

@@ -14,8 +14,11 @@ class TeacherRoutes{
         $app->get('/teacher/{teacher_id}', array($teacherHandler, 'getSingleHandler'))->add($scopes(['super_admin']));
         $app->get('/teachers/cohort/{cohort_id}', array($teacherHandler, 'getCohortTeachers'))->add($scopes(['super_admin']));
         
-        $app->post('/teacher/', array($teacherHandler, 'createTeacherHandler'))->add($scopes(['super_admin']));
-        $app->post('/teacher/{teacher_id}', array($teacherHandler, 'updateTeacherHandler'))->add($scopes(['super_admin']));
-        $app->delete('/teacher/{teacher_id}', array($teacherHandler, 'deleteTeacherHandler'))->add($scopes(['super_admin']));
+        /**
+         * These methods are disabled because its better to use the user endpoints passing the type=teacher
+         **/
+        // $app->post('/teacher/', array($teacherHandler, 'createTeacherHandler'))->add($scopes(['super_admin']));
+        // $app->post('/teacher/{teacher_id}', array($teacherHandler, 'updateTeacherHandler'))->add($scopes(['super_admin']));
+        // $app->delete('/teacher/{teacher_id}', array($teacherHandler, 'deleteTeacherHandler'))->add($scopes(['super_admin']));
     }
 }
