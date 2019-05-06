@@ -4,7 +4,7 @@ class Student extends \Illuminate\Database\Eloquent\Model
 {
     public $incrementing = false;
     protected $primaryKey = 'user_id';
-    protected $hidden = ['user_id','user','updated_at','pivot'];
+    protected $hidden = ['user_id','user','updated_at','pivot','full_name'];
     protected $appends = ['cohorts', 'url','badges','id','email','wp_id','first_name', 'last_name','avatar_url','bio'];
     
     public static $possibleStatus = ['under_review', 'currently_active', 'blocked', 'postponed', 'studies_finished', 'student_dropped'];
