@@ -148,7 +148,6 @@ class StudentHandler extends MainHandler{
             $user->save();
             
             $student = new Student();
-            $student = $this->setMandatory($student,$data,'full_name',BCValidator::NAME);
             $student = $this->setOptional($student,$data,'total_points');
             $student = $this->setOptional($student,$data,'phone');
             $student = $this->setOptional($student,$data,'github');
@@ -156,7 +155,7 @@ class StudentHandler extends MainHandler{
             $user->student()->save($student);
             $student->cohorts()->save($cohort);
             
-            $this->_sendUserInvitation($user);
+            if(EMAIL_NOTIFICATIONS) $this->_sendUserInvitation($user);
             
         }
         

@@ -72,7 +72,6 @@ class Tables extends Migration
             $this->schema->create('students', function($table) {
                 $table->engine = 'InnoDB';
                 $table->unsignedBigInteger('user_id');
-                $table->string('full_name', 200);
                 $table->integer('total_points')->nullable()->default(0);
                 $table->boolean('show_tutorial')->default(true);
                 $table->boolean('seeking_job')->default(false);
