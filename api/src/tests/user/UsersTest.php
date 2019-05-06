@@ -16,9 +16,8 @@ class UsersTest extends BaseTestCase {
     function testCreateUser(){
         $body = [
             "type" => "student",
-            "full_name" => "Rafael Esaá",
             "first_name" => "Rafael",
-            "last_name" => "Esaá",
+            "last_name" => "Esaa",
             "username" => "resaa@4geeks.com"
         ];
         $user = $this->mockAPICall(['REQUEST_METHOD' => 'PUT', 'REQUEST_URI' => '/user/'], $body)
@@ -41,7 +40,8 @@ class UsersTest extends BaseTestCase {
     function testCreateDoubleUser(){
         $body = [
             "type" => "student",
-            "full_name" => "Rafael Esaa",
+            "first_name" => "Rafael",
+            "last_name" => "Esaa",
             "username" => "resaa@4geeks.com"
         ];
         $this->mockAPICall(['REQUEST_METHOD' => 'PUT', 'REQUEST_URI' => '/user/'], $body)
@@ -69,7 +69,6 @@ class UsersTest extends BaseTestCase {
      */
     function testUpdateUserID($user){
         $body = [
-            "full_name" => "Antonio Aparicio",
             "first_name" => "Antonio",
             "last_name" => "Aparicio",
             "parent_location_id" => 1
@@ -95,7 +94,8 @@ class UsersTest extends BaseTestCase {
      */
     function testUpdateUserFullnameEmpty($user){
         $body = [
-            "full_name" => ""
+            "first_name" => "",
+            "last_name" => ""
         ];
         $this->mockAPICall(['REQUEST_METHOD' => 'POST','REQUEST_URI' => '/user/'.$user->id], $body)
             ->expectFailure();
@@ -134,7 +134,8 @@ class UsersTest extends BaseTestCase {
 
     function testCreateCredentialUser(){
         $body = [
-            "full_name" => "Rafael Esaa",
+            "first_name" => "Rafael",
+            "last_name" => "Essa",
             "email" => "resaa@4geekss.com",
             "type" => "student"
         ];

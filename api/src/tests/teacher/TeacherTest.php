@@ -21,7 +21,8 @@ class TeacherTest extends BaseTestCase {
         $body = [
             "username" => "teacher@4geeks.com",
             "type" => "teacher",
-            "full_name" => "Prof chapatin",
+            "first_name" => "Prof",
+            "last_name" => "Chapatin",
         ];
         $teacher = $this->mockAPICall(['REQUEST_METHOD' => 'PUT', 'REQUEST_URI' => '/user/'], $body)
             ->expectSuccess()
@@ -67,7 +68,8 @@ class TeacherTest extends BaseTestCase {
         $body = [
             "username" => "teacher@4geeks.com",
             "type" => "teacher",
-            "full_name" => "Prof chapatin",
+            "first_name" => "Prof",
+            "last_name" => "Chapatin",
         ];
         $teacher = $this->mockAPICall(['REQUEST_METHOD' => 'PUT', 'REQUEST_URI' => '/user/'], $body)
             ->expectFailure()
@@ -81,7 +83,8 @@ class TeacherTest extends BaseTestCase {
         $body = [
             "username" => "",
             "teacher" => "teacher",
-            "full_name" => "Prof jirafales 2"
+            "first_name" => "Prof",
+            "last_name" => "Jirafales",
         ];
         $teacher = $this->mockAPICall(['REQUEST_METHOD' => 'PUT', 'REQUEST_URI' => '/user/'], $body)
             ->expectFailure()
@@ -94,7 +97,8 @@ class TeacherTest extends BaseTestCase {
     function testCreateTeacherFullnameEmpty(){
         $body = [
             "username" => "teacher2@4geeks.com",
-            "full_name" => "",
+            "first_name" => "",
+            "last_name" => "",
             "type" => "teacher"
         ];
         $teacher = $this->mockAPICall(['REQUEST_METHOD' => 'PUT', 'REQUEST_URI' => '/user/'], $body)
@@ -107,7 +111,8 @@ class TeacherTest extends BaseTestCase {
      */
     function testUpdateTeacher($teacher){
         $body = [
-            "full_name" => "Prof chapatin",
+            "first_name" => "Prof",
+            "last_name" => "Chapatin",
             "avatar_url" => "https://holamundo.com",
             "bio" => "Bio del Prof chapatin"
         ];
@@ -122,7 +127,8 @@ class TeacherTest extends BaseTestCase {
      */
     function testUpdateTeacherFullnameEmpty($teacher){
         $body = [
-            "full_name" => "",
+            "first_name" => "",
+            "last_name" => "",
             "avatar_url" => "https://holamundo.com",
             "bio" => "Bio del Prof chapatin"
         ];
@@ -137,7 +143,8 @@ class TeacherTest extends BaseTestCase {
      */
     function testUpdateTeacherAvatarurlEmpty($teacher){
         $body = [
-            "full_name" => "Prof chapatin",
+            "first_name" => "Prof",
+            "last_name" => "Chapatin",
             "avatar_url" => "",
             "bio" => "Bio del Prof chapatin"
         ];
@@ -152,7 +159,8 @@ class TeacherTest extends BaseTestCase {
      */
     function testUpdateTeacherBioEmpty($teacher){
         $body = [
-            "full_name" => "Prof chapatin",
+            "first_name" => "Prof",
+            "last_name" => "Chapatin",
             "avatar_url" => "https://holamundo.com",
             "bio" => ""
         ];

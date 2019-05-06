@@ -78,18 +78,6 @@ class CohortTest extends BaseTestCase {
             ->expectFailure();
     }*/
 
-    function testCreateTeacher(){
-        $body = [
-            "email" => "teacherCohort@4geeks.com",
-            "full_name" => "Prof Cohort",
-        ];
-        $teacher = $this->mockAPICall(['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/teacher/'], $body)
-            ->expectSuccess()
-            ->getParsedBody();
-
-        return $teacher->data;
-    }
-
     /**
      * @depends testCreateCohort
      */
@@ -113,7 +101,8 @@ class CohortTest extends BaseTestCase {
         $body = [
             "cohort_slug" => $cohort->slug,
             "email" => "resaaa@4geeksss.com",
-            "full_name" => "Rafael Esaa",
+            "first_name" => "Rafael",
+            "last_name" => "Esaa",
             "avatar_url"=> "https://holamundo.com",
             "bio" => "webdeveloper",
             "total_points" => "20"

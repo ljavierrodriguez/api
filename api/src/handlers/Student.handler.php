@@ -129,9 +129,8 @@ class StudentHandler extends MainHandler{
             $user = new User;
             $user->username = $data['email'];
             $user->type = 'student';
-            $user = $this->setMandatory($user,$data,'full_name',BCValidator::NAME);
-            $user = $this->setOptional($user,$data,'first_name');
-            $user = $this->setOptional($user,$data,'last_name');
+            $user = $this->setMandatory($user,$data,'first_name',BCValidator::NAME);
+            $user = $this->setMandatory($user,$data,'last_name',BCValidator::NAME);
             $user = $this->setOptional($user,$data,'wp_id');
             $user = $this->setOptional($user,$data,'avatar_url');
             $user = $this->setOptional($user,$data,'bio');
@@ -140,9 +139,8 @@ class StudentHandler extends MainHandler{
         
         if($user)
         {
-            $user = $this->setMandatory($user,$data,'full_name',BCValidator::NAME);
-            $user = $this->setOptional($user,$data,'first_name');
-            $user = $this->setOptional($user,$data,'last_name');
+            $user = $this->setMandatory($user,$data,'first_name',BCValidator::NAME);
+            $user = $this->setMandatory($user,$data,'last_name',BCValidator::NAME);
             $user = $this->setOptional($user,$data,'avatar_url');
             $user = $this->setOptional($user,$data,'bio');
             $user->save();
@@ -191,7 +189,6 @@ class StudentHandler extends MainHandler{
         if(isset($data['email'])) throw new ArgumentException('Students emails cannot be updated through this service');
         
         $user = $student->user;
-        $user = $this->setOptional($user,$data,'full_name');
         $user = $this->setOptional($user,$data,'first_name');
         $user = $this->setOptional($user,$data,'last_name');
         $user = $this->setOptional($user,$data,'avatar_url');
@@ -221,7 +218,6 @@ class StudentHandler extends MainHandler{
         if(isset($data['email'])) throw new ArgumentException('Students emails cannot be updated through this service');
         
         $user = $c["token_data"]["user"];
-        $user = $this->setOptional($user,$data,'full_name');
         $user = $this->setOptional($user,$data,'first_name');
         $user = $this->setOptional($user,$data,'last_name');
         $user = $this->setOptional($user,$data,'avatar_url');

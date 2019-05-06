@@ -64,7 +64,8 @@ class StudentTest extends BaseTestCase {
         $body = [
             "cohort_slug" => $cohort->slug,
             "email" => "resaaa@4geeks.com",
-            "full_name" => "Rafael Esaa",
+            "first_name" => "Rafael",
+            "last_name" => "Esaa",
             "avatar_url"=> "https://holamundo.com",
             "bio" => "webdeveloper",
             "language" => "en",
@@ -90,7 +91,8 @@ class StudentTest extends BaseTestCase {
         $body = [
             "cohort_slug" => $cohort->slug,
             "email" => "resaaa@4geeks.com!!##",
-            "full_name" => "Rafael Esaa",
+            "first_name" => "Rafael",
+            "last_name" => "Esaa",
             "avatar_url"=> "https://holamundo.com",
             "bio" => "webdeveloper",
             "total_points" => "20"
@@ -107,7 +109,8 @@ class StudentTest extends BaseTestCase {
         $body = [
             "cohort_slug" => $cohort->slug,
             "email" => "resaaa@4geeks.com!!##",
-            "full_name" => "Rafael Esaa",
+            "first_name" => "Rafael",
+            "last_name" => "Esaa",
             "avatar_url"=> "https://holamundo.com",
             "bio" => "webdeveloper",
             "total_points" => "prueba de string"
@@ -124,7 +127,8 @@ class StudentTest extends BaseTestCase {
         $body = [
             "cohort_slug" => $cohort->slug,
             "email" => "resaaa@4geeks.com",
-            "full_name" => "Rafael Esaa",
+            "first_name" => "Rafael",
+            "last_name" => "Esaa",
             "avatar_url"=> "https://holamundo.com",
             "bio" => "webdeveloper",
             "total_points" => "20"
@@ -141,7 +145,8 @@ class StudentTest extends BaseTestCase {
         $body = [
             "cohort_slug" => $cohort->slug,
             "email" => "resaaa@4geeks.com",
-            "full_name" => "",
+            "first_name" => "",
+            "last_name" => "",
             "avatar_url"=> "https://holamundo.com",
             "bio" => "webdeveloper",
             "total_points" => "20"
@@ -175,7 +180,8 @@ class StudentTest extends BaseTestCase {
         $body = [
             "cohort_slug" => $cohort->slug,
             "email" => "",
-            "full_name" => "",
+            "first_name" => "",
+            "last_name" => "",
             "avatar_url"=> "",
             "bio" => "",
             "total_points" => ""
@@ -208,7 +214,8 @@ class StudentTest extends BaseTestCase {
      */
     function testUpdateStudent($student){
         $body = [
-            "full_name" => "Rafael Esaa",
+            "first_name" => "Rafael",
+            "last_name" => "Esaa",
             "avatar_url"=> "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e",
             "total_points" => 20,
         ];
@@ -237,7 +244,8 @@ class StudentTest extends BaseTestCase {
      */
     function testUpdateStudentFullNameEmpty($student){
         $body = [
-            "full_name" => "",
+            "first_name" => "",
+            "last_name" => "",
             "avatar_url"=> "https://www.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e",
             "total_points" => "20",
         ];
@@ -252,7 +260,8 @@ class StudentTest extends BaseTestCase {
      */
     function testUpdateStudentAvatarUrlEmpty($student){
         $body = [
-            "full_name" => "Rafael Esaa",
+            "first_name" => "Rafael",
+            "last_name" => "Esaa",
             "avatar_url"=> "",
             "total_points" => "20",
         ];
@@ -283,7 +292,8 @@ class StudentTest extends BaseTestCase {
         $this->mockAPICall(['REQUEST_METHOD' => 'GET', 'REQUEST_URI' => '/student/'.$student->id])
             ->expectSuccess()
             ->withPropertiesAndValues([
-                "full_name" => "Rafael Esaa"
+                "first_name" => "Rafael",
+                "last_name" => "Esaa"
             ]);
     }
 
@@ -294,7 +304,8 @@ class StudentTest extends BaseTestCase {
         $this->mockAPICall(['REQUEST_METHOD' => 'GET', 'REQUEST_URI' => '/student/'.$student->email])
             ->expectSuccess()
             ->withPropertiesAndValues([
-                "full_name" => "Rafael Esaa"
+                "first_name" => "Rafael",
+                "last_name" => "Esaa"
             ]);
     }
 
