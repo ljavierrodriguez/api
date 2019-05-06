@@ -5,7 +5,7 @@ class Student extends \Illuminate\Database\Eloquent\Model
     public $incrementing = false;
     protected $primaryKey = 'user_id';
     protected $hidden = ['user_id','user','updated_at','pivot'];
-    protected $appends = ['cohorts', 'url','badges','id','email','wp_id','full_name','avatar_url','bio'];
+    protected $appends = ['cohorts', 'url','badges','id','email','wp_id','first_name', 'last_name','avatar_url','bio'];
     
     public static $possibleStatus = ['under_review', 'currently_active', 'blocked', 'postponed', 'studies_finished', 'student_dropped'];
     public static $possibleFinancialStatus = ['fully_paid', 'up_to_date', 'late', 'uknown'];
@@ -20,8 +20,17 @@ class Student extends \Illuminate\Database\Eloquent\Model
         else null;
     }
     
-    public function getFullNameAttribute(){
-        if($this->user) return $this->user->full_name;
+    public function getFirstNameAttribute(){
+        if($this->user){
+            if($this->user->first_name && $this->user->first_name !== '') return $this->user->first_name;
+            else return $this->user->full_name;
+        } 
+        else null;
+    }
+    
+    
+    public function getLastNameAttribute(){
+        if($this->user) return $this->user->last_name;
         else null;
     }
     
