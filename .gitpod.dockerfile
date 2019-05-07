@@ -1,9 +1,15 @@
-FROM gitpod/workspace-mysql:branch-mysql
+FROM gitpod/workspace-full
 
-# 1. give write permission to the gitpod-user to apache directories
-# 2. let Apache use apache.conf and apache.env.sh from our /workspace/<myproject> folder
-RUN chown -R gitpod:gitpod /var/run/apache2 /var/lock/apache2 /var/log/apache2 \
- && echo "include \${GITPOD_REPO_ROOT}/apache.conf" > /etc/apache2/apache2.conf \
- && echo ". \${GITPOD_REPO_ROOT}/apache.env.sh" > /etc/apache2/envvars
+USER root
 
-ENV x=2
+RUN apt-get update && apt-get -y install apache2 mysql-server php-curl php-gd php-mbstring php-xml php-xmlrpc 
+
+RUN echo "include /workspace/wordpress/apache/apache.conf" > /etc/apache2/apache2.conf
+RUN echo ". /workspace/wordpress/apache/envvars" > /etc/apache2/envvars
+
+RUN echo "!include /workspace/wordpress/mysql/mysql.cnf" > /etc/mysql/my.cnf
+
+RUN mkdir /var/run/mysqld
+RUN chown gitpod:gitpod /var/run/apache2 /var/lock/apache2 /var/run/mysqld
+
+RUN addgroup gitpod www-data
