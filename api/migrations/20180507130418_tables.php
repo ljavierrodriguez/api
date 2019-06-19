@@ -75,6 +75,7 @@ class Tables extends Migration
                 $table->integer('total_points')->nullable()->default(0);
                 $table->boolean('show_tutorial')->default(true);
                 $table->boolean('seeking_job')->default(false);
+                $table->string('phone', 25)->nullable()->default(null);
                 $table->boolean('found_job')->default(false);
                 $table->enum('language', ['en', 'es'])->default('en');
                 $table->date('dropout_date')->nullable()->default(null);
