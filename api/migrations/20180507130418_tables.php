@@ -28,7 +28,7 @@ class Tables extends Migration
      */
 
     public function up(){
-        
+
         $this->schema->disableForeignKeyConstraints();
 
         if(!$this->schema->hasTable('badges')){
@@ -42,13 +42,13 @@ class Tables extends Migration
                 $table->text('description');
                 $table->string('technologies', 200);
                 $table->timestamps();
-            
+
                 $table->index('slug');
             });
         }
-        
+
         if(!$this->schema->hasTable('users')){
-            $this->schema->create('users', function($table) { 
+            $this->schema->create('users', function($table) {
                 $table->engine = 'InnoDB';
                 $table->bigIncrements('id');
                 $table->integer('wp_id')->unique()->nullable();
@@ -62,12 +62,12 @@ class Tables extends Migration
                 $table->string('username', 200)->unique();
                 $table->unsignedBigInteger('parent_location_id')->nullable()->default(null);
                 $table->timestamps();
-                
+
                 $table->index('wp_id');
                 $table->foreign('parent_location_id')->references('id')->on('locations')->onDelete('cascade');
             });
         }
-        
+
         if(!$this->schema->hasTable('students')){
             $this->schema->create('students', function($table) {
                 $table->engine = 'InnoDB';
@@ -87,7 +87,7 @@ class Tables extends Migration
         }
 
         if(!$this->schema->hasTable('cohorts')){
-            $this->schema->create('cohorts', function($table) { 
+            $this->schema->create('cohorts', function($table) {
                 $table->engine = 'InnoDB';
                 $table->bigIncrements('id');
                 $table->string('slug', 200)->unique();
@@ -95,56 +95,57 @@ class Tables extends Migration
                 $table->date('kickoff_date')->nullable();
                 $table->date('ending_date')->nullable();
                 $table->integer('current_day')->default(0);
+                $table->string('streaming_slug', 50)->nullable(0);
                 $table->unsignedBigInteger('location_id');
                 $table->unsignedBigInteger('profile_id');
                 $table->string('stage', 50);//['not-started', 'on-prework', 'on-course','on-final-project','finished']
                 $table->string('language', 2);//['es','en']
                 $table->string('slack_url', 200);
                 $table->timestamps();
-            
+
                 $table->foreign('location_id')->references('id')->on('locations')->onDelete('cascade');
                 $table->foreign('profile_id')->references('id')->on('profiles')->onDelete('cascade');
             });
         }
-        
+
         if(!$this->schema->hasTable('teachers')){
-            $this->schema->create('teachers', function($table) { 
+            $this->schema->create('teachers', function($table) {
                     $table->engine = 'InnoDB';
                     $table->unsignedBigInteger('user_id');
                     $table->timestamps();
-                
+
                     $table->primary('user_id');
                     $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
                 });
         }
-        
+
         if(!$this->schema->hasTable('cohort_teacher')){
-            $this->schema->create('cohort_teacher', function($table) { 
+            $this->schema->create('cohort_teacher', function($table) {
                 $table->engine = 'InnoDB';
                 $table->unsignedBigInteger('teacher_user_id');//->primary();
                 $table->unsignedBigInteger('cohort_id');//->primary();
                 $table->boolean('is_instructor')->default(false);//->primary();
                 $table->timestamps();
-            
+
                 $table->foreign('teacher_user_id')->references('user_id')->on('teachers')->onDelete('cascade');
                 $table->foreign('cohort_id')->references('id')->on('cohorts')->onDelete('cascade');
             });
         }
-        
+
         if(!$this->schema->hasTable('cohort_student')){
-            $this->schema->create('cohort_student', function($table) { 
+            $this->schema->create('cohort_student', function($table) {
                 $table->engine = 'InnoDB';
                 $table->unsignedBigInteger('student_user_id');//->primary();
                 $table->unsignedBigInteger('cohort_id');//->primary();
                 $table->timestamps();
-            
+
                 $table->foreign('student_user_id')->references('user_id')->on('students')->onDelete('cascade');
                 $table->foreign('cohort_id')->references('id')->on('cohorts')->onDelete('cascade');
             });
         }
-        
+
         if(!$this->schema->hasTable('locations')){
-            $this->schema->create('locations', function($table) { 
+            $this->schema->create('locations', function($table) {
                 $table->engine = 'InnoDB';
                 $table->bigIncrements('id');
                 $table->string('slug', 200)->unique();
@@ -152,26 +153,26 @@ class Tables extends Migration
                 $table->string('country', 200);
                 $table->string('address', 200);
                 $table->timestamps();
-            
+
             });
         }
-        
+
         if(!$this->schema->hasTable('badge_student')){
-            $this->schema->create('badge_student', function($table) { 
+            $this->schema->create('badge_student', function($table) {
                 $table->engine = 'InnoDB';
                 $table->unsignedBigInteger('student_user_id');//->primary();
                 $table->unsignedBigInteger('badge_id');//->primary();
                 $table->unsignedBigInteger('points_acumulated')->default(0);//->primary();
                 $table->boolean('is_achieved')->default(false);//->primary();
                 $table->timestamps();
-            
+
                 $table->foreign('student_user_id')->references('user_id')->on('students')->onDelete('cascade');
                 $table->foreign('badge_id')->references('id')->on('badges')->onDelete('cascade');
             });
         }
-        
+
         if(!$this->schema->hasTable('activities')){
-            $this->schema->create('activities', function($table) { 
+            $this->schema->create('activities', function($table) {
                 $table->engine = 'InnoDB';
                 $table->bigIncrements('id');
                 $table->unsignedBigInteger('student_user_id');
@@ -181,14 +182,14 @@ class Tables extends Migration
                 $table->text('description');
                 $table->integer('points_earned');
                 $table->timestamps();
-            
+
                 $table->foreign('student_user_id')->references('user_id')->on('students')->onDelete('cascade');
                 $table->foreign('badge_id')->references('id')->on('badges')->onDelete('cascade');;
             });
         }
-        
+
         if(!$this->schema->hasTable('specialties')){
-            $this->schema->create('specialties', function($table) { 
+            $this->schema->create('specialties', function($table) {
                 $table->engine = 'InnoDB';
                 $table->bigIncrements('id');
                 $table->string('slug', 200)->unique();
@@ -197,37 +198,37 @@ class Tables extends Migration
                 $table->text('description');
                 $table->integer('points_to_achieve');
                 $table->timestamps();
-        
+
             });
         }
-        
+
         if(!$this->schema->hasTable('student_specialty')){
-            $this->schema->create('student_specialty', function($table) { 
+            $this->schema->create('student_specialty', function($table) {
                 $table->engine = 'InnoDB';
                 $table->unsignedBigInteger('student_user_id');
                 $table->unsignedBigInteger('specialty_id', 200)->unique();
                 $table->timestamps();
-            
+
                 $table->foreign('student_user_id')->references('user_id')->on('students')->onDelete('cascade');;
                 $table->foreign('specialty_id')->references('id')->on('specialties')->onDelete('cascade');;
             });
         }
-        
+
         if(!$this->schema->hasTable('requierments')){
-            $this->schema->create('requierments', function($table) { 
+            $this->schema->create('requierments', function($table) {
                 $table->engine = 'InnoDB';
                 $table->unsignedBigInteger('specialty_id');
                 $table->unsignedBigInteger('badge_id');
                 $table->integer('points_to_complete');
                 $table->timestamps();
-            
+
                 $table->foreign('specialty_id')->references('id')->on('specialties')->onDelete('cascade');
                 $table->foreign('badge_id')->references('id')->on('badges')->onDelete('cascade');
             });
         }
-        
+
         if(!$this->schema->hasTable('profiles')){
-            $this->schema->create('profiles', function($table) { 
+            $this->schema->create('profiles', function($table) {
                 $table->engine = 'InnoDB';
                 $table->bigIncrements('id');
                 $table->string('slug', 200)->unique();
@@ -236,25 +237,25 @@ class Tables extends Migration
                 $table->integer('week_hours')->nullable();
                 $table->text('description');
                 $table->timestamps();
-        
+
             });
         }
-        
+
         if(!$this->schema->hasTable('profile_specialty')){
             $this->schema->create('profile_specialty', function($table) {
                 $table->engine = 'InnoDB';
                 $table->unsignedBigInteger('profile_id');
                 $table->unsignedBigInteger('specialty_id');
                 $table->timestamps();
-            
+
                 $table->foreign('profile_id')->references('id')->on('profiles')->onDelete('cascade');
                 $table->foreign('specialty_id')->references('id')->on('specialties')->onDelete('cascade');
             });
         }
-        
+
         $this->schema->enableForeignKeyConstraints();
     }
-    
+
     public function down(){
         if($this->schema->hasTable('users')) $app->db->table('users')->truncate();
         if($this->schema->hasTable('students')) $app->db->table('students')->truncate();
@@ -271,7 +272,7 @@ class Tables extends Migration
         if($this->schema->hasTable('requierments')) $app->db->table('requierments')->truncate();
         if($this->schema->hasTable('profiles')) $app->db->table('profiles')->truncate();
         if($this->schema->hasTable('profile_specialty')) $app->db->table('profile_specialty')->truncate();
-    
+
         $this->schema->dropIfExists('badges');
         $this->schema->dropIfExists('users');
         $this->schema->dropIfExists('students');
