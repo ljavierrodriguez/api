@@ -1,7 +1,16 @@
 image:
   file: .gitpod.dockerfile
 ports:
-  - port: 8001
-    onOpen: ignore
+  - port: 8080
   - port: 3306
     onOpen: ignore
+tasks:
+  - name: MySQL
+    init: wp core download --path=$GITPOD_REPO_ROOT;
+    command: >
+        mysqld --initialize-insecure;
+        mysqld &
+        sleep 5;
+  - name: Apache
+    command: >
+        apachectl start;
