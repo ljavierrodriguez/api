@@ -15,6 +15,7 @@ class TaskHandler extends MainHandler{
         $studentId = $request->getQueryParam('student', null);
         $cohortId = $request->getQueryParam('cohort', null);
         $teacherId = $request->getQueryParam('teacher', null);
+        $type = $request->getQueryParam('type', null);
 
 
         $query = $this->app->db->table('tasks');
@@ -28,6 +29,7 @@ class TaskHandler extends MainHandler{
             }
         }
         if(isset($studentId)) $query = $query->where('tasks.student_user_id',$studentId);
+        if(isset($type)) $query = $query->where('tasks.type',$type);
         $tasks = $query->select('tasks.*')->get();
 
         return $this->success($response,$tasks);
