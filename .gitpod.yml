@@ -11,5 +11,6 @@ tasks:
         mysqld &
         sleep 5;
   - name: Apache
+    init: composer install;
     command: >
         apachectl start;
