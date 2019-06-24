@@ -46,7 +46,7 @@ class TeacherHandler extends MainHandler{
         $task = Task::find($taskId);
         if(!$task) throw new ArgumentException('Invalid task id');
 
-        if(!in_array($data['revision_status'],Task::$revisionStages)) throw new ArgumentException("Invalid revision_status ".$data['status'].", the only valid revision_status are: ".implode(',',Task::$revision_status));
+        if(!in_array($data['revision_status'],Task::$revisionStages)) throw new ArgumentException("Invalid revision_status ".$data['revision_status'].", the only valid revision_status are: ".implode(',',Task::$revisionStages));
 
         try{
             if($task->type !== 'assignment' or $task->status !== 'done')
