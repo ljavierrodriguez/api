@@ -18,21 +18,21 @@ class TaskHandler extends MainHandler{
         $type = $request->getQueryParam('type', null);
 
 
-        $query = $this->app->db->table('tasks');
-        if(isset($cohortId) || isset($teacherId)){
-            $query = $query->join('cohort_student','cohort_student.student_user_id','=','tasks.student_user_id');
+        $query = $this->app->db->table('tasks')
+                    ->join('cohort_student','cohort_student.student_user_id','=','tasks.student_user_id')
+                    ->join('students','students.user_id','=','cohort_student.student_user_id');
 
-            if(isset($cohortId)) $query = $query->where('cohort_student.cohort_id',$cohortId);
-            if(isset($teacherId)){
-                $query = $query->join('cohort_teacher','cohort_student.cohort_id','=','cohort_teacher.cohort_id');
-                $query = $query->where('cohort_teacher.teacher_user_id',$teacherId);
-            }
+        if(isset($cohortId)) $query = $query->where('cohort_student.cohort_id',$cohortId);
+        if(isset($teacherId)){
+            $query = $query->join('cohort_teacher','cohort_student.cohort_id','=','cohort_teacher.cohort_id');
+            $query = $query->where('cohort_teacher.teacher_user_id',$teacherId);
         }
         if(isset($studentId)) $query = $query->where('tasks.student_user_id',$studentId);
         if(isset($type)) $query = $query->where('tasks.type',$type);
         $tasks = $query->select('tasks.*')->get();
 
-        return $this->success($response,$tasks);
+        $tasks = (array) collect($tasks)->toArray();
+        return $this->success($response,Task::hydrate($tasks)->all());
     }
 
     public function getAllStudentTasksHandler(Request $request, Response $response) {
