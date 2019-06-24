@@ -53,6 +53,7 @@ class TeacherHandler extends MainHandler{
                 throw new ArgumentException("Only delivered assignments can be marke as approved or rejected", 400);
 
             $task->revision_status = $data['revision_status']; //pending
+            if(!empty($data['description'])) $task->description = $data['description'];
             $task->save();
 
         }
